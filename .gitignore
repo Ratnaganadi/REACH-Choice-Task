@@ -8,3 +8,5 @@ data_camp/
 *.png
 *.jpg
 *.pkg
+*.sh
+*.gif
