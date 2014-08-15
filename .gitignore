@@ -1,0 +1,10 @@
+*.pyc
+*.pyo
+*.p
+*.mp4
+data/
+data_camp/
+*.wav
+*.png
+*.jpg
+*.pkg
