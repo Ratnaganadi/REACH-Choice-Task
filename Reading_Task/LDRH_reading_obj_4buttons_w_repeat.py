@@ -1,4 +1,4 @@
-2from __future__ import division
+from __future__ import division
 from psychopy import gui, visual, core, data, event, logging, sound, info, misc
 import time, numpy, os, sys, csv, pyglet, tempfile, wave
 from os.path import join, isfile
