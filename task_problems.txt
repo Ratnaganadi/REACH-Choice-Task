@@ -1,0 +1,11 @@
+** REaCh ** 
+
+*reading task (and possibly the other tasks)
+  - script line 362-367: the script fails to loop through the stimuli list. I don't know why.
+
+*practice for all tasks
+  - cannot exit while practice instruction is displayed.
+
+
+** Emotion Task **
+ - cannot exit when the task is being run, regardless of when I press 'escape'
