@@ -14,6 +14,10 @@ class Star_Game():
     def __init__(self, win):
         self.fn = os.path.dirname(__file__)
         self.trialClock=core.Clock()
+
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/'
+        
         #practice variables
         self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
         self.practice_instructions2 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 2: administrator walks through trials with child')
@@ -28,19 +32,19 @@ class Star_Game():
         self.continue_button = visual.ImageStim(win=win, image = self.fn + '/continue_button.png', units = 'pix', ori = 0, pos = [-250,-150])
         self.repeat_button = visual.ImageStim(win=win, image = self.fn + '/repeat_button.png', units = 'pix', ori = 0, pos = [250,-150])
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #trial variables
         self.t_twinkle = 3#when the star will twinkle
-        self.bintang = visual.ImageStim(win=win, name='bintang', image = self.fn + '/star.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)#stimulus
-        self.twinkle = visual.ImageStim(win=win, name='twinkle', image = self.fn + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinkle
-        self.twinkle2 = visual.ImageStim(win=win, name='twinkle2', image = self.fn + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinklefor END routine
-        self.star_selected = visual.ImageStim(win=win, name='star_selected', image = self.fn + '/star_selected.png', units = 'pix', ori = 0, size = [60, 60])
-        self.drag = visual.ImageStim(win=win, name = 'drag', image = self.fn + '/star2.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)
+        self.bintang = visual.ImageStim(win=win, name='bintang', image = image_path + '/star.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)#stimulus
+        self.twinkle = visual.ImageStim(win=win, name='twinkle', image = image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinkle
+        self.twinkle2 = visual.ImageStim(win=win, name='twinkle2', image = image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinklefor END routine
+        self.star_selected = visual.ImageStim(win=win, name='star_selected', image = image_path + '/star_selected.png', units = 'pix', ori = 0, size = [60, 60])
+        self.drag = visual.ImageStim(win=win, name = 'drag', image = image_path + '/star2.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)
         self.circledrag = visual.Circle(win, name = 'circledrag', units = u'pix', radius = 30, ori=0, pos = [0,0])
         self.circletwinkle = visual.Circle(win, name = 'circletwinkle', units = u'pix', radius = 30, ori=0, pos = [0,0])
-        self.mask = visual.ImageStim(win, name='mask2', image = self.fn + '/mask.jpg', units=u'pix', ori=0, pos=[0, 0], size=[1500,850], opacity = 1, mask =None, interpolate = True)
+        self.mask = visual.ImageStim(win, name='mask2', image = image_path + '/mask.jpg', units=u'pix', ori=0, pos=[0, 0], size=[1500,850], opacity = 1, mask =None, interpolate = True)
         self.blank=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white', text='+', height=30)
         self.mouse=event.Mouse(win=win); self.mouse.getPos()
         

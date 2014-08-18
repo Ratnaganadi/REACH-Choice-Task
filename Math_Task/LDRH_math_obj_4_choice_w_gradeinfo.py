@@ -16,8 +16,12 @@ class Math_Game:
     
     def __init__(self, win, conditions):
         "Initialize the stimuli and iteration numbers, and import conditions"
-        #get dir for importing conditions
+        #get dir for importing conditions, images and audio
         self.dir = os.path.dirname(__file__)
+
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/'
+        math_dotstims_path = 'Images/Stimuli/Math_dotstims`'
         
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to start practicing.")
@@ -28,8 +32,8 @@ class Math_Game:
         self.practice_aud3 = sound.Sound('practice_cue3.wav')
         
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         
         #create stimuli
         self.foil1 = visual.TextStim(win, pos=[0,0],height=70, text='Foil1')
@@ -42,20 +46,13 @@ class Math_Game:
         self.fixation = visual.ImageStim(win, color='black', image=None, mask='circle',size=5)
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+100], height=28, wrapWidth=700, text='In this game you will see a cluster of dots or a math problem at the top of the screen, and two or four possible answers at the bottom. Touch the answer you think is correct.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, wrapWidth=700, text="Touch anywhere on the screen when you're ready to start.")
-        self.foil1_button4 = visual.ImageStim(win, image=self.dir + '/general_button_4.png')#, size=[300,120])
-        self.foil2_button4 = visual.ImageStim(win, image=self.dir + '/general_button_4.png')
-        self.foil3_button4 = visual.ImageStim(win, image=self.dir + '/general_button_4.png')
-        self.target_button4 = visual.ImageStim(win, image=self.dir + '/general_button_4.png')#, size=[300,120])
-        self.foil1_button2 = visual.ImageStim(win, image=self.dir + '/general_button.png')
-        self.target_button2 = visual.ImageStim(win,image=self.dir + '/general_button.png')
-        self.depressed_button = visual.ImageStim(win, image=self.dir + '/depressed_button.png', pos=[220,-150], size=[300,120])
-        if white_rectangle:
-            self.foil_button = visual.ImageStim(win, image=self.dir + '/white_rectangle.png', pos=[-220,-150], size=[300,120])
-            self.target_button = visual.ImageStim(win, image=self.dir + '/white_rectangle.png', pos=[220,-150], size=[300,120])
-        if dark_button:
-            self.foil_button = visual.ImageStim(win, image=self.dir + '/dark_general_button.png', pos=[-220,-150], size=[300,120])
-            self.target_button = visual.ImageStim(win, image=self.dir + '/dark_general_button.png', pos=[220,-150], size=[300,120])
-            self.depressed_button = visual.ImageStim(win, image=self.dir + '/dark_depressed_button.png', pos=[220,-150], size=[300,120])
+        self.foil1_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
+        self.foil2_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')
+        self.foil3_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')
+        self.target_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
+        self.foil1_button2 = visual.ImageStim(win, image= image_path + '/general_button.png')
+        self.target_button2 = visual.ImageStim(win,image= image_path + '/general_button.png')
+
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
         
@@ -208,7 +205,7 @@ class Math_Game:
         if '*div' in stim_string: stim_string= stim_string.replace('*div',u'÷').replace('-',u'−')#stim_string[0:stim_string.index('*div')] + u'÷' + stim_string[stim_string.index('*div')+4:]
         #get image if applicable
         if '.png' in stim_string:
-            self.dot_stimulus.setImage(self.dir+'/dot_stims/'+stim_string)
+            self.dot_stimulus.setImage(math_dotstims_path+stim_string)
             self.stimulus = self.dot_stimulus
         else:
             self.text_stimulus.setText(stim_string)#[self.iteration[index]]))

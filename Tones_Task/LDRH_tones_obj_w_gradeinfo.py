@@ -16,33 +16,30 @@ class Tones_Game:
         "Initialize the stimuli and import conditions"
         #get dir for importing resources
         self.fn = os.path.dirname(__file__)
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/'
         
         #create practice instructions and trial instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to start practicing.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        self.practice_aud1 = sound.Sound('practice_cue1.wav')
-        self.practice_aud2 = sound.Sound('practice_cue2.wav')
-        self.practice_aud3 = sound.Sound('practice_cue3.wav')
+        self.practice_aud1 = sound.Sound(audio_path + 'practice_cue1.wav')
+        self.practice_aud2 = sound.Sound(audio_path + 'practice_cue2.wav')
+        self.practice_aud3 = sound.Sound(audio_path + 'practice_cue3.wav')
 
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         
         #create stimuli
-        self.speaker = visual.ImageStim(win=win, name='speaker',image=self.fn +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
-        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=self.fn +'/speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
+        self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path + 'speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
+        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=image_path + 'speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
         self.cue_touch = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,-150],height=28,text="Touch anywhere on the screen when you're ready to start.")
         self.instructions = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,+100],height=28, text='In this game, you will hear two short melodies that can be the same or different. If they were the same, touch the happy face button, and if they were not the same, touch the sad face button.')
         self.trial_start = visual.TextStim(win, height=1, wrapWidth=25, pos=[0,+2], text='Ok, we\'re ready to start.')
-        self.same_button=visual.ImageStim(win, name='same_button',units=u'pix',image=self.fn + '/same_button_shapes.png',ori=0, pos=[-260, -200],color=[1,1,1], opacity=1.0)
-        self.different_button=visual.ImageStim(win=win, name='different_button',units=u'pix',image=self.fn + '/different_button_shapes.png',ori=0, pos=[260, -200],color=[1,1,1], opacity=1.0)
-        self.same_button = visual.ImageStim(win, image=self.fn + '/happy_button.png', pos=[-260, -200])
-        self.different_button = visual.ImageStim(win, image=self.fn + '/sad_button.png', pos=[260, -200])
-        #self.same_button = visual.ImageStim(win, image=self.fn + '/general_button.png', pos=[-220,-150], size=[300,120])
-        #self.different_button = visual.ImageStim(win, image=self.fn + '/general_button.png', pos=[220,-150], size=[300,120])
-        #self.same_text = visual.TextStim(win, units=u'pix', pos=[-220,-150], height =50, text='Same')
-        #self.different_text = visual.TextStim(win, units=u'pix', pos=[220,-150], height =50, text='Different')
+        self.same_button = visual.ImageStim(win, image= image_path + 'happy_button.png', pos=[-260, -200])
+        self.different_button = visual.ImageStim(win, image= image_path + 'sad_button.png', pos=[260, -200])
+
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
         self.trialClock = core.Clock()

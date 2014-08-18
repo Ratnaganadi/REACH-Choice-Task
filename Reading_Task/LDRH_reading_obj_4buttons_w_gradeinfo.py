@@ -13,11 +13,12 @@ class Reading_Game:
     
     def __init__(self, win, conditions):
         self.fn = os.path.dirname(__file__)
-        "Initialize components"
+
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/'
         
         #get tempfile
         self.temp_dir = tempfile.gettempdir()
-        # self.trialList=data.importConditions('wordliststim.xlsx')
 
         #create window and stimuli
         self.globalClock = core.Clock()#to keep track of time
@@ -27,44 +28,40 @@ class Reading_Game:
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        self.practice_aud1 = sound.Sound('practice_cue1.wav')
-        self.practice_aud2 = sound.Sound('practice_cue2.wav')
-        self.practice_aud3 = sound.Sound('practice_cue3.wav')
+        self.practice_aud1 = sound.Sound(audio_path + 'practice_cue1.wav')
+        self.practice_aud2 = sound.Sound(audio_path + 'practice_cue2.wav')
+        self.practice_aud3 = sound.Sound(audio_path + 'practice_cue3.wav')
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will words on the left and the right side of the screen, then you will hear a spoken word. Touch the word you hear.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text="Touch anywhere on the screen when you are ready to start.")
-        
 
         #foil & target button, speaker stimuli
         self.fixation = visual.TextStim(win, pos=[0,0],height=45, text='', color='white')
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #for 2 buttons
         self.target2b = visual.TextStim(win, pos=[0,0],height=45, text='target2b.')
         self.foil2b = visual.TextStim(win, pos=[0,0],height=45, text='foil2b.')
-        self.target_2button=visual.ImageStim(win=win, name='target_2button', image=u'general_button.png', units=u'pix', pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_2button=visual.ImageStim(win, name='foil_2button', image=u'general_button.png', units=u'pix', pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.target_2button=visual.ImageStim(win=win, name='target_2button', image= image_path + 'general_button.png', units=u'pix', pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_2button=visual.ImageStim(win, name='foil_2button', image= image_path + 'general_button.png', units=u'pix', pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
 
         #for 4 buttons
         self.target4b = visual.TextStim(win, pos=[0,0],height=45, text='target4b.')
         self.foil4b1 = visual.TextStim(win, pos=[0,0],height=45, text='foil4b1.')
         self.foil4b2 = visual.TextStim(win, pos=[0,0],height=45, text='foil4b2.')
         self.foil4b3 = visual.TextStim(win, pos=[0,0],height=45, text='foil4b3.')
-        # self.foil4b4 = visual.TextStim(win, pos=[0,0],height=50, text='foil4b4.')
-        self.target_4button=visual.ImageStim(win=win, name='target_4button', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_4button1=visual.ImageStim(win, name='foil_4button1', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_4button2=visual.ImageStim(win, name='foil_4button2', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_4button3=visual.ImageStim(win, name='foil_4button3', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        # self.foil_4button4=visual.ImageStim(win, name='foil_4button4', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        
+        self.target_4button=visual.ImageStim(win=win, name='target_4button', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_4button1=visual.ImageStim(win, name='foil_4button1', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_4button2=visual.ImageStim(win, name='foil_4button2', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_4button3=visual.ImageStim(win, name='foil_4button3', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
 
         #speaker
-        self.speaker = visual.ImageStim(win=win, name='speaker', image= self.fn + '/speaker.png', mask = None, units=u'pix', ori=0, pos=[0,200], size=[115,115])
-        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix', image= self.fn + '/speaker_playing_white.png', mask = None, ori=0, pos=[45,200], size=[220,155])
+        self.speaker = visual.ImageStim(win=win, name='speaker', image=image_path + '/speaker.png', mask = None, units=u'pix', ori=0, pos=[0,200], size=[115,115])
+        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix', image=image_path + '/speaker_playing_white.png', mask = None, ori=0, pos=[45,200], size=[220,155])
         #feedback
-        self.correct = visual.ImageStim(win=win, name='correct', image= self.fn + '/green_check2.png', pos=[0,0], size=[128, 128])
-        self.incorrect = visual.ImageStim(win=win, name='incorrect', image= self.fn + '/red_x.png', units=u'pix', pos=[0, 0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1)
+        self.correct = visual.ImageStim(win=win, name='correct', image=image_path + '/green_check2.png', pos=[0,0], size=[128, 128])
+        self.incorrect = visual.ImageStim(win=win, name='incorrect', image=image_path + '/red_x.png', units=u'pix', pos=[0, 0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1)
         self.feedback = [self.incorrect, self.correct]
         #start feedback
         self.fb=feedback.fb(win)

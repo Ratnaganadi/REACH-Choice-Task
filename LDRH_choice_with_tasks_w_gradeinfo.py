@@ -87,15 +87,17 @@ else: pdata=None
 # Initialize things regardless of pickle
 win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=True) #Window
 trialClock=core.Clock()
+image_choice_path = 'Images/Choice/'
+audio_path = 'Audio/'
 retry_instructions = visual.TextStim(win=win, text='Touch anywhere to try again.', height=28)
 choice_instructions = visual.TextStim(win=win, height=28, wrapWidth=800, text="Now we're going to play all of the games together. In this next part you can choose which game you want to play by touching one of the game buttons that will be on the screen. Each time you play, you'll earn points that will fill up the colored bar at the top of the screen. Also, there will be colored rings around each game button-- the more rings there are, the more points you'll earn for playing that game. The game finishes when your bar is fully colored! \n\n\n\n\nTouch anywhere on the screen to play.")
-math_icon = visual.ImageStim(win=win, image = 'Images_Sounds/math.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-dots_icon = visual.ImageStim(win=win, image = 'Images_Sounds/panamath.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-reading_icon = visual.ImageStim(win=win, image = 'Images_Sounds/reading.png', units = 'pix', ori = 0, pos = [0,0], size = [126, 120], opacity = 1, mask =None, interpolate = True)
-phonology_icon = visual.ImageStim(win=win, image = 'Images_Sounds/phonology2.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-spatial_icon = visual.ImageStim(win=win, image = 'Images_Sounds/stars.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-music_icon = visual.ImageStim(win=win, image = 'Images_Sounds/music.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-selection_circle = visual.ImageStim(win=win, image = 'Images_Sounds/selection_circle.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+math_icon = visual.ImageStim(win=win, image = image_choice_path + 'math.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+dots_icon = visual.ImageStim(win=win, image = image_choice_path + 'panamath.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+reading_icon = visual.ImageStim(win=win, image = image_choice_path + 'reading.png', units = 'pix', ori = 0, pos = [0,0], size = [126, 120], opacity = 1, mask =None, interpolate = True)
+phonology_icon = visual.ImageStim(win=win, image = image_choice_path + 'phonology2.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+spatial_icon = visual.ImageStim(win=win, image = image_choice_path + 'stars.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+music_icon = visual.ImageStim(win=win, image = image_choice_path + 'music.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+selection_circle = visual.ImageStim(win=win, image = image_choice_path + 'selection_circle.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
 progress_frame = visual.Rect(win=win, units='pix',pos=[0,300],size=[1206,56],lineColor='white',fillColor=None,lineWidth=3)
 progress_fill = visual.Rect(win=win, units='pix',pos=[0,300],size=[0,30], fillColor='lime', lineColor='lime')
 progress_animation = visual.Rect(win=win, units='pix',pos=[0,300],size=[0,30], fillColor='lime')
@@ -103,12 +105,12 @@ math_operations = ['addition','subtraction','multiplication','division']
 math_benchmarks = {'subtraction': {'addition': {'thresh': 3, 'count': 0}}, 'multiplication': {'addition': {'thresh': 5, 'count': 0}, 'subtraction': {'thresh': 3, 'count': 0}}, 'division': {'multiplication': {'thresh': 3, 'count': 0}}}
 
 congratulations_text = visual.TextStim(win=win, text="You did it! You win!", height=38, pos = [0,200]) 
-fireworks = visual.MovieStim(win=win, filename='fireworks.mp4', loop=True, pos = [0,-100])
-applause = sound.Sound('applause.wav')
+fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', loop=True, pos = [0,-100])
+applause = sound.Sound(audio_path + 'applause.wav')
 applause.setVolume(0.6)
 
 score = visual.TextStim(win, units = 'pix', ori=0, font=u'Arial', pos=[0, -10], color=u'white', text='000')
-cash_register = sound.Sound(value='Images_Sounds/cash_register.wav')
+cash_register = sound.Sound(value= audio_path + 'cash_register.wav')
 cash_register.setVolume(0.2)
 mouse=event.Mouse(win=win)
 mouse.setVisible(0)
@@ -119,12 +121,12 @@ point_intervals=12
 colors_for_rings=['red','orange','light_orange','yellow']
 all_rings = {'Math': {}, 'Dots': {}, 'Reading': {}, 'Phonology': {}, 'Spatial': {}, 'Music': {}}
 for ring in range(len(colors_for_rings)):
-    all_rings['Math'][ring] = visual.ImageStim(win=win, image = 'Images_Sounds/%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)
-    all_rings['Dots'][ring] = visual.ImageStim(win=win, image = 'Images_Sounds/%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Reading'][ring] = visual.ImageStim(win=win, image = 'Images_Sounds/%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Phonology'][ring] = visual.ImageStim(win=win, image = 'Images_Sounds/%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Spatial'][ring] = visual.ImageStim(win=win, image = 'Images_Sounds/%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Music'][ring] = visual.ImageStim(win=win, image = 'Images_Sounds/%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
+    all_rings['Math'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)
+    all_rings['Dots'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
+    all_rings['Reading'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
+    all_rings['Phonology'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
+    all_rings['Spatial'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
+    all_rings['Music'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
 
 def can_evaluate(value):
     try:

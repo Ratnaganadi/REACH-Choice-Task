@@ -15,7 +15,9 @@ class Phonology_Game:
         #get dir for importing resources
         self.dir = os.path.dirname(__file__)
 
-        #directory holding dtimuli
+        #directory holding stimuli, images and audio
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/'
         self.stim_dir = 'final_phonemes'
 
         #create stimuli
@@ -34,13 +36,10 @@ class Phonology_Game:
         self.practice_aud3 = sound.Sound('practice_cue3.wav')
 
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-
-        #self.same_button = visual.ImageStim(win, image=self.fn + '/same_button_shapes.png', pos=[-260, -200])#, size=[300,140])
-        #self.different_button = visual.ImageStim(win, image=self.fn + '/different_button_shapes.png', pos=[260, -200])#, size=[300,140])
-        self.same_button = visual.ImageStim(win, image=self.dir + '/happy_button.png', pos=[-260, -200])
-        self.different_button = visual.ImageStim(win, image=self.dir + '/sad_button.png', pos=[260, -200])
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.same_button = visual.ImageStim(win, image=image_path + '/happy_button.png', pos=[-260, -200])
+        self.different_button = visual.ImageStim(win, image=image_path + '/sad_button.png', pos=[260, -200])
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
         self.trialClock = core.Clock()
