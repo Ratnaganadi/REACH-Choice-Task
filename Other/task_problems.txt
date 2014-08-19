@@ -2,6 +2,7 @@
 
 *reading task (and possibly the other tasks)
   - script line 362-367: the script fails to loop through the stimuli list. I don't know why.
+  - when going I keep on getting it wrong and I stay on the kindergarden level (grade k, or difficulty 1), somehow letters starts appearing though there’s no letter stimuli on the kindergarden level
 
 *practice for all tasks
   - cannot exit while practice instruction is displayed.

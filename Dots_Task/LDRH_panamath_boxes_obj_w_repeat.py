@@ -135,10 +135,10 @@ class Dots_Game():
             print 'with_practice', with_practice
             if with_practice==True: output = self.run_game(win, stim_condition); print 'run practice' #run first practice trial
 
-        def run_3_practice(inst,stimuli,score_conds):
+        def run_3_practice(inst,audio,stimuli):
             #draw practice instructions, and do sub practice
-            for txt,stim,score in zip(inst,stimuli,score_conds):
-                run_sub_practice(self,win,txt,self.practice_aud2,stim,True,'no_repeat_option')
+            for txt,stim,score in zip(inst,audio,stimuli):
+                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue1,self.practice_aud1,39,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,30,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,35,True,'no_repeat_option')
