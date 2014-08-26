@@ -12,7 +12,12 @@ from Dots_Task import LDRH_panamath_boxes_obj_w_repeat as Dots_Script
 from Reading_Task import LDRH_reading_obj_4buttons_w_repeat as Reading_Script
 from Phonology_Task import LDRH_phonology_obj_w_repeat as Phonology_Script
 from Star_Task import LDRH_spatial_obj_w_repeat as Star_Script
-from feedback import feedback
+from Feedback import feedback
+
+try:
+    import taskversion as VERSION
+except ImportError as e:
+    VERSION = "no_version"
 
 #enable pickling of data
 pickle_enabled = False
@@ -188,14 +193,14 @@ else:
     
     #create output structure
     wb = xlwt.Workbook()
-    all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos'], row=1),
-        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['Trial Number', 'Operation', 'Difficulty','Stimulus','Target','Foil1','Foil2','Foil3','Score','Resp Time'], row=1),
-        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['Trial Number', 'Difficulty','Correct','Incorrect','Ratio','Score','Resp Time'], row=1),
-        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Criteria','Target_2b','Foil_2b','Target_4b','Foil_4b1','Foil_4b2','Foil_4b3','Foil_4b4','Response','Score','Resp Time'], row=1),
-        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference'], row=1),
-        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['Difficulty', 'Score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance'], row=1),
-        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['Trial Number', 'Difficulty', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','Score','Resp Time'], row=1),
-        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['Task','Instructions','Practice','Staircase','Total'],row=1)}
+    all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos', 'Task Version'], row=1),
+        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['Trial Number', 'Operation', 'Difficulty','Stimulus','Target','Foil1','Foil2','Foil3','Score','Resp Time', 'Task Version'], row=1),
+        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['Trial Number', 'Difficulty','Correct','Incorrect','Ratio','Score','Resp Time', 'Task Version'], row=1),
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Criteria','Target_2b','Foil_2b','Target_4b','Foil_4b1','Foil_4b2','Foil_4b3','Foil_4b4','Response','Score','Resp Time', 'Task Version'], row=1),
+        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference', 'Task Version'], row=1),
+        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['Difficulty', 'Score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance', 'Task Version'], row=1),
+        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['Trial Number', 'Difficulty', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','Score','Resp Time', 'Task Version'], row=1),
+        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['Task','Instructions','Practice','Staircase','Total', 'Task Version'],row=1)}
     
     #initialize headers for each sheet
     for key in all_sheets.keys():
@@ -306,7 +311,10 @@ def run_staircase(task, operation=None):
         #first write trial number to output, then write the output variables
         all_sheets[task]['sheet'].write(all_sheets[task]['row'], 0, trial_number)
         for col,header in enumerate(all_sheets[task]['headers'][1:]):
-            all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+1, output[header])
+            if header=="Task Version":
+                all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+1, VERSION)
+            else:
+                all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+1, output[header])
         #increment row on output structure
         all_sheets[task]['row'] += 1
         
