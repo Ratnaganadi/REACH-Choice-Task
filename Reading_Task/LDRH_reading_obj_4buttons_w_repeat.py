@@ -5,7 +5,7 @@ from os.path import join, isfile
 from PIL import Image
 import random
 from random import choice, shuffle
-if __name__ != '__main__': from feedback import feedback
+if __name__ != '__main__': from Feedback import feedback
 
 touchscreen = True
 
@@ -376,7 +376,7 @@ class Reading_Game:
 
 # if __name__=='__main__':
 #     sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-#     from feedback import feedback
+#     from Feedback import feedback
     
 #     win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix') #Window
     

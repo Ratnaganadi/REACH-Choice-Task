@@ -3,7 +3,7 @@ import time, numpy, os, sys, tempfile, wave
 from os.path import join
 from math import floor
 from random import randint, choice
-if __name__ != '__main__': from feedback import feedback
+if __name__ != '__main__': from Feedback import feedback
 #touchscreen or not
 touchscreen = True
 

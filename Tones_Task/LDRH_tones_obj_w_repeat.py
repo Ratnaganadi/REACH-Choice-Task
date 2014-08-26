@@ -5,7 +5,7 @@ from math import floor, log
 from random import randint, choice
 from numpy import linspace,sin,pi,int16
 from scipy.io.wavfile import write
-if __name__ != '__main__': from feedback import feedback
+if __name__ != '__main__': from Feedback import feedback
 
 #touchscreen or not
 touchscreen = True
@@ -347,7 +347,7 @@ class Tones_Game:
 
 if __name__=='__main__':
     sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-    from feedback import feedback
+    from Feedback import feedback
     
     #store info about the experiment session
     expName='LDRH Task'; expInfo={'participant':''}

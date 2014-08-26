@@ -3,7 +3,7 @@ import numpy as np
 from numpy import sin, cos, tan, log, log10, pi, average, sqrt, std, deg2rad, rad2deg, linspace, asarray
 from numpy.random import random, randint, normal, shuffle
 import os, random, xlwt, sys
-if __name__ != '__main__': from feedback import feedback
+if __name__ != '__main__': from Feedback import feedback
 
 #if you want to leave the mask up after presentation of dots times out
 leave_mask_up=True
@@ -279,7 +279,7 @@ class Dots_Game():
 
 if __name__=='__main__':
     sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-    from feedback import feedback
+    from Feedback import feedback
     
     #store info about the experiment session
     expName='LDRH Task'; expInfo={'participant':''}

@@ -2,7 +2,7 @@
 from psychopy import core, visual, gui, data, misc, event, sound
 import time, numpy, os, sys
 from random import shuffle
-if __name__ != '__main__': from feedback import feedback
+if __name__ != '__main__': from Feedback import feedback
 
 #touchscreen? if False, uses conventional mouse
 touchscreen = True
@@ -311,7 +311,7 @@ class Math_Game:
 
 if __name__=='__main__':
     sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-    from feedback import feedback
+    from Feedback import feedback
     
     win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix') #Window
     

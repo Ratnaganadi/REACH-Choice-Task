@@ -12,7 +12,7 @@ from Dots_Task import LDRH_panamath_boxes_obj as Dots_Script
 from Reading_Task import LDRH_reading_obj_4buttons as Reading_Script
 from Phonology_Task import LDRH_phonology_obj as Phonology_Script
 from Star_Task import LDRH_spatial_obj as Star_Script
-from feedback import feedback
+from Feedback import feedback
 
 try:
     import taskversion as VERSION

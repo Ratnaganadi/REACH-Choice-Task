@@ -5,7 +5,7 @@ import numpy as np
 from numpy.random import random, randint, normal, shuffle
 from numpy import sin, cos, tan, log, log10, pi, average, sqrt, std, deg2rad, rad2deg, linspace, asarray
 import time, os, sys, math, random#, xlwt
-if __name__ != '__main__': from feedback import feedback
+if __name__ != '__main__': from Feedback import feedback
 
 touchscreen = True
 
@@ -402,7 +402,7 @@ class Star_Game():
 
 if __name__=='__main__':
     sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-    from feedback import feedback
+    from Feedback import feedback
     
     #store info about the experiment session
     expName='REaCh Star Task'; expInfo={'participant':''}
