@@ -1,4 +1,4 @@
-from __future__ import division
+2from __future__ import division
 from psychopy import gui, visual, core, data, event, logging, sound, info, misc
 import time, numpy, os, sys, csv, pyglet, tempfile, wave
 from os.path import join, isfile
@@ -13,58 +13,68 @@ class Reading_Game:
     
     def __init__(self, win, conditions):
         self.fn = os.path.dirname(__file__)
-        "Initialize components"
         
         #get tempfile
         self.temp_dir = tempfile.gettempdir()
-        # self.trialList=data.importConditions('wordliststim.xlsx')
 
         #create window and stimuli
         self.globalClock = core.Clock()#to keep track of time
         self.trialClock = core.Clock()#to keep track of time
         
-        #create practice instructions and trial instructions
+        #file paths
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/General/'
+        aud_practice_path = 'Audio/Practice/'
+        aud_inst_path = 'Audio/Instructions/'
+        
+        #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        self.practice_aud1 = sound.Sound('practice_cue1.wav')
-        self.practice_aud2 = sound.Sound('practice_cue2.wav')
-        self.practice_aud3 = sound.Sound('practice_cue3.wav')
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will words on the left and the right side of the screen, then you will hear a spoken word. Touch the word you hear.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text="Touch anywhere on the screen when you are ready to start.")
         
+        #initializing audio files for practice and instructions
+        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        self.reading_inst1 = sound.Sound(aud_inst_path + 'reading_inst1.wav')
+        self.reading_inst2 = sound.Sound(aud_inst_path + 'reading_inst2.wav')
+        self.reading_inst3 = sound.Sound(aud_inst_path + 'reading_inst3.wav')
+        self.general_inst_last = sound.Sound(aud_inst_path + 'general_inst_last.wav')
+
+        #instructions
+        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will see letters or words at the bottom of the screen, then you will hear a spoken sound or word. Touch the one you hear.')
+        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text='Touch anywhere on the screen when you are ready to start.')
 
         #foil & target button, speaker stimuli
         self.fixation = visual.TextStim(win, pos=[0,0],height=45, text='', color='white')
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #for 2 buttons
         self.target2b = visual.TextStim(win, pos=[0,0],height=45, text='target2b.')
         self.foil2b = visual.TextStim(win, pos=[0,0],height=45, text='foil2b.')
-        self.target_2button=visual.ImageStim(win=win, name='target_2button', image=u'general_button.png', units=u'pix', pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_2button=visual.ImageStim(win, name='foil_2button', image=u'general_button.png', units=u'pix', pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.target_2button=visual.ImageStim(win=win, name='target_2button', image= image_path + 'general_button.png', units=u'pix', pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_2button=visual.ImageStim(win, name='foil_2button', image= image_path + 'general_button.png', units=u'pix', pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
 
         #for 4 buttons
         self.target4b = visual.TextStim(win, pos=[0,0],height=45, text='target4b.')
         self.foil4b1 = visual.TextStim(win, pos=[0,0],height=45, text='foil4b1.')
         self.foil4b2 = visual.TextStim(win, pos=[0,0],height=45, text='foil4b2.')
         self.foil4b3 = visual.TextStim(win, pos=[0,0],height=45, text='foil4b3.')
-        # self.foil4b4 = visual.TextStim(win, pos=[0,0],height=50, text='foil4b4.')
-        self.target_4button=visual.ImageStim(win=win, name='target_4button', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_4button1=visual.ImageStim(win, name='foil_4button1', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_4button2=visual.ImageStim(win, name='foil_4button2', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        self.foil_4button3=visual.ImageStim(win, name='foil_4button3', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        # self.foil_4button4=visual.ImageStim(win, name='foil_4button4', image=self.fn + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
-        
+        self.target_4button=visual.ImageStim(win=win, name='target_4button', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_4button1=visual.ImageStim(win, name='foil_4button1', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_4button2=visual.ImageStim(win, name='foil_4button2', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
+        self.foil_4button3=visual.ImageStim(win, name='foil_4button3', image=image_path + '/general_button_4.png', units=u'pix')#, pos=[-260, -200], size=[322,100], color=[1,1,1], colorSpace=u'rgb', opacity=1.0) #size=[322,152],
 
         #speaker
-        self.speaker = visual.ImageStim(win=win, name='speaker', image= self.fn + '/speaker.png', mask = None, units=u'pix', ori=0, pos=[0,200], size=[115,115])
-        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix', image= self.fn + '/speaker_playing_white.png', mask = None, ori=0, pos=[45,200], size=[220,155])
+        self.speaker = visual.ImageStim(win=win, name='speaker', image=image_path + '/speaker.png', mask = None, units=u'pix', ori=0, pos=[0,200], size=[115,115])
+        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix', image=image_path + '/speaker_playing_white.png', mask = None, ori=0, pos=[45,200], size=[220,155])
         #feedback
-        self.correct = visual.ImageStim(win=win, name='correct', image= self.fn + '/green_check2.png', pos=[0,0], size=[128, 128])
-        self.incorrect = visual.ImageStim(win=win, name='incorrect', image= self.fn + '/red_x.png', units=u'pix', pos=[0, 0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1)
+        self.correct = visual.ImageStim(win=win, name='correct', image=image_path + '/green_check2.png', pos=[0,0], size=[128, 128])
+        self.incorrect = visual.ImageStim(win=win, name='incorrect', image=image_path + '/red_x.png', units=u'pix', pos=[0, 0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1)
         self.feedback = [self.incorrect, self.correct]
         #start feedback
         self.fb=feedback.fb(win)
@@ -81,30 +91,33 @@ class Reading_Game:
         for question in range(len(self.trialList)):
             self.iteration[question] = 0
     
-    def run_instructions(self, win):
-        "Display the instructions for the game."
-        #display instructions and wait
-        self.message1.draw()
-        self.message2.draw()
-        win.flip()
-        #wait a second before checking for mouse movement
-        core.wait(1)
-        self.mouse.getPos()
-        #check for a touch
-        cont=False
-        while cont==False:
-            if self.click(): cont=True
-            if 'escape' in event.getKeys(): core.quit()
+    # def run_instructions(self, win):
+    #     "Display the instructions for the game."
+    #     #display instructions and wait
+    #     self.message1.draw()
+    #     self.message2.draw()
+    #     win.flip()
+    #     #wait a second before checking for mouse movement
+    #     core.wait(1)
+    #     self.mouse.getPos()
+    #     #check for a touch
+    #     cont=False
+    #     while cont==False:
+    #         if self.click(): cont=True
+    #         if 'escape' in event.getKeys(): core.quit()
     
+    def run_instructions(self,win):
+        "Run game instructions"
+        return self.run_trial(win, thisIncrement, 'instruction_set', 'instructions')
 
-    def run_practice(self, win):
+    def run_practice(self, win, grade):
         "Run practice"
 
         def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,repeat_option, practice_set):
             # self.repeat_button.draw() # self.continue_button.draw()
             if repeat_option=='no_repeat_option':
                 text_cue.draw()
-                # aud_cue.play()
+                aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -123,7 +136,7 @@ class Reading_Game:
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
-                # aud_cue.play()
+                aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -146,16 +159,25 @@ class Reading_Game:
             print 'with_practice', with_practice
 
             #run practice trial if with_practice is true
-            if with_practice==True: output = self.run_trial(win, stim_condition,practice_set); print 'run practice'
+            if with_practice==True: output = self.run_trial(win, stim_condition,practice_set,'practice'); print 'run practice'
 
-        def run_3_practice(practice_set):
+        def run_3_practice(inst,audio,stimuli,practice_set):
             #draw practice instructions, and do sub practipractice_setce
-            run_sub_practice(self,win,self.practice_cue1,self.practice_aud1,4,True,'no_repeat_option',practice_set)
-            run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,2,True,'no_repeat_option',practice_set)
-            run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,3,True,'no_repeat_option',practice_set)
+            for txt,aud,stim in zip(inst,audio,stimuli):
+                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',practice_set)
+            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,2,True,'no_repeat_option',practice_set)
+            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,3,True,'no_repeat_option',practice_set)
         
-        run_3_practice('practice_set1')
-        run_3_practice('practice_set2')
+        inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
+        aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
+        stim_set = [4,2,3]
+
+        "!!!Don't forget to put in stim_set based on grade level here when the letter level is ready!!!"
+
+        run_3_practice(inst_set,aud_set,stim_set,'practice_set1')
+        run_3_practice(inst_set,aud_set,stim_set,'practice_set2')
+        # run_3_practice('practice_set1')
+        # run_3_practice('practice_set2')
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
@@ -166,9 +188,11 @@ class Reading_Game:
                 go_to_choice=True
         if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
             
+    def run_game(self, win, grade, thisIncrement):
+        "Run one iteration of the game without touch"
+        return self.run_trial(win, thisIncrement, 'trial_set', 'game')
 
-
-    def run_trial(self, win, index,practice_set):
+    def run_trial(self, win, index,practice_set, task_phase):
         "Run one iteration of the game."
 
         def draw_buttons(time,top,change,string_ls,text_ls,xpositions,button_ls):
@@ -282,74 +306,105 @@ class Reading_Game:
             # draw_buttons(1,'no-speaker','yes-flip',string_4b,text_4b,four_xpositions,button_4b)
             # draw_buttons(1.5,'yes-speaker','yes-flip',string_4b,text_4b,four_xpositions,button_4b)
 
-        draw_buttons(1,'no-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,two_xpositions,button_2b)
-        draw_buttons(1.5,'yes-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,two_xpositions,button_2b)
-        
-        #play audio + buttons
-        if practice_set=='practice_set1':
+        if task_phase=='instructions':
+            play_with_psychopy(self.reading_inst1,'no_drawing')
+            draw_buttons(1,'no_speaker','no_flip',B[1],B[2],B[3],B[4])
+            play_with_psychopy(self.reading_inst2,'no_drawing')
+            draw_buttons(0,'yes_speaker','yes_flip',B[1],B[2],B[3],B[4])
+
             audio_touchfn = concat_wavs([self.fn+'/wav_files/touch_word.wav'],0.4)
             play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
             os.remove(audio_touchfn)
             audio_fn = concat_wavs([self.fn+'/wav_files/{}.wav'.format(B[0])],0.2)
-            play_with_button(audio_fn,B[1],B[2],B[3],B[4])
+            os.remove(audio_fn)
+
+            play_with_psychopy(self.reading_inst3,'no_drawing')
+            draw_buttons(0,'yes_speaker','yes_flip',B[1],B[2],B[3],B[4])
+
+            win.flip()
+            self.message2.draw()
+            self.general_inst_last.play()
+
+            #wait a second before accepting touch
+            start_time=self.trialClock.getTime()
+            while start_time+1>self.trialClock.getTime():
+                if 'escape' in event.getKeys(): return 'QUIT'
+            #wait for a touch
+            self.mouse.getPos()
+            cont=False
+            while cont==False:
+                if self.click(): cont=True
+                if 'escape' in event.getKeys(): return 'QUIT'
+
         else:
-            audio_fn = concat_wavs([self.fn+'/wav_files/{}.wav'.format(B[0])],0.2)
-            play_with_button(audio_fn,B[1],B[2],B[3],B[4])
-        
-        #start the timer for the response
-        start_timer=self.trialClock.getTime()
-        timer=0
-        score = None
-        thisResp = None
-        self.mouse.getPos()
-        while thisResp == None and timer<15:
-            self.mouse_moved=self.mouse.mouseMoved()
-            # self.mouse_pos=self.mouse.getPos()
-            if difficulty <= 3:
-                if self.mouse_moved and (self.target_2button.contains(self.mouse)):
-                    score, thisResp = (1,'correct')
-                    self.target2b.setColor('yellow')
-                elif self.mouse_moved and self.foil_2button.contains(self.mouse): 
-                    score, thisResp = (0,'incorrect')
-                    self.foil2b.setColor('yellow')
-            elif difficulty > 3:
-                if self.mouse_moved and (self.target_4button.contains(self.mouse)):
-                    score, thisResp = (1,'correct')
-                    self.target4b.setColor('yellow')
-                elif self.mouse_moved and self.foil_4button1.contains(self.mouse):
-                    score, thisResp = (0,'incorrect')
-                    self.foil4b1.setColor('yellow')
-                elif self.mouse_moved and self.foil_4button2.contains(self.mouse):
-                    score, thisResp = (0,'incorrect')
-                    self.foil4b2.setColor('yellow')
-                elif self.mouse_moved and self.foil_4button3.contains(self.mouse):
-                    score, thisResp = (0,'incorrect')
-                    self.foil4b3.setColor('yellow')
-            if self.mouse_moved and self.speaker.contains(self.mouse):
+            draw_buttons(1,'no-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,two_xpositions,button_2b)
+            draw_buttons(1.5,'yes-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,two_xpositions,button_2b)
+            
+            #play audio + buttons
+            if practice_set=='practice_set1':
+                audio_touchfn = concat_wavs([self.fn+'/wav_files/touch_word.wav'],0.4)
+                play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
+                os.remove(audio_touchfn)
+                audio_fn = concat_wavs([self.fn+'/wav_files/{}.wav'.format(B[0])],0.2)
                 play_with_button(audio_fn,B[1],B[2],B[3],B[4])
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-            # if event.getKeys(keyList=['escape']): core.quit()
-            timer=self.trialClock.getTime()-start_timer
+            elif (practice_set=='practice_set2') or (practice_set=='trial_set'):
+                audio_fn = concat_wavs([self.fn+'/wav_files/{}.wav'.format(B[0])],0.2)
+                play_with_button(audio_fn,B[1],B[2],B[3],B[4])
+            
+            #start the timer for the response
+            start_timer=self.trialClock.getTime()
+            timer=0
+            score = None
+            thisResp = None
+            self.mouse.getPos()
+            while thisResp == None and timer<15:
+                self.mouse_moved=self.mouse.mouseMoved()
+                # self.mouse_pos=self.mouse.getPos()
+                if difficulty <= 3:
+                    if self.mouse_moved and (self.target_2button.contains(self.mouse)):
+                        score, thisResp = (1,'correct')
+                        self.target2b.setColor('yellow')
+                    elif self.mouse_moved and self.foil_2button.contains(self.mouse): 
+                        score, thisResp = (0,'incorrect')
+                        self.foil2b.setColor('yellow')
+                elif difficulty > 3:
+                    if self.mouse_moved and (self.target_4button.contains(self.mouse)):
+                        score, thisResp = (1,'correct')
+                        self.target4b.setColor('yellow')
+                    elif self.mouse_moved and self.foil_4button1.contains(self.mouse):
+                        score, thisResp = (0,'incorrect')
+                        self.foil4b1.setColor('yellow')
+                    elif self.mouse_moved and self.foil_4button2.contains(self.mouse):
+                        score, thisResp = (0,'incorrect')
+                        self.foil4b2.setColor('yellow')
+                    elif self.mouse_moved and self.foil_4button3.contains(self.mouse):
+                        score, thisResp = (0,'incorrect')
+                        self.foil4b3.setColor('yellow')
+                if self.mouse_moved and self.speaker.contains(self.mouse):
+                    play_with_button(audio_fn,B[1],B[2],B[3],B[4])
+                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+                # if event.getKeys(keyList=['escape']): core.quit()
+                timer=self.trialClock.getTime()-start_timer
 
-        print ', response:', thisResp
-        
-        #calculate response time
-        if timer<=15: choice_time=timer
-        else: choice_time = 'timed out'
-        
-        self.scores.append(score) #store score data on scores=[]
-        
-        #give feedback
-        self.fb.present_fb(win,score, feedback_screen)#[self.speaker, self.foil_2button, self.foil2b, self.target_2button, self.target2b])
-        
-        # if practicing==True:
-            # "That's right! You touched the word ... That is correct!"
-            # "That's incorrect. You are supposed to touch the word ... But you touched the wrong one. Let's try some more."
+            print ', response:', thisResp
+            
+            #calculate response time
+            if timer<=15: choice_time=timer
+            else: choice_time = 'timed out'
+            
+            self.scores.append(score) #store score data on scores=[]
+            
+            #give feedback
+            self.fb.present_fb(win,score, feedback_screen)#[self.speaker, self.foil_2button, self.foil2b, self.target_2button, self.target2b])
+            
+            # if practicing==True:
+                # "That's right! You touched the word ... That is correct!"
+                # "That's incorrect. You are supposed to touch the word ... But you touched the wrong one. Let's try some more."
 
 
-        self.fixation.draw()
-        win.flip()
-        core.wait(1)
+            self.fixation.draw()
+            win.flip()
+            core.wait(1)
 
         if difficulty <=3:
             output = {'Difficulty':difficulty,'Grade':grade,'Criteria':criteria,'Target_2b':self.target_string,'Foil_2b':self.foil_string,'Target_4b':None,'Foil_4b1':None,'Foil_4b2':None,'Foil_4b3':None,'Foil_4b4':None,'Response':thisResp,'Score':score,'Resp Time':choice_time}
@@ -360,8 +415,9 @@ class Reading_Game:
         if difficulty <=3:
             if (self.iteration[n] == len(self.trialList[n]['Target_'+criteria])-1): self.iteration[n] = 0
             else: self.iteration[n] += 1; print 'iteration:', self.iteration[n]
-        elif difficulty >3 and (self.iteration[n] == len(self.trialList[n]['Target_4button'])-1): self.iteration[n] = 0
-        else: self.iteration[n] += 1; print 'iteration:', self.iteration[n]
+        elif difficulty >3:
+            if (self.iteration[n] == len(self.trialList[n]['Target_4button'])-1): self.iteration[n] = 0
+            else: self.iteration[n] += 1; print 'iteration:', self.iteration[n]
         print '*'
         # if self.iteration[#indexNo] == len(self.trialList[#indexNo]['Target_'+criteria])-1: self.iteration[#indexNo] = 0
         # else: self.iteration[#indexNo] += 1

@@ -13,9 +13,6 @@ class Reading_Game:
     
     def __init__(self, win, conditions):
         self.fn = os.path.dirname(__file__)
-
-        image_path = 'Images/Tasks/'
-        audio_path = 'Audio/'
         
         #get tempfile
         self.temp_dir = tempfile.gettempdir()
@@ -24,15 +21,30 @@ class Reading_Game:
         self.globalClock = core.Clock()#to keep track of time
         self.trialClock = core.Clock()#to keep track of time
         
-        #create practice instructions and trial instructions
+        #file paths
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/General/'
+        aud_practice_path = 'Audio/Practice/'
+        aud_inst_path = 'Audio/Instructions/'
+        
+        #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        self.practice_aud1 = sound.Sound(audio_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(audio_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(audio_path + 'practice_cue3.wav')
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will words on the left and the right side of the screen, then you will hear a spoken word. Touch the word you hear.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text="Touch anywhere on the screen when you are ready to start.")
+        
+        #initializing audio files for practice and instructions
+        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        self.reading_inst1 = sound.Sound(aud_practice_path + 'reading_inst1.wav')
+        self.reading_inst2 = sound.Sound(aud_practice_path + 'reading_inst2.wav')
+        self.reading_inst3 = sound.Sound(aud_practice_path + 'reading_inst3.wav')
+
+        #instructions
+        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will see letters or words at the bottom of the screen, then you will hear a spoken sound or word. Touch the one you hear.')
+        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text='Touch anywhere on the screen when you are ready to start.')
 
         #foil & target button, speaker stimuli
         self.fixation = visual.TextStim(win, pos=[0,0],height=45, text='', color='white')
@@ -101,7 +113,7 @@ class Reading_Game:
             # self.repeat_button.draw() # self.continue_button.draw()
             if repeat_option=='no_repeat_option':
                 text_cue.draw()
-                # aud_cue.play()
+                aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -120,7 +132,7 @@ class Reading_Game:
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
-                # aud_cue.play()
+                aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
