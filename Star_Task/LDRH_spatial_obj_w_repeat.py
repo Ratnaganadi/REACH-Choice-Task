@@ -14,50 +14,33 @@ class Star_Game():
     def __init__(self, win):
         self.fn = os.path.dirname(__file__)
         self.trialClock=core.Clock()
-
-        #file paths
-        image_path = 'Images/Tasks/'
-        audio_path = 'Audio/General/'
-        aud_practice_path = 'Audio/Practice/'
-        aud_inst_path = 'Audio/Instructions/'
-        
-        #create practice instructions
+        #practice variables
         self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
         self.practice_instructions2 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 2: administrator walks through trials with child')
         self.practice_instructions3 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 3: child completes trials on his/her own')
         self.practice_instructions4 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's do some more practice")
-        self.try_again = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's try that again.")
-
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
+        self.practice_aud2 = sound.Sound('practice_cue2.wav')
+        self.practice_aud3 = sound.Sound('practice_cue3.wav')
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.star_inst1 = sound.Sound(aud_practice_path + 'star_inst1.wav')
-        self.star_inst2 = sound.Sound(aud_practice_path + 'star_inst2.wav')
-        self.star_inst3 = sound.Sound(aud_practice_path + 'star_inst3.wav')
-
-        #instructions
-        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will see a pink star flashing on the screen and then disappear. Afterward, touch a white star that will appear in the middle of the screen. When the white star turns yellow touch where you think the pink star was flashing.')
-        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text='Touch anywhere on the screen when you are ready to start.')
-        
+        self.try_again = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's try that again.")
+        self.prompt_continue = visual.TextStim(win, units='pix', pos=[0,150], height=20, text='Are we ready to begin?')
+        self.continue_button = visual.ImageStim(win=win, image = self.fn + '/continue_button.png', units = 'pix', ori = 0, pos = [-250,-150])
+        self.repeat_button = visual.ImageStim(win=win, image = self.fn + '/repeat_button.png', units = 'pix', ori = 0, pos = [250,-150])
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #trial variables
         self.t_twinkle = 3#when the star will twinkle
-        self.bintang = visual.ImageStim(win=win, name='bintang', image = image_path + '/star.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)#stimulus
-        self.twinkle = visual.ImageStim(win=win, name='twinkle', image = image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinkle
-        self.twinkle2 = visual.ImageStim(win=win, name='twinkle2', image = image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinklefor END routine
-        self.star_selected = visual.ImageStim(win=win, name='star_selected', image = image_path + '/star_selected.png', units = 'pix', ori = 0, size = [60, 60])
-        self.drag = visual.ImageStim(win=win, name = 'drag', image = image_path + '/star2.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)
+        self.bintang = visual.ImageStim(win=win, name='bintang', image = self.fn + '/star.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)#stimulus
+        self.twinkle = visual.ImageStim(win=win, name='twinkle', image = self.fn + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinkle
+        self.twinkle2 = visual.ImageStim(win=win, name='twinkle2', image = self.fn + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinklefor END routine
+        self.star_selected = visual.ImageStim(win=win, name='star_selected', image = self.fn + '/star_selected.png', units = 'pix', ori = 0, size = [60, 60])
+        self.drag = visual.ImageStim(win=win, name = 'drag', image = self.fn + '/star2.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)
         self.circledrag = visual.Circle(win, name = 'circledrag', units = u'pix', radius = 30, ori=0, pos = [0,0])
         self.circletwinkle = visual.Circle(win, name = 'circletwinkle', units = u'pix', radius = 30, ori=0, pos = [0,0])
-        self.mask = visual.ImageStim(win, name='mask2', image = image_path + '/mask.jpg', units=u'pix', ori=0, pos=[0, 0], size=[1500,850], opacity = 1, mask =None, interpolate = True)
+        self.mask = visual.ImageStim(win, name='mask2', image = self.fn + '/mask.jpg', units=u'pix', ori=0, pos=[0, 0], size=[1500,850], opacity = 1, mask =None, interpolate = True)
         self.blank=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white', text='+', height=30)
         self.mouse=event.Mouse(win=win); self.mouse.getPos()
         
@@ -93,14 +76,14 @@ class Star_Game():
     # def run_instructions_w_demo(self,win):
 
     
-    def run_practice(self, win, grade):
+    def run_practice(self, win):
         "Run practice"
 
         def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,score,with_practice,repeat_option):
             # self.repeat_button.draw() # self.continue_button.draw()
             if repeat_option=='no_repeat_option':
                 text_cue.draw()
-                aud_cue.play()
+                # aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -118,7 +101,7 @@ class Star_Game():
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
-                aud_cue.play()
+                # aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -175,12 +158,155 @@ class Star_Game():
                 print 'continue2'
                 go_to_choice=True
             if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
+
+    # def run_practice_trial(self, win, size, score):
+    #     output = self.run_game(win, size)
+    #     print output['Score']
+    #     #if response isn't what was desired, run until we get desired response
+    #     while output['Score']!=score:
+    #         self.try_again.draw()
+    #         win.flip()
+    #         #wait a second before accepting touch
+    #         start_time=self.trialClock.getTime()
+    #         while start_time+1>self.trialClock.getTime():
+    #             if 'escape' in event.getKeys(): return 'QUIT'
+    #         #wait for a touch
+    #         self.mouse.getPos()
+    #         cont=False
+    #         while cont==False:
+    #             if self.click(): cont=True
+    #             if 'escape' in event.getKeys(): return 'QUIT'
+    #         output = self.run_game(win, size)
     
-    def run_game(self, win, grade, thisIncrement):
-        "Run one iteration of the game with self.trialList as conditions."
-        return self.run_trial(win, thisIncrement)
+    # def run_practice(self, win):
+        
+    #     #first set practice trial instructions
+    #     self.practice_instructions1.draw()
+    #     win.flip()
+    #     #wait a second before accepting touch
+    #     start_time=self.trialClock.getTime()
+    #     while start_time+1>self.trialClock.getTime():
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+    #     #wait for a touch
+    #     self.mouse.getPos()
+    #     cont=False
+    #     while cont==False:
+    #         if self.click(): cont=True
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+        
+    #     #first practice trial, administrator demonstrates correct response
+    #     self.run_practice_trial(win, 150, 1)
+        
+    #     #draw practice cue
+    #     self.practice_cue.draw()
+    #     win.flip() # display cue
+        
+    #     #wait 1 seconds before checking for touch
+    #     start_time = self.trialClock.getTime()
+    #     while start_time+1 > self.trialClock.getTime():
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+        
+    #     #check for a touch
+    #     cont=False
+    #     self.mouse.getPos()
+    #     while cont==False:
+    #         if self.click(): cont=True
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+            
+    #     #second practice trial, administrator demonstrates incorrect response
+    #     self.run_practice_trial(win, 100, 0)
+        
+    #     #draw practice cue
+    #     self.practice_cue.draw()
+    #     win.flip() # display cue
+        
+    #     #wait 1 seconds before checking for touch
+    #     start_time = self.trialClock.getTime()
+    #     while start_time+1 > self.trialClock.getTime():
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+        
+    #     #check for a touch
+    #     cont=False
+    #     self.mouse.getPos()
+    #     while cont==False:
+    #         if self.click(): cont=True
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+            
+    #     #third practice trial, administrator demonstrates correct response
+    #     self.run_practice_trial(win, 115, 1)
+        
+        
+        
+    #     #second set practice trial instructions
+    #     self.practice_instructions2.draw()
+    #     win.flip()
+    #     #wait a second before accepting touch
+    #     start_time=self.trialClock.getTime()
+    #     while start_time+1>self.trialClock.getTime():
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+    #     #wait for a touch
+    #     self.mouse.getPos() #clear last mouse movement
+    #     cont=False
+    #     while cont==False:
+    #         if self.click(): cont=True
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+        
+    #     #second practice trial, administrator walks child through two correct responses
+    #     self.run_practice_trial(win, 250, 1)
+        
+    #     #draw practice cue
+    #     self.practice_cue.draw()
+    #     win.flip() # display cue
+        
+    #     #wait 1 seconds before checking for touch
+    #     start_time = self.trialClock.getTime()
+    #     while start_time+1 > self.trialClock.getTime():
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+        
+    #     #check for a touch
+    #     cont=False
+    #     self.mouse.getPos()
+    #     while cont==False:
+    #         if self.click(): cont=True
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+        
+    #     self.run_practice_trial(win, 200, 1)
+        
+        
+    #     #third set practice trial instructions
+    #     self.practice_instructions3.draw()
+    #     win.flip()
+    #     #wait a second before accepting touch
+    #     start_time=self.trialClock.getTime()
+    #     while start_time+1>self.trialClock.getTime():
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+    #     #wait for a touch
+    #     self.mouse.getPos() #clear last mouse movement
+    #     cont=False
+    #     while cont==False:
+    #         if self.click(): cont=True
+    #         if 'escape' in event.getKeys(): return 'QUIT'
+        
+    #     #give child two practice trials to do on their own
+    #     repeat=True
+    #     while repeat:
+    #         if self.run_game(win, 200)['Score']==1:
+    #             self.run_game(win, 150)
+    #         else: self.run_game(win, 250)
+    #         self.prompt_continue.draw()
+    #         self.continue_button.draw()
+    #         self.repeat_button.draw()
+    #         win.flip()
+    #         while True:
+    #             if self.click() and self.continue_button.contains(self.mouse): 
+    #                 repeat=False
+    #                 break
+    #             elif self.click() and self.repeat_button.contains(self.mouse):
+    #                 break
+    #             if 'escape' in event.getKeys(): return 'QUIT'
+        
     
-    def run_trial(self, win, thisIncrement):
+    def run_game(self, win, thisIncrement):
         sz= thisIncrement
         theseKeys = ""
 

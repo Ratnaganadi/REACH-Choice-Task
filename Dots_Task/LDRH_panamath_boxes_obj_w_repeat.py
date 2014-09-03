@@ -15,31 +15,17 @@ class Dots_Game():
     
     def __init__(self, win, conditions):
         
-        #get dir for importing conditions, images and audio
+        #get dir for importing conditions
         self.fn = os.path.dirname(__file__)
-
-        #file paths
-        image_path = 'Images/Tasks/'
-        audio_path = 'Audio/General/'
-        aud_practice_path = 'Audio/Practice/'
-        aud_inst_path = 'Audio/Instructions/'
-        dotstim_path = 'Images/Stimuli/Dots'
         
         #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to start practicing.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.dots_inst1 = sound.Sound(aud_practice_path + 'dots_inst1.wav')
-        self.dots_inst2 = sound.Sound(aud_practice_path + 'dots_inst2.wav')
-        self.dots_inst3 = sound.Sound(aud_practice_path + 'dots_inst3.wav')
-        
-        #instructions
-        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will see two boxes with dots inside, one on the left and one on the right side of the screen. Touch the box that has more dots.')
+        self.practice_aud1 = sound.Sound('practice_cue1.wav')
+        self.practice_aud2 = sound.Sound('practice_cue2.wav')
+        self.practice_aud3 = sound.Sound('practice_cue3.wav')
+        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will words on the left and the right side of the screen, then you will hear a spoken word. Touch the word you hear.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text="Touch anywhere on the screen when you are ready to start.")
         
         #Initialise components for routine: trial
@@ -52,20 +38,20 @@ class Dots_Game():
         self.t_mask_end = 1
         
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=u'repeat5.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=u'continue5.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #INITIALIZING FIXATION POINT, MASK & BLANK#
         self.line = visual.ShapeStim(win, name='line', units=u'pix', lineWidth = 2.0, lineColor = 'white', lineColorSpace='rgb',pos = [0,0], vertices = ((0,-300),(0,0),(0,300)),interpolate = True)
         self.fix_point=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
-        self.mask=visual.ImageStim(win, units=u'pix', image= image_path +'/mask.jpg', pos=[0, 0], size=[900, 600], color=[1,1,1])
-        self.left_mask = visual.ImageStim(win, units=u'pix', image= image_path +'/mask.jpg', pos=[-230,0],size=[400,600])
-        self.right_mask = visual.ImageStim(win, units=u'pix', image= image_path +'/mask.jpg', pos=[230,0],size=[400,600])
+        self.mask=visual.ImageStim(win, units=u'pix', image=self.fn+u'/mask.jpg', pos=[0, 0], size=[900, 600], color=[1,1,1])
+        self.left_mask = visual.ImageStim(win, units=u'pix', image=self.fn+'/mask.jpg', pos=[-230,0],size=[400,600])
+        self.right_mask = visual.ImageStim(win, units=u'pix', image=self.fn+'/mask.jpg', pos=[230,0],size=[400,600])
         self.blank=visual.TextStim(win, ori=0, text=None)
         self.left = visual.ImageStim(win,image=None,pos=[-230,0],size=[400,600])
         self.right = visual.ImageStim(win,image=None,pos=[230,0],size=[400,600])
-        self.left_box = visual.ImageStim(win,image= image_path +'/box.png',pos=[-230,0],size=[420,620])
-        self.right_box = visual.ImageStim(win,image= image_path +'/box.png',pos=[230,0],size=[420,620])
+        self.left_box = visual.ImageStim(win,image=self.fn+'/box.png',pos=[-230,0],size=[420,620])
+        self.right_box = visual.ImageStim(win,image=self.fn+'/box.png',pos=[230,0],size=[420,620])
         
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+100],height=28, wrapWidth=700, text='In this game you will see two boxes with dots inside, one on each side of the screen. Touch the box that has more dots.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, wrapWidth=700, text="Touch anywhere on the screen when you're ready to start.")
@@ -99,14 +85,14 @@ class Dots_Game():
             if self.click(): cont=True
             if 'escape' in event.getKeys(): return 'QUIT'
     
-    def run_practice(self, win, grade):
+    def run_practice(self, win):
         "Run practice"
 
         def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,repeat_option):
             # self.repeat_button.draw() # self.continue_button.draw()
             if repeat_option=='no_repeat_option':
                 text_cue.draw()
-                aud_cue.play()
+                # aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -125,7 +111,7 @@ class Dots_Game():
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
-                aud_cue.play()
+                # aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -151,7 +137,7 @@ class Dots_Game():
 
         def run_3_practice(inst,audio,stimuli):
             #draw practice instructions, and do sub practice
-            for txt,aud,stim in zip(inst,audio,stimuli):
+            for txt,stim,score in zip(inst,audio,stimuli):
                 run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue1,self.practice_aud1,39,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,30,True,'no_repeat_option')
@@ -171,11 +157,8 @@ class Dots_Game():
                 go_to_choice=True
             if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
 
-    def run_game(self, win, grade, thisIncrement):
-        "Run one iteration of the game with self.trialList as conditions."
-        return self.run_trial(win, thisIncrement)
-    
-    def run_trial(self, win, thisIncrement):
+       
+    def run_game(self, win, thisIncrement):
         
         #Start of routine trial
         t=0; self.trialClock.reset()
@@ -190,8 +173,8 @@ class Dots_Game():
         print 'Difficulty is:', difficulty
         
         #randomize side of stimuli
-        incorrect = dotstim_path+self.trialList[index]['Incorrect'][self.iteration[index]]
-        correct = dotstim_path+self.trialList[index]['Correct'][self.iteration[index]]
+        incorrect = self.fn+'/DotsStimulus/'+self.trialList[index]['Incorrect'][self.iteration[index]]
+        correct = self.fn+'/DotsStimulus/'+self.trialList[index]['Correct'][self.iteration[index]]
         correct_side = random.choice(['left','right'])
         
         if correct_side=='left':
