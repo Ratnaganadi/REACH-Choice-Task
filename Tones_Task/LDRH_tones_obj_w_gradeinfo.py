@@ -134,14 +134,22 @@ class Tones_Game:
                 cont=False
                 self.mouse.getPos()
                 while cont==False:
-                    if self.click():
-                        if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
-                            aud_cue.stop(); return 'repeat'
-                            break
-                        elif self.continue_button.contains(self.mouse):
-                            aud_cue.stop(); return 'continue'
-                            break
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    if self.mouse.mouseMoved() and self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
+                        aud_cue.stop(); return 'repeat'
+                        break
+                    elif self.mouse.mouseMoved() and self.continue_button.contains(self.mouse):
+                        aud_cue.stop(); return 'continue'
+                        break
+                    elif 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+
+                    # if self.click():
+                    #     if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
+                    #         aud_cue.stop(); return 'repeat'
+                    #         break
+                    #     elif self.continue_button.contains(self.mouse):
+                    #         aud_cue.stop(); return 'continue'
+                    #         break
+                    # if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
             
             print 'with_practice', with_practice
             if with_practice==True: output = self.run_trial(win, stim_condition, trialList = self.practiceList); print 'run practice' #run first practice trial

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from psychopy import visual, core, data, event, logging, gui, sound
 from psychopy.constants import *
 import os, random, math, copy, xlwt, numpy, csv
@@ -29,7 +30,7 @@ just_choice = False
 touchscreen = True
 
 #which tasks to run
-task_names=['Reading']#['Phonology','Dots','Math','Spatial','Music','Reading']
+task_names=['Music']#['Phonology','Dots','Math','Spatial','Music','Reading']
 
 #store info about the experiment session
 expName='REaCh Task'; expInfo={'participant':'','grade':'(k,1,2,3,4,or 5)'}
@@ -95,7 +96,8 @@ trialClock=core.Clock()
 image_choice_path = 'Images/Choice/'
 audio_path = 'Audio/'
 retry_instructions = visual.TextStim(win=win, text='Touch anywhere to try again.', height=28)
-choice_instructions = visual.TextStim(win=win, height=28, wrapWidth=800, text="Now we are going to play all of the games together. In this next part you can choose which game you want to play by touching one of the game buttons on the screen. Each time you play, you will earn points that will fill up the colored bar at the top of the screen. Each game button will have colored rings. The more rings there are, the more points you’ll earn for playing that game. For example, a game button with four rings will give you  a lot of points. But another game that has less rings or no rings will give you less points. You can still play the game button that has no rings. You will win when the colored bar on top is fully colored! \n\n\n\n\nTouch anywhere on the screen to play.")
+choice_instructions = visual.TextStim(win=win, height=28, wrapWidth=800, text=
+    "Now we are going to play all of the games together. In this next part you can choose which game you want to play by touching one of the game buttons on the screen. Each time you play, you will earn points that will fill up the colored bar at the top of the screen. Each game button will have colored rings. The more rings there are, the more points you’ll earn for playing that game. For example, a game button with four rings will give you  a lot of points. But another game that has less rings or no rings will give you less points. You can still play the game button that has no rings. You will win when the colored bar on top is fully colored! \n\n\n\n\nTouch anywhere on the screen to play.")
 math_icon = visual.ImageStim(win=win, image = image_choice_path + 'math.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
 dots_icon = visual.ImageStim(win=win, image = image_choice_path + 'panamath.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
 reading_icon = visual.ImageStim(win=win, image = image_choice_path + 'reading.png', units = 'pix', ori = 0, pos = [0,0], size = [126, 120], opacity = 1, mask =None, interpolate = True)
