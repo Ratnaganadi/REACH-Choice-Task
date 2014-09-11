@@ -332,6 +332,14 @@ def run_staircase(task, operation=None):
         #if 'Correct Response' in output.keys() and output['Correct Response'].lower() != 'same': all_handlers[task].addData(output['Score'])
         #else: print 'same trial-- did not update stairhandler'
         handler.addData(output['Score'])
+
+        # This code is to boost the staircase level of 'lower' operations when a student is successful on
+        # more difficult operations. As a first pass, this simply records a success in *all* operations up to the one
+        # that the student achieves the success in.
+        if operation and output['Score']:
+            operations = ['addition', 'subtraction', 'multiplication', 'division']
+            for operation_name in operations[0:operations.index(operation)]:
+                all_handlers[task][operation_name].addData(output['Score'])
         
         #increment trial number
         trial_number+=1
