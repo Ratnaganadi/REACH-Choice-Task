@@ -142,9 +142,6 @@ class Phonology_Game:
             #draw practice instructions, and do sub practice
             for txt,aud,stim in zip(inst,audio,stimuli):
                 run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue1,self.practice_aud1,3,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,2,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,1,True,'no_repeat_option')
         
         inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
         aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
@@ -154,7 +151,7 @@ class Phonology_Game:
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
-            if repeat_or_continue=='repeat': run_3_practice()
+            if repeat_or_continue=='repeat': run_3_practice(inst_set,aud_set,stim_set)
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True
@@ -188,6 +185,22 @@ class Phonology_Game:
             if self.trialList[question]['Difficulty'] == (len(self.trialList)-thisIncrement):
                 index = question
 
+        def play_audio(audio,audio_length):
+            audio.play()
+            start_time=self.trialClock.getTime()
+            while start_time+audio_length > self.trialClock.getTime():
+                if event.getKeys(keyList=['escape']): return 'QUIT'
+
+        def get_stims(stim):
+            phonemes = [stim[x:x+2] for x in [0,2,4]]
+            stim_files = [join(self.dir, self.stim_dir, phoneme.upper()+'.wav') for phoneme in phonemes]
+            fn = join(self.temp_dir,'%s.wav'%stim)
+            self.concat_wavs(stim_files, fn)
+            audio = sound.Sound(value=fn)
+            audio_length = audio1.getDuration()
+            return [audio,audio_length]
+            os.remove(fn)
+
         #load trial variables
         difficulty = self.trialList[index]['Difficulty']
         stim1 = self.trialList[index]['Stim1'][self.iteration[index]]
@@ -205,31 +218,10 @@ class Phonology_Game:
         #update answer_history
         self.answer_history.append(answer)
 
-        #get stims
-        phonemes1 = [stim1[x:x+2] for x in [0,2,4]]
-        stim1_files = [join(self.dir, self.stim_dir, phoneme.upper()+'.wav') for phoneme in phonemes1]
-        fn = join(self.temp_dir,'%s.wav'%stim1)
-        self.concat_wavs(stim1_files, fn)
-        audio1 = sound.Sound(value=fn)
-        audio1_length = audio1.getDuration()
-        os.remove(fn)
-
-        phonemes2 = [stim2[x:x+2] for x in [0,2,4]]
-        stim2_files = [join(self.dir, self.stim_dir, phoneme.upper()+'.wav') for phoneme in phonemes2]
-        fn = join(self.temp_dir,'%s.wav'%stim2)
-        self.concat_wavs(stim2_files, fn)
-        audio2 = sound.Sound(value=fn)
-        audio2_length = audio2.getDuration()
-        os.remove(fn)
-
-        #cue for start of trial
-#        self.cue_touch.draw()
-#        win.flip()
-#        self.mouse.getPos()
-#        while True:
-#            if touchscreen and self.mouse.mouseMoved(): break
-#            elif not touchscreen and self.mouse.getPressed()==[1,0,0]: break
-#            if event.getKeys(keyList=['escape']): return 'QUIT'
+        audio1 = get_stims(stim1)
+        audio2 = get_stims(stim2)
+        audio_order = [audio1,audio2]
+        shuffle(audio_order)
 
         #draw the center dot
         self.speaker.draw()
@@ -242,19 +234,8 @@ class Phonology_Game:
         self.speaker_playing.draw()
         win.flip()
 
-        #set order for trial
-        order = choice([True,False])
-        #check order and play first stimulus
-        if order: 
-            audio1.play()
-            start_time=self.trialClock.getTime()
-            while start_time+audio1_length > self.trialClock.getTime():
-                if event.getKeys(keyList=['escape']): return 'QUIT'
-        else: 
-            audio2.play() 
-            start_time=self.trialClock.getTime()
-            while start_time+audio2_length > self.trialClock.getTime():
-                if event.getKeys(keyList=['escape']): return 'QUIT'
+
+        play_audio(audio_order[0][0],audio_order[0][1])
 
         #after tone is played, wait one second and then play second tone
         self.speaker.draw()
@@ -265,17 +246,8 @@ class Phonology_Game:
         self.speaker_playing.draw()
         win.flip()
 
-        #play second stim
-        if order: 
-            audio2.play()
-            start_time=self.trialClock.getTime()
-            while start_time+audio2_length > self.trialClock.getTime():
-                if event.getKeys(keyList=['escape']): return 'QUIT'
-        else: 
-            audio1.play() #play(stim1_files, audio1)
-            start_time=self.trialClock.getTime()
-            while start_time+audio1_length > self.trialClock.getTime():
-                if event.getKeys(keyList=['escape']): return 'QUIT'
+        play_audio(audio_order[1][0],audio_order[1][1])
+
 
         #after the second tone has finished, put up the same and different buttons
         self.speaker.draw()
