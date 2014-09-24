@@ -30,7 +30,7 @@ just_choice = False
 touchscreen = True
 
 #which tasks to run
-task_names=['Music']#['Phonology','Dots','Math','Spatial','Music','Reading']
+task_names=['Spatial','Phonology','Math','Music','Reading','Dots']
 
 #store info about the experiment session
 expName='REaCh Task'; expInfo={'participant':'','grade':'(k,1,2,3,4,or 5)'}
@@ -248,7 +248,7 @@ else:
     all_thresholds = {}
     
     #create list to randomize order of presentation
-    shuffle(task_names)
+    # shuffle(task_names)
     staircased = []
 
 #method to get clicks
