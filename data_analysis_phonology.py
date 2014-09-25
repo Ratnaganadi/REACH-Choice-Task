@@ -246,7 +246,6 @@ for no in [0,3]:
 
 plt.show()
 
-
 # ind + (1-(i/2))*w
 # 1= ind+w/2
 # 2= ind
