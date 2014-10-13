@@ -238,16 +238,19 @@ class Star_Game():
                         status='STARTED'
                         first_click_time = t - start_time
                         self.drag.setImage(self.fn + '/star_selected.png')
-                if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
                     second_click_time = t - start_time
                     self.drag.setImage(self.fn + '/star2.png')
                     self.drag.setPos(self.mouse.getPos())
                     x_resp = self.drag.pos[0]
                     y_resp = self.drag.pos[1]
                     distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
-                    if distance<=sz: score=1
-                    else: score=0
-                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+                    if distance<=sz:
+                        score=1
+                    else:
+                        score=0
+                if event.getKeys(keyList=['q', 'escape']):
+                    return 'QUIT'
                 win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
