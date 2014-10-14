@@ -16,7 +16,8 @@ from Star_Task import LDRH_spatial_obj_w_gradeinfo as Star_Script
 from Feedback import feedback
 
 try:
-    import taskversion as VERSION
+    import taskversion
+    VERSION = taskversion.__doc__
 except ImportError as e:
     VERSION = "no_version"
 
