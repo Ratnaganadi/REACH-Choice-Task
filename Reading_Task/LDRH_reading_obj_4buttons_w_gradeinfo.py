@@ -38,9 +38,9 @@ class Reading_Game:
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.reading_inst1 = sound.Sound(aud_practice_path + 'reading_inst1.wav')
-        self.reading_inst2 = sound.Sound(aud_practice_path + 'reading_inst2.wav')
-        self.reading_inst3 = sound.Sound(aud_practice_path + 'reading_inst3.wav')
+        self.reading_inst1 = sound.Sound(aud_inst_path + 'reading_inst1.wav')
+        self.reading_inst2 = sound.Sound(aud_inst_path + 'reading_inst2.wav')
+        self.reading_inst3 = sound.Sound(aud_inst_path + 'reading_inst3.wav')
 
         #instructions
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will see letters or words at the bottom of the screen, then you will hear a spoken sound or word. Touch the one you hear.')

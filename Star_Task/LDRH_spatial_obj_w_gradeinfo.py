@@ -16,10 +16,10 @@ class Star_Game():
         self.trialClock=core.Clock()
 
         #file paths
-        image_path = 'Images/Tasks/'
-        audio_path = 'Audio/General/'
-        aud_practice_path = 'Audio/Practice/'
-        aud_inst_path = 'Audio/Instructions/'
+        self.image_path = 'Images/Tasks/'
+        self.audio_path = 'Audio/General/'
+        self.aud_practice_path = 'Audio/Practice/'
+        self.aud_inst_path = 'Audio/Instructions/'
         
         #create practice instructions
         self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
@@ -33,31 +33,31 @@ class Star_Game():
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
         
         #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.star_inst1 = sound.Sound(aud_practice_path + 'star_inst1.wav')
-        self.star_inst2 = sound.Sound(aud_practice_path + 'star_inst2.wav')
-        self.star_inst3 = sound.Sound(aud_practice_path + 'star_inst3.wav')
+        self.practice_aud1 = sound.Sound(self.aud_practice_path + 'practice_cue1.wav')
+        self.practice_aud2 = sound.Sound(self.aud_practice_path + 'practice_cue2.wav')
+        self.practice_aud3 = sound.Sound(self.aud_practice_path + 'practice_cue3.wav')
+        self.star_inst1 = sound.Sound(self.aud_inst_path + 'star_inst1.wav')
+        self.star_inst2 = sound.Sound(self.aud_inst_path + 'star_inst2.wav')
+        self.star_inst3 = sound.Sound(self.aud_inst_path + 'star_inst3.wav')
 
         #instructions
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will see a pink star flashing on the screen and then disappear. Afterward, touch a white star that will appear in the middle of the screen. When the white star turns yellow touch where you think the pink star was flashing.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text='Touch anywhere on the screen when you are ready to start.')
         
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= self.image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= self.image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #trial variables
         self.t_twinkle = 3#when the star will twinkle
-        self.bintang = visual.ImageStim(win=win, name='bintang', image = image_path + '/star.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)#stimulus
-        self.twinkle = visual.ImageStim(win=win, name='twinkle', image = image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinkle
-        self.twinkle2 = visual.ImageStim(win=win, name='twinkle2', image = image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinklefor END routine
-        self.star_selected = visual.ImageStim(win=win, name='star_selected', image = image_path + '/star_selected.png', units = 'pix', ori = 0, size = [60, 60])
-        self.drag = visual.ImageStim(win=win, name = 'drag', image = image_path + '/star2.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)
+        self.bintang = visual.ImageStim(win=win, name='bintang', image = self.image_path + '/star.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)#stimulus
+        self.twinkle = visual.ImageStim(win=win, name='twinkle', image = self.image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinkle
+        self.twinkle2 = visual.ImageStim(win=win, name='twinkle2', image = self.image_path + '/twinklingstar.png', units=u'pix', ori = 0, pos = [0,0], size = [62, 62], opacity = 1, mask =None, interpolate = True)#twinklefor END routine
+        self.star_selected = visual.ImageStim(win=win, name='star_selected', image = self.image_path + '/star_selected.png', units = 'pix', ori = 0, size = [60, 60])
+        self.drag = visual.ImageStim(win=win, name = 'drag', image = self.image_path + '/star2.png', units = 'pix', ori = 0, pos = [0,0], size = [60, 60], opacity = 1, mask =None, interpolate = True)
         self.circledrag = visual.Circle(win, name = 'circledrag', units = u'pix', radius = 30, ori=0, pos = [0,0])
         self.circletwinkle = visual.Circle(win, name = 'circletwinkle', units = u'pix', radius = 30, ori=0, pos = [0,0])
-        self.mask = visual.ImageStim(win, name='mask2', image = image_path + '/mask.jpg', units=u'pix', ori=0, pos=[0, 0], size=[1500,850], opacity = 1, mask =None, interpolate = True)
+        self.mask = visual.ImageStim(win, name='mask2', image = self.image_path + '/mask.jpg', units=u'pix', ori=0, pos=[0, 0], size=[1500,850], opacity = 1, mask =None, interpolate = True)
         self.blank=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white', text='+', height=30)
         self.mouse=event.Mouse(win=win); self.mouse.getPos()
         
@@ -140,7 +140,7 @@ class Star_Game():
             
             print 'with_practice', with_practice
             if with_practice==True: 
-                output = self.run_game(win, stim_condition) #run first practice trial
+                output = self.run_game(win, "", stim_condition) #run first practice trial
                 print 'run practice'
                 while output['Score']!=score:
                     self.try_again.draw()
@@ -155,7 +155,7 @@ class Star_Game():
                     while cont==False:
                         if self.click(): cont=True
                         if 'escape' in event.getKeys(): return 'QUIT'
-                    output = self.run_game(win, stim_condition)
+                    output = self.run_game(win, "", stim_condition)
 
         def run_3_practice(inst,stimuli,score_conds):
             #draw practice instructions, and do sub practice
@@ -197,7 +197,7 @@ class Star_Game():
         self.twinkle2.setPos([x,y]); self.twinkle2.setSize([sz, sz])
         self.circletwinkle.setPos([x,y]); self.circletwinkle.setRadius([sz/2]); self.circletwinkle.setLineColor('#f50af2')
         self.circledrag.setPos([0,0]); self.circledrag.setRadius([sz/2]); self.circledrag.setLineColor('white')
-        self.drag.setPos([0,0]); self.drag.setSize([sz, sz]); self.drag.setImage(self.fn + '/star2.png')
+        self.drag.setPos([0,0]); self.drag.setSize([sz, sz]); self.drag.setImage(self.image_path + '/star2.png')
         
         print 'degree:', degree
         print 'radians:', radians
@@ -228,7 +228,7 @@ class Star_Game():
         #allow participant to move star and make response, then check if correct
         self.mouse.setVisible(1)
         self.mouse.getPos()
-        self.drag.setImage(self.fn + '/star2.png')
+        self.drag.setImage(self.image_path + '/star2.png')
         while score==None:
             t=self.trialClock.getTime()
             if t>=5:
@@ -237,10 +237,10 @@ class Star_Game():
                     if self.drag.contains(self.mouse.getPos()): 
                         status='STARTED'
                         first_click_time = t - start_time
-                        self.drag.setImage(self.fn + '/star_selected.png')
+                        self.drag.setImage(self.image_path + '/star_selected.png')
                 if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
                     second_click_time = t - start_time
-                    self.drag.setImage(self.fn + '/star2.png')
+                    self.drag.setImage(self.image_path + '/star2.png')
                     self.drag.setPos(self.mouse.getPos())
                     x_resp = self.drag.pos[0]
                     y_resp = self.drag.pos[1]
@@ -307,11 +307,10 @@ if __name__=='__main__':
     
     #step through staircase to find threshold
     for thisIncrement in staircase: 
-        output = game.run_game(win, thisIncrement)
+        output = game.run_game(win, "", thisIncrement)
         staircase.addData(output['Score'])
     #record the resulting threshold level of the training
     thresh = staircase._nextIntensity
     
     #run one iteration of game at threshold:
-    game.run_game(win, thresh)
-    
+    game.run_game(win, "", thresh)

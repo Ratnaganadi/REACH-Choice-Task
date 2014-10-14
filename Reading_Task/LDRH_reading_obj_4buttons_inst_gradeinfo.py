@@ -1,4 +1,4 @@
-2from __future__ import division
+from __future__ import division
 from psychopy import gui, visual, core, data, event, logging, sound, info, misc
 import time, numpy, os, sys, csv, pyglet, tempfile, wave
 from os.path import join, isfile
@@ -91,24 +91,23 @@ class Reading_Game:
         for question in range(len(self.trialList)):
             self.iteration[question] = 0
     
-    # def run_instructions(self, win):
-    #     "Display the instructions for the game."
-    #     #display instructions and wait
-    #     self.message1.draw()
-    #     self.message2.draw()
-    #     win.flip()
-    #     #wait a second before checking for mouse movement
-    #     core.wait(1)
-    #     self.mouse.getPos()
-    #     #check for a touch
-    #     cont=False
-    #     while cont==False:
-    #         if self.click(): cont=True
-    #         if 'escape' in event.getKeys(): core.quit()
+    def run_instructions(self, win):
+        "Display the instructions for the game."
+        #display instructions and wait
+        self.message1.draw()
+        self.message2.draw()
+        win.flip()
+        #wait a second before checking for mouse movement
+        core.wait(1)
+        self.mouse.getPos()
+        #check for a touch
+        cont=False
+        while cont==False:
+            if self.click():
+                cont=True
+            if 'escape' in event.getKeys():
+                core.quit()
     
-    def run_instructions(self,win):
-        "Run game instructions"
-        return self.run_trial(win, thisIncrement, 'instruction_set', 'instructions')
 
     def run_practice(self, win, grade):
         "Run practice"
@@ -180,9 +179,9 @@ class Reading_Game:
         # run_3_practice('practice_set2')
         go_to_choice=False
         while go_to_choice==False:
-            repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
+            repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt', 'practice_set1')
             if repeat_or_continue=='repeat': 
-                run_3_practice()
+                run_3_practice(inst_set,aud_set,stim_set,'practice_set1')
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True

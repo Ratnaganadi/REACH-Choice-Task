@@ -24,7 +24,7 @@ class Math_Game:
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
-        math_dotstims_path = 'Images/Stimuli/Math_dotstims`'
+        self.math_dotstims_path = 'Images/Stimuli/Math_dotstims/'
         
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
@@ -35,9 +35,9 @@ class Math_Game:
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.math_inst1 = sound.Sound(aud_practice_path + 'math_inst1.wav')
-        self.math_inst2 = sound.Sound(aud_practice_path + 'math_inst2.wav')
-        self.math_inst3 = sound.Sound(aud_practice_path + 'math_inst3.wav')
+        self.math_inst1 = sound.Sound(aud_inst_path + 'math_inst1.wav')
+        self.math_inst2 = sound.Sound(aud_inst_path + 'math_inst2.wav')
+        self.math_inst3 = sound.Sound(aud_inst_path + 'math_inst3.wav')
 
         #instructions
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+100], height=28, wrapWidth=700, text='In this game you will see a cluster of dots or a math problem at the top of the screen, then, you will see two or four possible answers at the bottom. Touch the answer that you think is correct.')
@@ -95,7 +95,7 @@ class Math_Game:
             if self.click(): cont=True
             if 'escape' in event.getKeys(): return 'QUIT'
     
-    def run_practice(self, win):
+    def run_practice(self, win, grade):
         "Run practice"
 
         def run_sub_practice(self,win,text_cue,aud_cue,math_operation,stim_condition,with_practice,repeat_option):
@@ -143,7 +143,9 @@ class Math_Game:
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
             
             print 'with_practice', with_practice
-            if with_practice==True: output = self.run_game(win, math_operation, stim_condition); print 'run practice' #run first practice trial
+            if with_practice==True:
+                output = self.run_game(win, "", math_operation, stim_condition)
+                print 'run practice' #run first practice trial
 
         def run_3_practice(inst,audio,stimuli):
             #draw practice instructions, and do sub practice
@@ -168,7 +170,7 @@ class Math_Game:
                 go_to_choice=True
             if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
 
-    def run_game(self, win, grade, thisIncrement):
+    def run_game(self, win, grade, operation, thisIncrement):
         "Run one iteration of the game with self.trialList as conditions."
         return self.run_trial(win, operation, thisIncrement)
     
@@ -215,7 +217,7 @@ class Math_Game:
         if '*div' in stim_string: stim_string= stim_string.replace('*div',u'÷').replace('-',u'−')#stim_string[0:stim_string.index('*div')] + u'÷' + stim_string[stim_string.index('*div')+4:]
         #get image if applicable
         if '.png' in stim_string:
-            self.dot_stimulus.setImage(math_dotstims_path+stim_string)
+            self.dot_stimulus.setImage(self.math_dotstims_path+stim_string)
             self.stimulus = self.dot_stimulus
         else:
             self.text_stimulus.setText(stim_string)#[self.iteration[index]]))
