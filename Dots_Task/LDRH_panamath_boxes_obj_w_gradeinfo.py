@@ -40,8 +40,8 @@ class Dots_Game():
         self.dots_inst3 = sound.Sound(aud_inst_path + 'dots_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + '/dots_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(aud_inst_path + '/dots_instructions.wav')
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'dots_instructions.mp4', size = [1500,850], flipHoriz = True)
+        self.audio_inst = sound.Sound(aud_inst_path + 'dots_instructions.wav')
 
         #Initialise components for routine: trial
         self.trialClock=core.Clock()
@@ -59,14 +59,14 @@ class Dots_Game():
         #INITIALIZING FIXATION POINT, MASK & BLANK#
         self.line = visual.ShapeStim(win, name='line', units=u'pix', lineWidth = 2.0, lineColor = 'white', lineColorSpace='rgb',pos = [0,0], vertices = ((0,-300),(0,0),(0,300)),interpolate = True)
         self.fix_point=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
-        self.mask=visual.ImageStim(win, units=u'pix', image= image_path +'/mask.jpg', pos=[0, 0], size=[900, 600], color=[1,1,1])
-        self.left_mask = visual.ImageStim(win, units=u'pix', image= image_path +'/mask.jpg', pos=[-230,0],size=[400,600])
-        self.right_mask = visual.ImageStim(win, units=u'pix', image= image_path +'/mask.jpg', pos=[230,0],size=[400,600])
+        self.mask=visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[0, 0], size=[900, 600], color=[1,1,1])
+        self.left_mask = visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[-230,0],size=[400,600])
+        self.right_mask = visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[230,0],size=[400,600])
         self.blank=visual.TextStim(win, ori=0, text=None)
         self.left = visual.ImageStim(win,image=None,pos=[-230,0],size=[400,600])
         self.right = visual.ImageStim(win,image=None,pos=[230,0],size=[400,600])
-        self.left_box = visual.ImageStim(win,image= image_path +'/box.png',pos=[-230,0],size=[420,620])
-        self.right_box = visual.ImageStim(win,image= image_path +'/box.png',pos=[230,0],size=[420,620])
+        self.left_box = visual.ImageStim(win,image= image_path +'box.png',pos=[-230,0],size=[420,620])
+        self.right_box = visual.ImageStim(win,image= image_path +'box.png',pos=[230,0],size=[420,620])
 
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+100],height=28, wrapWidth=700, text='In this game you will see two boxes with dots inside, one on each side of the screen. Touch the box that has more dots.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, wrapWidth=700, text="Touch anywhere on the screen when you're ready to start.")
