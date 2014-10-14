@@ -21,12 +21,12 @@ class Phonology_Game:
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
-        
+
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        
+
         #initializing audio files for practice and instructions
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
@@ -37,9 +37,9 @@ class Phonology_Game:
         self.phonology_inst4 = sound.Sound(aud_inst_path + 'phonology_inst4.wav')
 
         #instructions
-        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game, you will hear two made up words. Do not worry about what they mean. Sometimes they will be the same, sometimes they will be different.  If the made up words are the same, touch the happy face button. If they are not the same, touch the sad face button.')
-        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text="Touch anywhere on the screen when you are ready to start.")
-        
+        self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + '/phon_instructions.mp4', size = [1500,850], flipHoriz = True)
+        self.audio_inst = sound.Sound(aud_inst_path + '/phon_instructions.wav')
+
         #create stimuli, repeat and continue button
         self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
         self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=image_path +'/speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
@@ -76,9 +76,10 @@ class Phonology_Game:
     def run_instructions(self, win):
         "Display the instructions for the game."
         #display instructions and wait
-        self.message1.draw()
-        self.message2.draw()
-        win.flip()
+        self.audio_inst.play()
+        while self.instructions.status != visual.FINISHED:
+            self.instructions.draw()
+            win.flip()
         #wait a second before checking for mouse movement
         core.wait(1)
         self.mouse.getPos()
@@ -102,7 +103,7 @@ class Phonology_Game:
                 start_time = self.trialClock.getTime()
                 while start_time+1 > self.trialClock.getTime():
                     if 'escape' in event.getKeys(): return 'QUIT'
-                
+
                 #check for a touch
                 cont=False
                 self.mouse.getPos()
@@ -110,7 +111,7 @@ class Phonology_Game:
                     if self.click(): aud_cue.stop(); cont=True
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
 
-            elif repeat_option=='repeat_opt': 
+            elif repeat_option=='repeat_opt':
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
@@ -121,7 +122,7 @@ class Phonology_Game:
                 start_time = self.trialClock.getTime()
                 while start_time+1 > self.trialClock.getTime():
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-                
+
                 #check for a touch
                 cont=False
                 self.mouse.getPos()
@@ -134,7 +135,7 @@ class Phonology_Game:
                             aud_cue.stop(); return 'continue'
                             break
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-            
+
             print 'with_practice', with_practice
             if with_practice==True: output = self.run_game(win, "", stim_condition); print 'run practice' #run first practice trial
 
@@ -142,7 +143,7 @@ class Phonology_Game:
             #draw practice instructions, and do sub practice
             for txt,aud,stim in zip(inst,audio,stimuli):
                 run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option')
-        
+
         inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
         aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
         stim_set = [3,2,1]
@@ -174,7 +175,7 @@ class Phonology_Game:
     def run_game(self, win, grade, thisIncrement):
         "Run one iteration of the game with self.trialList as conditions."
         return self.run_trial(win, thisIncrement)
-    
+
     def run_trial(self, win, thisIncrement):
         "Run one iteration of the game."
         self.trialClock.reset(); t=0
@@ -274,7 +275,7 @@ class Phonology_Game:
         #give feedback
         self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
 
-        #write data 
+        #write data
         #['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps',
         # 'VOT_steps','VOT_or_POA','Difference Position','Distance','Number Phonemes','Phoneme Difference']
         #output = dict(self.trialList[index])
