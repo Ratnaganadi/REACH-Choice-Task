@@ -54,13 +54,13 @@ logFile = logging.LogFile(filename+'.log', level=logging.EXP)
 logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a file
 
 # Check for pickle
-if os.path.isfile('data.p') and pickle_enabled: 
+if os.path.isfile('data.p') and pickle_enabled:
     f = open('data.p', 'r')
     pdata = pickle.load(f)
     if ppt in pdata.keys():
         dates = pdata[ppt].keys()
         dlg = gui.Dlg(title="Found previous data")
-        if len(dates)==1: 
+        if len(dates)==1:
             dlg.addText('An incomplete dataset was found for this participant from {}, would you like to resume that session?'.format(dates[0]))
         elif len(dates)>1:
             query = '{} incomplete datasets were found for this participant from the following dates:'.format(len(dates))
@@ -72,7 +72,7 @@ if os.path.isfile('data.p') and pickle_enabled:
         if dlg.OK:  # then the user pressed OK
             print dlg.data
             use_pickle=dlg.data[0]=='Yes'
-            if len(dates)==1: 
+            if len(dates)==1:
                 this_pdata = pdata.pop(ppt)[dates[0]]
                 old_date = dates[0]
             elif len(dates)>1:
@@ -119,10 +119,12 @@ math_operations = ['addition','subtraction','multiplication','division']
 math_benchmarks = {'subtraction': {'addition': {'thresh': 3, 'count': 0}}, 'multiplication': {'addition': {'thresh': 5, 'count': 0}, 'subtraction': {'thresh': 3, 'count': 0}}, 'division': {'multiplication': {'thresh': 3, 'count': 0}}}
 
 congratulations_text = visual.TextStim(win=win, text="You did it! You win!", height=38, pos = [0,200])
+
 try:
     fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', loop=True, pos = [0,-100])
 except AttributeError:
     fireworks = None 
+
 applause = sound.Sound(audio_path + 'applause.wav')
 applause.setVolume(0.6)
 
@@ -139,11 +141,11 @@ colors_for_rings=['red','orange','light_orange','yellow']
 all_rings = {'Math': {}, 'Dots': {}, 'Reading': {}, 'Phonology': {}, 'Spatial': {}, 'Music': {}}
 for ring in range(len(colors_for_rings)):
     all_rings['Math'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)
-    all_rings['Dots'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Reading'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Phonology'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Spatial'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
-    all_rings['Music'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring]) 
+    all_rings['Dots'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Reading'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Phonology'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Spatial'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Music'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
 
 def can_evaluate(value):
     try:
@@ -171,9 +173,9 @@ all_conditions = {
         },
     'Dots': importConditions('Dots_Task/dots_conds2.csv'),
     'Reading': importConditions('Reading_Task/stimulus_gradelist_newlysorted4_more_g4.csv'),
-    'Phonology': importConditions('Phonology_Task/final_phon_stims_short.csv'),
+    'Phonology': importConditions('Phonology_Task/phonology_stims_new.csv'),
     'Spatial': None,
-    'Music': importConditions('Tones_Task/final_tones_stims2.csv')}
+    'Music': importConditions('Tones_Task/tones_stims_new.csv')}
 
 #initialize games
 all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
@@ -195,7 +197,7 @@ if pdata:
     wb_read = open_workbook(old_filename)
     wb = xlcopy(wb_read)
     all_sheets = {}
-    for i, sheet in enumerate(wb_read.sheet_names()): 
+    for i, sheet in enumerate(wb_read.sheet_names()):
         ws_read = wb_read.sheet_by_index(i)
         all_sheets[sheet] = dict(sheet = wb.get_sheet(i), headers=[ws_read.cell_value(0,col) for col in range(ws_read.ncols)], row=ws_read.nrows)
 
@@ -205,7 +207,7 @@ else:
     thesePoints=0
     first_pass=True
     trial_number = 1
-    
+
     #create output structure
     wb = xlwt.Workbook()
     all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos', 'Task Version'], row=1),
@@ -216,11 +218,11 @@ else:
         'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['Difficulty', 'Score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance', 'Task Version'], row=1),
         'Music': dict(sheet = wb.add_sheet('Music'), headers = ['Trial Number', 'Difficulty', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','Score','Resp Time', 'Task Version'], row=1),
         'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['Task','Instructions','Practice','Staircase','Total', 'Task Version'],row=1)}
-    
+
     #initialize headers for each sheet
     for key in all_sheets.keys():
         for col, header in enumerate(all_sheets[key]['headers']): all_sheets[key]['sheet'].write(0,col,header)
-    
+
     #create handlers
     all_handlers = {
         'Math': {
@@ -233,7 +235,7 @@ else:
                 'division': data.StairHandler(startVal= len(all_conditions['Math']['division'])-1, stepSizes=[2,1,1,1],
                     minVal=0, maxVal=len(all_conditions['Math']['division'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin')
                 },
-        'Music': data.StairHandler(startVal = 9, stepType = 'lin', stepSizes=[2,1,1,1,1,1], #reduce step size every two reversals
+        'Music': data.StairHandler(startVal = 14, stepType = 'lin', stepSizes=[2,1,1,1,1,1], #reduce step size every two reversals
             minVal=0, maxVal=len(all_conditions['Music'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
             nTrials = 10),
         'Dots': data.StairHandler(startVal = 35, stepType = 'lin', stepSizes=[5,3,2,2,1,1], #reduce step size every two reversals
@@ -242,7 +244,7 @@ else:
         'Reading': data.StairHandler(startVal = 5, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
             minVal=0, maxVal=len(all_conditions['Reading'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
             nTrials = 10, nReversals = 0),
-        'Phonology': data.StairHandler(startVal = 3, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
+        'Phonology': data.StairHandler(startVal = 4, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
             minVal=0, maxVal=len(all_conditions['Phonology'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
             nTrials = 10, nReversals = 0),
         'Spatial': data.StairHandler(startVal = 150,
@@ -250,13 +252,13 @@ else:
             minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
             nTrials = 10)
         }
-    
+
     #dictionry of ring tracking
     num_rings = {'Math': 4, 'Music': 4, 'Reading': 4, 'Dots': 4, 'Phonology': 4, 'Spatial': 4}
-    
+
     #dictionary of threshold tracking
     all_thresholds = {}
-    
+
     #create list to randomize order of presentation
     # shuffle(task_names)
     staircased = []
@@ -282,26 +284,26 @@ def save_and_quit(complete=False):
 def pickle_and_quit():
     if not pickle_enabled: save_and_quit()
     # load previous pickle if exists
-    if os.path.isfile('data.p'): 
+    if os.path.isfile('data.p'):
         f = open('data.p', 'r')
         pdata = pickle.load(f)
         f.close()
         f = open('data.p', 'w')
-    else: 
+    else:
         pdata = {}
         f = open('data.p', 'w')
-    
+
     # create dictionary to pickle
     this_pdata = dict(points=points, thesePoints=thesePoints, first_pass=first_pass, trial_number=trial_number,
         all_handlers=all_handlers, num_rings=num_rings,
         all_thresholds=all_thresholds, task_names=task_names)
-    
+
     # nest dictionary into outer dicts with ppt and date as keys
     if ppt in pdata.keys():
         pdata[ppt][expInfo['date']] = this_pdata
-    else: 
+    else:
         pdata[ppt] = {expInfo['date']: this_pdata}
-    
+
     # dump, save, and quit
     pickle.dump(pdata, f)
     f.close()
@@ -314,7 +316,7 @@ def run_staircase(task, operation=None):
     else: handler = all_handlers[task]
     pos_streak=0
     neg_streak=0
-    
+
     try:
         thisIncrement = handler.next()
         print 'thisIncrement:', thisIncrement
@@ -322,7 +324,7 @@ def run_staircase(task, operation=None):
         if operation: output = all_games[task].run_game(win, grade, operation, thisIncrement)
         else: output = all_games[task].run_game(win, grade, thisIncrement)
         if output=='QUIT': pickle_and_quit()
-        
+
         #first write trial number to output, then write the output variables
         all_sheets[task]['sheet'].write(all_sheets[task]['row'], 0, trial_number)
         for col,header in enumerate(all_sheets[task]['headers'][1:]):
@@ -332,12 +334,12 @@ def run_staircase(task, operation=None):
                 all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+1, output[header])
         #increment row on output structure
         all_sheets[task]['row'] += 1
-        
+
         #write output for main sheet
         main_output = {'Trial Number':trial_number, 'Game': task, 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'threshold','Icon_Pos':'', 'Task Version': VERSION}
         for col,header in enumerate(all_sheets['Main']['headers']):
             all_sheets['Main']['sheet'].write(trial_number, col, main_output[header])
-        
+
         #update handler only if not a "same" trial from tones or phonology
         #if 'Correct Response' in output.keys() and output['Correct Response'].lower() != 'same': all_handlers[task].addData(output['Score'])
         #else: print 'same trial-- did not update stairhandler'
@@ -350,24 +352,24 @@ def run_staircase(task, operation=None):
             operations = ['addition', 'subtraction', 'multiplication', 'division']
             for operation_name in operations[0:operations.index(operation)]:
                 all_handlers[task][operation_name].addData(output['Score'])
-        
+
         #increment trial number
         trial_number+=1
-        
+
         #keep track of how many correct/incorrect in a row
         if output['Score'] and all_conditions[task] and output['Difficulty']==len(all_conditions[task]): output['pos_streak']=1
         else: output['pos_streak']=0
         if not output['Score'] and all_conditions[task] and output['Difficulty']==1: output['neg_streak']=1
         else: output['neg_streak']=0
         print "output['pos_streak']:", output['pos_streak']
-        
+
         output['thisIncrement'] = thisIncrement
-    
+
     except StopIteration:
         output={}
         output['Score'] = 'StopIteration'
         output['thisIncrement'] = handler.intensities[-1]
-    
+
     return output
 
 
@@ -388,32 +390,32 @@ if not just_choice:
         start_time=trialClock.getTime()
         while trialClock.getTime()<start_time+3:
             if event.getKeys(keyList=['q', 'escape']): pickle_and_quit()
-        
+
         #run instructions for task
         instructions_start = trialClock.getTime()
         if all_games[task].run_instructions(win)=='QUIT': pickle_and_quit()
         instructions_times[task] = trialClock.getTime() - instructions_start
-        
+
         #run practice for task
         practice_start = trialClock.getTime()
-        if hasattr(all_games[task], 'run_practice'): 
+        if hasattr(all_games[task], 'run_practice'):
             if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
         practice_times[task] = trialClock.getTime() - practice_start
-        
+
         #run staircase; math needs special circumstances
         staircasing_start = trialClock.getTime()
-        if task=='Math': 
+        if task=='Math':
             if 'Math' not in all_thresholds.keys(): all_thresholds['Math']={}
             streaks = {'addition': {'pos':0,'neg':0}, 'subtraction': {'pos':0,'neg':0}, 'multiplication': {'pos':0,'neg':0}, 'division': {'pos':0, 'neg':0}}
             add_count_for_mult = 0
             active_operations = ['addition']
-            
+
             while active_operations:
-                for operation in math_operations: 
+                for operation in math_operations:
                     if operation in active_operations:
                         #one trial of staircase is run here
                         output = run_staircase(task, operation=operation)
-                        
+
                         for new_operation, reqs in math_benchmarks.items():
                             if operation in reqs.keys() and output['Score'] and (len(all_conditions[task][operation]) - output['thisIncrement']) >= reqs[operation]['thresh']: reqs[operation]['count']+=1
                         for new_operation, reqs in math_benchmarks.items():
@@ -427,14 +429,14 @@ if not just_choice:
                             active_operations.append('multiplication')
                             math_benchmarks.pop('multiplication')
                             print '{} is now active'.format(new_operation)
-                        
+
                         #handle StopIterations
                         if output['Score']=='StopIteration':
                             #record threshold and remove operation
                             all_thresholds[task][operation] = output['thisIncrement']
                             active_operations.remove(operation)
                             continue
-                        
+
                         #keep track of streaks
                         streaks[operation]['pos'] = streaks[operation]['pos']*output['pos_streak']+output['pos_streak'] #adds 1 or sets to 0
                         streaks[operation]['neg'] = streaks[operation]['neg']*output['neg_streak']+output['neg_streak']
@@ -445,28 +447,28 @@ if not just_choice:
                         #remove operation from being active, don't record a threshold
                         if streaks[operation]['neg'] >=2:
                             active_operations.remove(operation)
-                
+
                 #add new operation if applicable
                 for new_operation, reqs in math_benchmarks.items():
                     if new_operation in all_thresholds[task].keys(): continue
-                    
+
                     if False not in [req_operation in all_thresholds[task].keys() and (len(all_conditions[task][req_operation]) - all_thresholds[task][req_operation]) >= benchmark for req_operation, benchmark in reqs.items()]:
                         active_operations.append(new_operation)
                         print 'added', new_operation
-        
+
         else:
             pos_streak=0
             neg_streak=0
             while True:
                 #one trial of staircase is run here
                 output = run_staircase(task)
-                
+
                 #handle StopIterations
                 if output['Score']=='StopIteration':
                     #record threshold and remove operation
                     all_thresholds[task] = output['thisIncrement']
                     break
-                
+
                 #keep track of streaks
                 pos_streak = pos_streak*output['pos_streak']+output['pos_streak'] #adds 1 or sets to 0
                 neg_streak = neg_streak*output['neg_streak']+output['neg_streak']
@@ -478,7 +480,7 @@ if not just_choice:
                 if neg_streak >=2: break
         staircasing_times[task] = trialClock.getTime() - staircasing_start
         total_times[task] = instructions_times[task]+practice_times[task]+staircasing_times[task]
-    
+
     print 'instruction times', instructions_times
     print 'practice_times', practice_times
     print 'staircasing times', staircasing_times
@@ -493,10 +495,10 @@ if not just_choice:
         all_sheets['Task_Times']['row']+=1
 
 elif just_choice:
-    for task in task_names: 
+    for task in task_names:
         if task=='Math':
             all_thresholds[task] = {}
-            for operation in math_operations: 
+            for operation in math_operations:
                 all_thresholds[task][operation] = all_handlers[task][operation].startVal
         else:
             all_thresholds[task] = all_handlers[task].startVal
@@ -536,7 +538,7 @@ while True:
             all_rings[task][ring].setPos(xy[num][1])
     draw_main_screen()
     win.flip()
-    
+
     #draw animation of progress bar if applicable
     progress_colors=['red','orangered','orange','gold','yellow']
     if not first_pass:
@@ -564,8 +566,8 @@ while True:
                 progress_fill.draw()
                 win.flip()
                 if event.getKeys(["escape"]): pickle_and_quit()
-        
-        
+
+
         #add points, create normal progress bar
         points+=points_to_add
         progress_frame.setLineColor('white')
@@ -579,7 +581,7 @@ while True:
             break
         draw_main_screen()
         win.flip()
-    
+
     this_task = None
     mouse.getPos()
     while this_task==None:
@@ -591,9 +593,9 @@ while True:
             elif spatial_icon.contains(mouse): this_task='Spatial'
             elif music_icon.contains(mouse): this_task='Music'
         if event.getKeys(['escape','q']): pickle_and_quit()
-    
+
     print 'task chosen:', this_task
-    
+
     #show selection screen and wait 0.5 seconds
     #draw_main_screen()
     all_icons[this_task].draw()
@@ -606,7 +608,7 @@ while True:
     while True:
         if event.getKeys(['escape','q']): pickle_and_quit()
         if trialClock.getTime() - start_time > 0.5: break
-    
+
     if this_task!='Math':
         all_thresholds[this_task] = all_thresholds[this_task] if this_task in all_thresholds else low_thresh[this_task]
 
@@ -619,31 +621,31 @@ while True:
             output = all_games[this_task].run_game(win, grade, operation, all_thresholds[this_task][operation])
         else:
             output = all_games[this_task].run_game(win, grade, all_thresholds[this_task]) #None, all_sheets[this_task]['sheet'])
-            
+
         score = output['Score']
         thesePoints += score*(num_rings[this_task]+1)*point_intervals
-        
+
         #first write trial number to output
         all_sheets[this_task]['sheet'].write(all_sheets[this_task]['row'], 0, trial_number)
-        
+
         #next write the output variables
         for col,header in enumerate(all_sheets[this_task]['headers'][1:-1]):
             all_sheets[this_task]['sheet'].write(all_sheets[this_task]['row'],col+1,output[header])
 
         all_sheets[this_task]['sheet'].write(all_sheets[this_task]['row'],len(all_sheets[this_task]['headers'])-1,VERSION)
-        
+
         #increment row for output records
         all_sheets[this_task]['row'] += 1
-        
+
         #write output for main sheet
         main_output = {'Trial Number':trial_number, 'Game': this_task, 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'choice','Icon_Pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task].pos[0] and tup[1][1]==all_icons[this_task].pos[1]][0]}
         for col,header in enumerate(all_sheets['Main']['headers'][:-1]):
             all_sheets['Main']['sheet'].write(trial_number, col, main_output[header])
         all_sheets['Main']['sheet'].write(trial_number, len(all_sheets['Main']['headers'])-1, VERSION)
-        
+
         #increment trial number
         trial_number+=1
-        
+
         #display retry screen if incorrect trial
         if score==0:
             mouse.getPos()
@@ -652,13 +654,13 @@ while True:
             while True:
                 if click(): break
                 if event.getKeys(keyList=['q', 'escape']): pickle_and_quit()
-        
+
     if thesePoints!=0: points_to_add=thesePoints
-    
+
     #decrease rings by 1
     if num_rings[this_task]>0: num_rings[this_task]-=1
     first_pass=False
-    
+
 #record choice time
 all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, 'Choice Section')
 all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, trialClock.getTime()-choice_start)
