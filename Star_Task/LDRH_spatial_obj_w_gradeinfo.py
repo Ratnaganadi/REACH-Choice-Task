@@ -10,7 +10,7 @@ if __name__ != '__main__': from Feedback import feedback
 touchscreen = True
 
 class Star_Game():
-    
+
     def __init__(self, win):
         self.fn = os.path.dirname(__file__)
         self.trialClock=core.Clock()
@@ -20,7 +20,7 @@ class Star_Game():
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
-        
+
         #create practice instructions
         self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
         self.practice_instructions2 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 2: administrator walks through trials with child')
@@ -31,7 +31,7 @@ class Star_Game():
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        
+
         #initializing audio files for practice and instructions
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
@@ -41,9 +41,9 @@ class Star_Game():
         self.star_inst3 = sound.Sound(aud_practice_path + 'star_inst3.wav')
 
         #instructions
-        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will see a pink star flashing on the screen and then disappear. Afterward, touch a white star that will appear in the middle of the screen. When the white star turns yellow touch where you think the pink star was flashing.')
-        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text='Touch anywhere on the screen when you are ready to start.')
-        
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + '/stars_video_instructions.mp4', size = [1500,850], flipHoriz = True)
+        self.audio_inst = sound.Sound(aud_inst_path + '/stars_instructions.wav')
+
         #repeat and continue button
         self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
@@ -60,27 +60,26 @@ class Star_Game():
         self.mask = visual.ImageStim(win, name='mask2', image = image_path + '/mask.jpg', units=u'pix', ori=0, pos=[0, 0], size=[1500,850], opacity = 1, mask =None, interpolate = True)
         self.blank=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white', text='+', height=30)
         self.mouse=event.Mouse(win=win); self.mouse.getPos()
-        
-        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+100],height=28, wrapWidth=700, text="In this game you will see a pink star flashing on the screen and then disappear. Afterward, a white star will appear in the middle of the screen. Touch the white star, then touch where you think the pink star was flashing.")
-        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, wrapWidth=700, text="Touch anywhere on the screen when you're ready to start.")
-        
+
+
         #start feedback
         self.fb=feedback.fb(win)
-        
+
         # number of degrees to exclude for star placement-- degrees given will be excluded on each side of the cardinal directions
         self.cardinal_exclusion_range = 7
-        
+
         #create possible star positions in degrees
         self.degree_possibilities = []
         for x in [45,135,225,315]: self.degree_possibilities.extend(range(x-(44-self.cardinal_exclusion_range), x+(45-self.cardinal_exclusion_range)))
-        
-        
+
+
     def run_instructions(self, win):
         "Display the instructions for the game."
         #display instructions and wait
-        self.message1.draw()
-        self.message2.draw()
-        win.flip()
+        self.audio_inst.play()
+        while self.instructions.status != visual.FINISHED:
+            self.instructions.draw()
+            win.flip()
         #wait a second before checking for mouse movement
         core.wait(1)
         self.mouse.getPos()
@@ -89,10 +88,10 @@ class Star_Game():
         while cont==False:
             if self.click(): cont=True
             if 'escape' in event.getKeys(): return 'QUIT'
-    
+
     # def run_instructions_w_demo(self,win):
 
-    
+
     def run_practice(self, win, grade):
         "Run practice"
 
@@ -114,7 +113,7 @@ class Star_Game():
                     if self.click(): aud_cue.stop(); cont=True
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
 
-            elif repeat_option=='repeat_opt': 
+            elif repeat_option=='repeat_opt':
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
@@ -137,9 +136,9 @@ class Star_Game():
                             aud_cue.stop(); return 'continue'
                             break
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-            
+
             print 'with_practice', with_practice
-            if with_practice==True: 
+            if with_practice==True:
                 output = self.run_game(win, stim_condition) #run first practice trial
                 print 'run practice'
                 while output['Score']!=score:
@@ -163,7 +162,7 @@ class Star_Game():
                 run_sub_practice(self,win,txt,self.practice_aud2,stim,score,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue,self.practice_aud2,100,0,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue,self.practice_aud2,115,1,True,'no_repeat_option')
-        
+
         run_3_practice([self.practice_instructions1,self.practice_cue2,self.practice_cue2],[150,100,115],[1,0,1])
         run_3_practice([self.practice_instructions2,self.practice_cue2],[250,200],[1,1])
         run_3_practice([self.practice_instructions3,self.practice_cue2],[200,150],[1,1])
@@ -175,18 +174,18 @@ class Star_Game():
                 print 'continue2'
                 go_to_choice=True
             if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
-    
+
     def run_game(self, win, grade, thisIncrement):
         "Run one iteration of the game with self.trialList as conditions."
         return self.run_trial(win, thisIncrement)
-    
+
     def run_trial(self, win, thisIncrement):
         sz= thisIncrement
         theseKeys = ""
 
         t=0; self.trialClock.reset()
         frameN=-1
-        
+
         r = 250
         degree = choice(self.degree_possibilities)
         radians = degree*(2*math.pi/360)
@@ -198,11 +197,11 @@ class Star_Game():
         self.circletwinkle.setPos([x,y]); self.circletwinkle.setRadius([sz/2]); self.circletwinkle.setLineColor('#f50af2')
         self.circledrag.setPos([0,0]); self.circledrag.setRadius([sz/2]); self.circledrag.setLineColor('white')
         self.drag.setPos([0,0]); self.drag.setSize([sz, sz]); self.drag.setImage(self.fn + '/star2.png')
-        
+
         print 'degree:', degree
         print 'radians:', radians
         print 'x, y:', x, y
-        
+
         drag_started=False
         thisResp=None
         self.mouse.setVisible(0)
@@ -219,7 +218,7 @@ class Star_Game():
             if len(theseKeys)>0:
                 if theseKeys[-1] in ['q','escape']: return 'QUIT'
             win.flip()
-        
+
         start_time = self.trialClock.getTime()
         score = None
         first_click_time=None
@@ -233,8 +232,8 @@ class Star_Game():
             t=self.trialClock.getTime()
             if t>=5:
                 self.drag.draw()
-                if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]): 
-                    if self.drag.contains(self.mouse.getPos()): 
+                if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
+                    if self.drag.contains(self.mouse.getPos()):
                         status='STARTED'
                         first_click_time = t - start_time
                         self.drag.setImage(self.fn + '/star_selected.png')
@@ -261,16 +260,16 @@ class Star_Game():
                 x_resp=np.nan
                 y_resp=np.nan
                 distance=np.nan
-        
+
         #give feedback
         self.fb.present_fb(win,score,[self.twinkle2,self.circletwinkle,self.drag,self.circledrag])
-        
+
         #write data #headers are ['Trial Number', 'Difficulty','Score','Resp Time','Adaptive']
-        output = {'Difficulty': float(sz), 'Score': int(score), 'First_Click_Time': float(first_click_time), 'Second_Click_Time': float(second_click_time), 'Resp Time': float(second_click_time-first_click_time),'Star_Pos': "(%f, %f)"%(x,y), 
+        output = {'Difficulty': float(sz), 'Score': int(score), 'First_Click_Time': float(first_click_time), 'Second_Click_Time': float(second_click_time), 'Resp Time': float(second_click_time-first_click_time),'Star_Pos': "(%f, %f)"%(x,y),
             'Resp_Pos': "(%f, %f)"%(x_resp, y_resp), 'Resp_Distance': float(distance)}
         print output
         return output
-    
+
     #method to get clicks
     def click(self):
         if touchscreen and self.mouse.mouseMoved(): return True
@@ -280,7 +279,7 @@ class Star_Game():
 if __name__=='__main__':
     sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
     from Feedback import feedback
-    
+
     #store info about the experiment session
     expName='REaCh Star Task'; expInfo={'participant':''}
     dlg=gui.DlgFromDict(dictionary=expInfo,title=expName)
@@ -289,29 +288,28 @@ if __name__=='__main__':
     fileName = expInfo['participant'] + expInfo['date']
     #dataFile = open('LDRH spatial data/' + fileName+'.txt', 'w')
     #dataFile.write('Level>Answer\n')
-    
+
     win = visual.Window(size=(1500, 850), allowGUI=False
     , monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=False) #Window
-#    
+#
 #    #create the staircase handler
     staircase = data.StairHandler(startVal = 130,
           stepType = 'db', stepSizes=[10,5,2,1],#[8,4,4,2,2,1,1], #reduce step size every two reversals
           minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
           nTrials = 10)
-    
+
     #initialize game
     game = Star_Game(win)
-    
+
     #start feedback
     fb=feedback.fb(win)
-    
+
     #step through staircase to find threshold
-    for thisIncrement in staircase: 
+    for thisIncrement in staircase:
         output = game.run_game(win, thisIncrement)
         staircase.addData(output['Score'])
     #record the resulting threshold level of the training
     thresh = staircase._nextIntensity
-    
+
     #run one iteration of game at threshold:
     game.run_game(win, thresh)
-    
