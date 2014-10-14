@@ -99,7 +99,8 @@ class Star_Game():
             # self.repeat_button.draw() # self.continue_button.draw()
             if repeat_option=='no_repeat_option':
                 text_cue.draw()
-                aud_cue.play()
+                if aud_cue:
+                    aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
@@ -110,32 +111,49 @@ class Star_Game():
                 cont=False
                 self.mouse.getPos()
                 while cont==False:
-                    if self.click(): aud_cue.stop(); cont=True
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    if self.click():
+                        if aud_cue:
+                            aud_cue.stop()
+                        cont=True
+                    if 'escape' in event.getKeys():
+                        if aud_cue:
+                            aud_cue.stop()
+                        return 'QUIT'
 
             elif repeat_option=='repeat_opt':
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
-                aud_cue.play()
+                if aud_cue:
+                    aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
                 start_time = self.trialClock.getTime()
                 while start_time+1 > self.trialClock.getTime():
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    if 'escape' in event.getKeys():
+                        if aud_cue:
+                            aud_cue.stop()
+                        return 'QUIT'
                 #check for a touch
                 cont=False
                 self.mouse.getPos()
                 while cont==False:
                     if self.click():
                         if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
-                            aud_cue.stop(); return 'repeat'
+                            if aud_cue:
+                                aud_cue.stop()
+                            return 'repeat'
                             break
                         elif self.continue_button.contains(self.mouse):
-                            aud_cue.stop(); return 'continue'
+                            if aud_cue:
+                                aud_cue.stop()
+                            return 'continue'
                             break
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    if 'escape' in event.getKeys():
+                        if aud_cue:
+                            aud_cue.stop()
+                        return 'QUIT'
 
             print 'with_practice', with_practice
 
@@ -161,7 +179,7 @@ class Star_Game():
         def run_3_practice(inst,stimuli,score_conds):
             #draw practice instructions, and do sub practice
             for txt,stim,score in zip(inst,stimuli,score_conds):
-                run_sub_practice(self,win,txt,self.practice_aud2,stim,score,True,'no_repeat_option')
+                run_sub_practice(self,win,txt,None,stim,score,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue,self.practice_aud2,100,0,True,'no_repeat_option')
             # run_sub_practice(self,win,self.practice_cue,self.practice_aud2,115,1,True,'no_repeat_option')
 
