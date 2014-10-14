@@ -23,8 +23,8 @@ class Dots_Game():
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
-        dotstim_path = 'Images/Stimuli/Dots'
-
+        self.dotstim_path = 'Images/Stimuli/Dots/'
+        
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
@@ -34,9 +34,10 @@ class Dots_Game():
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.dots_inst1 = sound.Sound(aud_practice_path + 'dots_inst1.wav')
-        self.dots_inst2 = sound.Sound(aud_practice_path + 'dots_inst2.wav')
-        self.dots_inst3 = sound.Sound(aud_practice_path + 'dots_inst3.wav')
+
+        self.dots_inst1 = sound.Sound(aud_inst_path + 'dots_inst1.wav')
+        self.dots_inst2 = sound.Sound(aud_inst_path + 'dots_inst2.wav')
+        self.dots_inst3 = sound.Sound(aud_inst_path + 'dots_inst3.wav')
 
         #instructions
         self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + '/dots_instructions.mp4', size = [1500,850], flipHoriz = True)
@@ -148,7 +149,9 @@ class Dots_Game():
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
 
             print 'with_practice', with_practice
-            if with_practice==True: output = self.run_game(win, stim_condition); print 'run practice' #run first practice trial
+            if with_practice==True:
+                output = self.run_game(win, "", stim_condition)
+                print 'run practice' #run first practice trial
 
         def run_3_practice(inst,audio,stimuli):
             #draw practice instructions, and do sub practice
@@ -166,7 +169,8 @@ class Dots_Game():
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
-            if repeat_or_continue=='repeat': run_3_practice()
+            if repeat_or_continue=='repeat':
+                run_3_practice(inst_set,aud_set,stim_set)
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True
@@ -191,8 +195,8 @@ class Dots_Game():
         print 'Difficulty is:', difficulty
 
         #randomize side of stimuli
-        incorrect = dotstim_path+self.trialList[index]['Incorrect'][self.iteration[index]]
-        correct = dotstim_path+self.trialList[index]['Correct'][self.iteration[index]]
+        incorrect = self.dotstim_path+self.trialList[index]['Incorrect'][self.iteration[index]]
+        correct = self.dotstim_path+self.trialList[index]['Correct'][self.iteration[index]]
         correct_side = random.choice(['left','right'])
 
         if correct_side=='left':

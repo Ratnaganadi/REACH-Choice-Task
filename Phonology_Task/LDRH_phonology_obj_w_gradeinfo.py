@@ -2,7 +2,7 @@ from psychopy import gui, visual, core, data, event, logging, sound, info, misc
 import time, numpy, os, sys, tempfile, wave
 from os.path import join
 from math import floor
-from random import randint, choice
+from random import randint, choice, shuffle
 if __name__ != '__main__': from Feedback import feedback
 #touchscreen or not
 touchscreen = True
@@ -31,18 +31,18 @@ class Phonology_Game:
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.phonology_inst1 = sound.Sound(aud_practice_path + 'phonology_inst1.wav')
-        self.phonology_inst2 = sound.Sound(aud_practice_path + 'phonology_inst2.wav')
-        self.phonology_inst3 = sound.Sound(aud_practice_path + 'phonology_inst3.wav')
-        self.phonology_inst4 = sound.Sound(aud_practice_path + 'phonology_inst4.wav')
+        self.phonology_inst1 = sound.Sound(aud_inst_path + 'phonology_inst1.wav')
+        self.phonology_inst2 = sound.Sound(aud_inst_path + 'phonology_inst2.wav')
+        self.phonology_inst3 = sound.Sound(aud_inst_path + 'phonology_inst3.wav')
+        self.phonology_inst4 = sound.Sound(aud_inst_path + 'phonology_inst4.wav')
 
         #instructions
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game, you will hear two made up words. Do not worry about what they mean. Sometimes they will be the same, sometimes they will be different.  If the made up words are the same, touch the happy face button. If they are not the same, touch the sad face button.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text="Touch anywhere on the screen when you are ready to start.")
         
         #create stimuli, repeat and continue button
-        self.speaker = visual.ImageStim(win=win, name='speaker',image=self.dir +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
-        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=self.dir +'/speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
+        self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
+        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=image_path +'/speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
         self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.same_button = visual.ImageStim(win, image=image_path + '/happy_button.png', pos=[-260, -200])
@@ -136,7 +136,7 @@ class Phonology_Game:
                     if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
             
             print 'with_practice', with_practice
-            if with_practice==True: output = self.run_game(win, stim_condition); print 'run practice' #run first practice trial
+            if with_practice==True: output = self.run_game(win, "", stim_condition); print 'run practice' #run first practice trial
 
         def run_3_practice(inst,audio,stimuli):
             #draw practice instructions, and do sub practice
@@ -197,7 +197,7 @@ class Phonology_Game:
             fn = join(self.temp_dir,'%s.wav'%stim)
             self.concat_wavs(stim_files, fn)
             audio = sound.Sound(value=fn)
-            audio_length = audio1.getDuration()
+            audio_length = audio.getDuration()
             return [audio,audio_length]
             os.remove(fn)
 

@@ -31,9 +31,9 @@ class Tones_Game:
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.tones_inst1 = sound.Sound(aud_practice_path + 'tones_inst1.wav')
-        self.tones_inst2 = sound.Sound(aud_practice_path + 'tones_inst2.wav')
-        self.tones_inst3 = sound.Sound(aud_practice_path + 'tones_inst3.wav')
+        # self.tones_inst1 = sound.Sound(aud_inst_path + 'tones_inst1.wav')
+        # self.tones_inst2 = sound.Sound(aud_inst_path + 'tones_inst2.wav')
+        # self.tones_inst3 = sound.Sound(aud_inst_path + 'tones_inst3.wav')
 
         #instructions
         self.message1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,+100],height=28, text='In this game, you will hear two short melodies that can be the same or different. If they are the same, touch the happy face button. If they are not the same, touch the sad face button.')
@@ -122,34 +122,27 @@ class Tones_Game:
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
-                aud_cue.play()
+                # aud_cue.play()
                 win.flip() #display instructions
 
                 #wait 1 seconds before checking for touch
                 start_time = self.trialClock.getTime()
                 while start_time+1 > self.trialClock.getTime():
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    if event.getKeys(keyList=['q', 'escape']): return 'QUIT'#if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
                 
                 #check for a touch
                 cont=False
                 self.mouse.getPos()
                 while cont==False:
-                    if self.mouse.mouseMoved() and self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
-                        aud_cue.stop(); return 'repeat'
-                        break
-                    elif self.mouse.mouseMoved() and self.continue_button.contains(self.mouse):
-                        aud_cue.stop(); return 'continue'
-                        break
-                    elif 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-
-                    # if self.click():
-                    #     if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
-                    #         aud_cue.stop(); return 'repeat'
-                    #         break
-                    #     elif self.continue_button.contains(self.mouse):
-                    #         aud_cue.stop(); return 'continue'
-                    #         break
-                    # if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    print 'repeat_option', event.getKeys()
+                    if self.click():
+                        if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
+                            aud_cue.stop(); return 'repeat'
+                            break
+                        elif self.continue_button.contains(self.mouse):
+                            aud_cue.stop(); return 'continue'
+                            break
+                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
             
             print 'with_practice', with_practice
             if with_practice==True: output = self.run_trial(win, stim_condition, trialList = self.practiceList); print 'run practice' #run first practice trial
@@ -170,11 +163,14 @@ class Tones_Game:
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
-            if repeat_or_continue=='repeat': run_3_practice()
+            if repeat_or_continue=='repeat':
+                run_3_practice(inst_set,aud_set,stim_set)
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True
-            if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
+            if 'escape' in event.getKeys():
+                go_to_choice=True
+                return 'QUIT'
         
     def concat_wavs(self, infiles, outfile):
         data=[]
@@ -395,10 +391,10 @@ if __name__=='__main__':
     
     #step through staircase to find threshold
     for thisIncrement in staircase: 
-        output = game.run_game(win, thisIncrement)
+        output = game.run_game(win, "", thisIncrement)
         staircase.addData(output['Score'])
     #record the resulting threshold level of the training
     thresh = staircase._nextIntensity
     
     #run one iteration of game at threshold:
-    game.run_game(win, thresh)
+    game.run_game(win, "", thresh)
