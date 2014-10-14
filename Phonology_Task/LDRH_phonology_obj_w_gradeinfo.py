@@ -37,8 +37,8 @@ class Phonology_Game:
         self.phonology_inst4 = sound.Sound(aud_inst_path + 'phonology_inst4.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + '/phon_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(aud_inst_path + '/phon_instructions.wav')
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'phon_instructions.mp4', size = [1500,850], flipHoriz = True)
+        self.audio_inst = sound.Sound(aud_inst_path + 'phon_instructions.wav')
 
         #create stimuli, repeat and continue button
         self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])

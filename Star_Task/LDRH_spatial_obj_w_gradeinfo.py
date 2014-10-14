@@ -41,8 +41,8 @@ class Star_Game():
         self.star_inst3 = sound.Sound(self.aud_inst_path + 'star_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + '/stars_video_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(aud_inst_path + '/stars_instructions.wav')
+        self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + 'stars_video_instructions.mp4', size = [1500,850], flipHoriz = True)
+        self.audio_inst = sound.Sound(self.aud_inst_path + 'stars_instructions.wav')
 
         #repeat and continue button
         self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= self.image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
