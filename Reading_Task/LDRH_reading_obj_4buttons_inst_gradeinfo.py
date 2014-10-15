@@ -277,8 +277,9 @@ class Reading_Game:
 
         if difficulty <= 3: #for grade k, 1a, 1b
             criteria = str(self.trialList[n]['Criteria'][self.iteration[n]]) # target_header = 'Target_'+criteria; foil_header = 'Foil_'+criteria
-            self.target_string =  str(self.trialList[n]['Target_'+criteria][self.iteration[n]])
-            self.foil_string = str(self.trialList[n]['Foil_'+criteria][self.iteration[n]])
+            index_value = self.iteration[n] - self.iteration[n]*int(self.iteration[n]/len(self.trialList[n]['Target_'+criteria]))
+            self.target_string =  str(self.trialList[n]['Target_'+criteria][index_value])
+            self.foil_string = str(self.trialList[n]['Foil_'+criteria][index_value])
             string_2b = [self.target_string, self.foil_string]
             # target_word = self.target_string
             shuffle(two_xpositions)
@@ -413,11 +414,17 @@ class Reading_Game:
 
         #update iteration of current difficulty
         if difficulty <=3:
-            if (self.iteration[n] == len(self.trialList[n]['Target_'+criteria])-1): self.iteration[n] = 0
-            else: self.iteration[n] += 1; print 'iteration:', self.iteration[n]
+            if (self.iteration[n] == len(self.trialList[n]["Criteria"])-1):
+                self.iteration[n] = 0
+            else:
+                self.iteration[n] += 1
+                print 'iteration:', self.iteration[n]
         elif difficulty >3:
-            if (self.iteration[n] == len(self.trialList[n]['Target_4button'])-1): self.iteration[n] = 0
-            else: self.iteration[n] += 1; print 'iteration:', self.iteration[n]
+            if (self.iteration[n] == len(self.trialList[n]['Target_4button'])-1):
+                self.iteration[n] = 0
+            else:
+                self.iteration[n] += 1
+                print 'iteration:', self.iteration[n]
         print '*'
         # if self.iteration[#indexNo] == len(self.trialList[#indexNo]['Target_'+criteria])-1: self.iteration[#indexNo] = 0
         # else: self.iteration[#indexNo] += 1
