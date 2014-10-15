@@ -513,7 +513,8 @@ def draw_main_screen():
     progress_fill.draw()
     for num,task in enumerate(task_names):
         all_icons[task].draw()
-        for ring in range(0, num_rings[task]): all_rings[task][ring].draw()
+        for ring in range(0, num_rings[task]):
+            all_rings[task][ring].draw()
 
 #present instructions for choice task
 choice_start = trialClock.getTime()
@@ -623,7 +624,7 @@ while True:
         else:
             output = all_games[this_task].run_game(win, grade, all_thresholds[this_task]) #None, all_sheets[this_task]['sheet'])
 
-        score = output['Score']
+        score = output.get('Score', 0) if output else 0
         thesePoints += score*(num_rings[this_task]+1)*point_intervals
 
         #first write trial number to output
@@ -659,7 +660,8 @@ while True:
     if thesePoints!=0: points_to_add=thesePoints
 
     #decrease rings by 1
-    if num_rings[this_task]>0: num_rings[this_task]-=1
+    if num_rings[this_task]>0: 
+        num_rings[this_task]-=1
     first_pass=False
 
 #record choice time
