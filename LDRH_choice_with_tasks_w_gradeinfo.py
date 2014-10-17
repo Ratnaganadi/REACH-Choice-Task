@@ -190,6 +190,7 @@ all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
 all_icons = {'Math': math_icon, 'Music': music_icon, 'Reading': reading_icon, 'Dots': dots_icon, 'Phonology': phonology_icon, 'Spatial': spatial_icon}
 #[Music, Phonology, Dots, Reading, Spatial]
 low_thresh = {'Music':10,'Phonology':3,'Dots':39,'Reading':5,'Spatial':150}
+low_thresh_operations = {'addition': 1, 'subtraction': 1, 'multiplication': 1, 'division': 1}
 
 #load pickled data if applicable
 if pdata:
@@ -613,6 +614,9 @@ while True:
 
     if this_task!='Math':
         all_thresholds[this_task] = all_thresholds[this_task] if this_task in all_thresholds else low_thresh[this_task]
+    else:
+        low_thresh_operations.update(all_thresholds[this_task])
+        all_thresholds[this_task] = low_thresh_operations
 
     #run game until get a correct answer
     score = None
