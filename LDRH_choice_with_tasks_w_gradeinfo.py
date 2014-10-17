@@ -124,7 +124,7 @@ congratulations_text = visual.TextStim(win=win, text="You did it! You win!", hei
 try:
     fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', loop=True, pos = [0,-100])
 except AttributeError:
-    fireworks = None 
+    fireworks = None
 
 applause = sound.Sound(audio_path + 'applause.wav')
 applause.setVolume(0.6)
@@ -189,7 +189,7 @@ all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
 #dictionary of icons
 all_icons = {'Math': math_icon, 'Music': music_icon, 'Reading': reading_icon, 'Dots': dots_icon, 'Phonology': phonology_icon, 'Spatial': spatial_icon}
 #[Music, Phonology, Dots, Reading, Spatial]
-low_thresh = {'Music':10,'Phonology':3,'Dots':39,'Reading':5,'Spatial':150}
+low_thresh = {'Music':14,'Phonology':4,'Dots':39,'Reading':8,'Spatial':150}
 low_thresh_operations = {'addition': 1, 'subtraction': 1, 'multiplication': 1, 'division': 1}
 
 #load pickled data if applicable
@@ -664,7 +664,7 @@ while True:
     if thesePoints!=0: points_to_add=thesePoints
 
     #decrease rings by 1
-    if num_rings[this_task]>0: 
+    if num_rings[this_task]>0:
         num_rings[this_task]-=1
     first_pass=False
 
