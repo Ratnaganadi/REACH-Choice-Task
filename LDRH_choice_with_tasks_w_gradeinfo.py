@@ -124,7 +124,7 @@ congratulations_text = visual.TextStim(win=win, text="You did it! You win!", hei
 try:
     fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', loop=True, pos = [0,-100])
 except AttributeError:
-    fireworks = None 
+    fireworks = None
 
 applause = sound.Sound(audio_path + 'applause.wav')
 applause.setVolume(0.6)
@@ -664,7 +664,7 @@ while True:
     if thesePoints!=0: points_to_add=thesePoints
 
     #decrease rings by 1
-    if num_rings[this_task]>0: 
+    if num_rings[this_task]>0:
         num_rings[this_task]-=1
     first_pass=False
 
