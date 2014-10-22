@@ -122,7 +122,7 @@ math_benchmarks = {'subtraction': {'addition': {'thresh': 3, 'count': 0}}, 'mult
 congratulations_text = visual.TextStim(win=win, text="You did it! You win!", height=38, pos = [0,200])
 
 try:
-    fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', loop=True, pos = [0,-100])
+    fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', pos = [0,-100])
 except AttributeError:
     fireworks = None
 

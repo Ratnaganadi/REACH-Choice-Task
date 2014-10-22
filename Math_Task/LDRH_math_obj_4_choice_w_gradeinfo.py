@@ -41,7 +41,7 @@ class Math_Game:
         self.math_inst3 = sound.Sound(aud_inst_path + 'math_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'math_instructions.mp4', size = [1500,850], flipHoriz = True)
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'math_instructions.mp4', size = [1500,850])
         self.audio_inst = sound.Sound(aud_inst_path + 'math_instructions.wav')
 
         #repeat and continue button
@@ -87,15 +87,7 @@ class Math_Game:
         while self.instructions.status != visual.FINISHED:
             self.instructions.draw()
             win.flip()
-        #wait a second before checking for mouse movement
-        core.wait(1)
-        self.mouse.getPos()
-        #check for a touch
-        cont=False
-        while cont==False:
-            if self.click(): cont=True
-            if 'escape' in event.getKeys(): return 'QUIT'
-
+        win.flip()
 
     def run_practice(self, win, grade):
         "Run practice"
