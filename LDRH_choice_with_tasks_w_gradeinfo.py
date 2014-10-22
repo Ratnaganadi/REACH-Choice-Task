@@ -468,7 +468,10 @@ if not just_choice:
                 #handle StopIterations
                 if output['Score']=='StopIteration':
                     #record threshold and remove operation
-                    all_thresholds[task] = output['thisIncrement']
+                    if pos_streak==0:
+                        all_thresholds[task] = output['thisIncrement'] - 1
+                    else:
+                        all_thresholds[task] = output['thisIncrement']
                     break
 
                 #keep track of streaks
