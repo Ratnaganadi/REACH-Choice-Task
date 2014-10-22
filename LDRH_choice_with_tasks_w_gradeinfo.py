@@ -190,7 +190,7 @@ all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
 all_icons = {'Math': math_icon, 'Music': music_icon, 'Reading': reading_icon, 'Dots': dots_icon, 'Phonology': phonology_icon, 'Spatial': spatial_icon}
 #[Music, Phonology, Dots, Reading, Spatial]
 low_thresh = {'Music':14,'Phonology':4,'Dots':39,'Reading':8,'Spatial':150}
-low_thresh_operations = {'addition': 13, 'subtraction': 9, 'multiplication': 8, 'division': 7}
+low_thresh_operations = {'addition': 13}
 
 #load pickled data if applicable
 if pdata:
@@ -243,7 +243,7 @@ else:
         'Dots': data.StairHandler(startVal = 35, stepType = 'lin', stepSizes=[5,3,2,2,1,1], #reduce step size every two reversals
             minVal=0, maxVal=len(all_conditions['Dots'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
             nTrials = 10),
-        'Reading': data.StairHandler(startVal = 5, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
+        'Reading': data.StairHandler(startVal = 8, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
             minVal=0, maxVal=len(all_conditions['Reading'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
             nTrials = 10, nReversals = 0),
         'Phonology': data.StairHandler(startVal = 4, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
