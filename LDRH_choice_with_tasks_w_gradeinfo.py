@@ -314,10 +314,10 @@ def pickle_and_quit():
 
 def run_staircase(task, operation=None):
     global trial_number
-    if operation: handler = all_handlers[task][operation]
-    else: handler = all_handlers[task]
-    pos_streak=0
-    neg_streak=0
+    if operation:
+        handler = all_handlers[task][operation]
+    else:
+        handler = all_handlers[task]
 
     try:
         thisIncrement = handler.next()
@@ -357,13 +357,6 @@ def run_staircase(task, operation=None):
 
         #increment trial number
         trial_number+=1
-
-        #keep track of how many correct/incorrect in a row
-        if output['Score'] and all_conditions[task] and output['Difficulty']==len(all_conditions[task]): output['pos_streak']=1
-        else: output['pos_streak']=0
-        if not output['Score'] and all_conditions[task] and output['Difficulty']==1: output['neg_streak']=1
-        else: output['neg_streak']=0
-        print "output['pos_streak']:", output['pos_streak']
 
         output['thisIncrement'] = thisIncrement
 
@@ -407,8 +400,9 @@ if not just_choice:
         #run staircase; math needs special circumstances
         staircasing_start = trialClock.getTime()
         if task=='Math':
-            if 'Math' not in all_thresholds.keys(): all_thresholds['Math']={}
-            streaks = {'addition': {'pos':0,'neg':0}, 'subtraction': {'pos':0,'neg':0}, 'multiplication': {'pos':0,'neg':0}, 'division': {'pos':0, 'neg':0}}
+            if 'Math' not in all_thresholds.keys():
+                all_thresholds['Math']={}
+            streaks = {'addition': {}, 'subtraction': {}, 'multiplication': {}, 'division': {}}
             add_count_for_mult = 0
             active_operations = ['addition']
 
@@ -440,15 +434,16 @@ if not just_choice:
                             continue
 
                         #keep track of streaks
-                        streaks[operation]['pos'] = streaks[operation]['pos']*output['pos_streak']+output['pos_streak'] #adds 1 or sets to 0
-                        streaks[operation]['neg'] = streaks[operation]['neg']*output['neg_streak']+output['neg_streak']
+                        streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []).append(output["Score"])
+    
                         #handle streak breaking
-                        if streaks[operation]['pos'] >= 8:
-                            all_thresholds[task][operation] = output['thisIncrement']
-                            active_operations.remove(operation)
-                        #remove operation from being active, don't record a threshold
-                        if streaks[operation]['neg'] >=2:
-                            active_operations.remove(operation)
+                        if len(streaks[operation][output['thisIncrement']]) > 9:
+                            if sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) >= 0.8:
+                                all_thresholds[task][operation] = output['thisIncrement']
+                                active_operations.remove(operation)
+                            #remove operation from being active, don't record a threshold
+                            if sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) <= 0.5:
+                                active_operations.remove(operation)
 
                 #add new operation if applicable
                 for new_operation, reqs in math_benchmarks.items():
@@ -459,8 +454,7 @@ if not just_choice:
                         print 'added', new_operation
 
         else:
-            pos_streak=0
-            neg_streak=0
+            streaks = {}
             while True:
                 #one trial of staircase is run here
                 output = run_staircase(task)
@@ -475,14 +469,17 @@ if not just_choice:
                     break
 
                 #keep track of streaks
-                pos_streak = pos_streak*output['pos_streak']+output['pos_streak'] #adds 1 or sets to 0
-                neg_streak = neg_streak*output['neg_streak']+output['neg_streak']
-                print 'pos_streak:', pos_streak
+                streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []).append(output["Score"])
+
+                print 'pos_streak:', streaks[output['thisIncrement']]
                 #handle streak breaking
-                if pos_streak >= 8:
-                    all_thresholds[task] = output['thisIncrement']
-                    break
-                if neg_streak >=2: break
+                if len(streaks[output['thisIncrement']]) > 9:
+                    if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) >= 0.8:
+                        all_thresholds[task] = output['thisIncrement']
+                        break
+                    #remove operation from being active, don't record a threshold
+                    if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) <= 0.5:
+                        break
         staircasing_times[task] = trialClock.getTime() - staircasing_start
         total_times[task] = instructions_times[task]+practice_times[task]+staircasing_times[task]
 
