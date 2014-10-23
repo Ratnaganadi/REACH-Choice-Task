@@ -77,7 +77,7 @@ class Star_Game():
         "Display the instructions for the game."
         #display instructions and wait
         self.audio_inst.play()
-        while self.instructions.status != visual.FINISHED:
+        while self.instructions._player.time <= int(self.instructions.duration*10)/10.0:
             self.instructions.draw()
             win.flip()
         win.flip()
