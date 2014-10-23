@@ -189,8 +189,14 @@ all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
 #dictionary of icons
 all_icons = {'Math': math_icon, 'Music': music_icon, 'Reading': reading_icon, 'Dots': dots_icon, 'Phonology': phonology_icon, 'Spatial': spatial_icon}
 #[Music, Phonology, Dots, Reading, Spatial]
-low_thresh = {'Music':16,'Phonology':4,'Dots':39,'Reading':8,'Spatial':150}
-low_thresh_operations = {'addition': 13}
+low_thresh = {
+    'Music':len(all_conditions['Music'])-1,
+    'Phonology':len(all_conditions['Phonology'])-1,
+    'Dots':len(all_conditions['Dots'])-1,
+    'Reading':len(all_conditions['Reading'])-1,
+    'Spatial':150
+}
+low_thresh_operations = {'addition': len(all_conditions['Math']['addition'])-1}
 
 #load pickled data if applicable
 if pdata:
@@ -420,7 +426,9 @@ if not just_choice:
                                 math_benchmarks.pop(new_operation)
                                 print '{} is now active'.format(new_operation)
                         #separate logic for OR case with multiplication
-                        if operation=='addition' and output['Score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6: add_count_for_mult+=1
+                        if operation=='addition' and output['Score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6:
+                            add_count_for_mult+=1
+
                         if 'multiplication' not in active_operations and 'multiplication' in math_benchmarks.keys() and add_count_for_mult >= 3:
                             active_operations.append('multiplication')
                             math_benchmarks.pop('multiplication')
@@ -428,8 +436,11 @@ if not just_choice:
 
                         #handle StopIterations
                         if output['Score']=='StopIteration':
+                            if sum(streaks.get(operation, {}).get(output['thisIncrement'], []))/float(len(streaks.get(operation, {}).get(output['thisIncrement'], []))) >= 0.8:
+                                all_thresholds[task][operation] = output['thisIncrement']
+                            else:
+                                all_thresholds[task][operation] = min(output['thisIncrement'] + 1, len(all_conditions[task][operation])-1)
                             #record threshold and remove operation
-                            all_thresholds[task][operation] = output['thisIncrement']
                             active_operations.remove(operation)
                             continue
 
@@ -462,10 +473,10 @@ if not just_choice:
                 #handle StopIterations
                 if output['Score']=='StopIteration':
                     #record threshold and remove operation
-                    if pos_streak==0:
-                        all_thresholds[task] = output['thisIncrement'] - 1
-                    else:
+                    if sum(streaks.get(output['thisIncrement'], []))/float(len(streaks.get(output['thisIncrement'], []))) >= 0.8:
                         all_thresholds[task] = output['thisIncrement']
+                    else:
+                        all_thresholds[task] = min(output['thisIncrement'] + 1, low_thresh[task])
                     break
 
                 #keep track of streaks
