@@ -189,7 +189,7 @@ all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
 #dictionary of icons
 all_icons = {'Math': math_icon, 'Music': music_icon, 'Reading': reading_icon, 'Dots': dots_icon, 'Phonology': phonology_icon, 'Spatial': spatial_icon}
 #[Music, Phonology, Dots, Reading, Spatial]
-low_thresh = {'Music':14,'Phonology':4,'Dots':39,'Reading':8,'Spatial':150}
+low_thresh = {'Music':16,'Phonology':4,'Dots':39,'Reading':8,'Spatial':150}
 low_thresh_operations = {'addition': 13}
 
 #load pickled data if applicable
