@@ -150,7 +150,7 @@ class Tones_Game:
 
         inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
         aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
-        stim_set = [2,1,0]
+        stim_set = [14,10,7]
 
         run_3_practice(inst_set,aud_set,stim_set)
         go_to_choice=False

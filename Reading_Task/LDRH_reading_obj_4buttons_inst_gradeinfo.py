@@ -161,7 +161,7 @@ class Reading_Game:
 
         inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
         aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
-        stim_set = [4,2,3]
+        stim_set = [8,6,5]
 
         "!!!Don't forget to put in stim_set based on grade level here when the letter level is ready!!!"
 
