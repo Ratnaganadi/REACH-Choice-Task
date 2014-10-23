@@ -434,7 +434,7 @@ if not just_choice:
                             continue
 
                         #keep track of streaks
-                        streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []).append(output["Score"])
+                        streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["Score"]]
     
                         #handle streak breaking
                         if len(streaks[operation][output['thisIncrement']]) > 9:
@@ -469,7 +469,7 @@ if not just_choice:
                     break
 
                 #keep track of streaks
-                streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []).append(output["Score"])
+                streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []) + [output["Score"]]
 
                 print 'pos_streak:', streaks[output['thisIncrement']]
                 #handle streak breaking
