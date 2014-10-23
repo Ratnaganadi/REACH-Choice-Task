@@ -139,7 +139,7 @@ class Phonology_Game:
 
         inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
         aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
-        stim_set = [3,2,1]
+        stim_set = [4,3,1]
 
         run_3_practice(inst_set,aud_set,stim_set)
         go_to_choice=False
