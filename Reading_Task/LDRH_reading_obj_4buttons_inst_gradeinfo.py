@@ -269,8 +269,13 @@ class Reading_Game:
         if difficulty <= 3: #for grade k, 1a, 1b
             criteria = str(self.trialList[n]['Criteria'][self.iteration[n]]) # target_header = 'Target_'+criteria; foil_header = 'Foil_'+criteria
             index_value = self.iteration[n] - self.iteration[n]*int(self.iteration[n]/len(self.trialList[n]['Target_'+criteria]))
-            self.target_string =  str(self.trialList[n]['Target_'+criteria][index_value])
-            self.foil_string = str(self.trialList[n]['Foil_'+criteria][index_value])
+            try:
+                self.target_string =  str(self.trialList[n]['Target_'+criteria][index_value])
+                self.foil_string = str(self.trialList[n]['Foil_'+criteria][index_value])
+            except IndexError:
+                index_value = 0
+                self.target_string =  str(self.trialList[n]['Target_'+criteria][index_value])
+                self.foil_string = str(self.trialList[n]['Foil_'+criteria][index_value])
             string_2b = [self.target_string, self.foil_string]
             # target_word = self.target_string
             shuffle(two_xpositions)
