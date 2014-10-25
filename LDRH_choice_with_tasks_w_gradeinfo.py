@@ -281,11 +281,14 @@ elif not touchscreen:
         if mouse.getPressed()==[1,0,0]: return True
         else: return False
 
-#save data to xls then quit
-def save_and_quit(complete=False):
+def save(complete=False):
     wb.save('data/'+ '%s_%s' %(ppt, expInfo['date']+'.xls'))
     if complete:
         wb.save('data/complete_data/'+ '%s_%s' %(ppt, expInfo['date']+'.xls'))
+
+#save data to xls then quit
+def save_and_quit(complete=False):
+    save(complete=complete)
     core.quit()
 
 #pickle data then save_and_quit
@@ -683,6 +686,7 @@ while True:
 all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, 'Choice Section')
 all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, trialClock.getTime()-choice_start)
 print 'choice time:', trialClock.getTime()-choice_start
+save(complete=True)
 
 #fireworks yay!!
 start_time = trialClock.getTime()
@@ -692,7 +696,8 @@ while start_time + 20 > trialClock.getTime():
         fireworks.draw()
     congratulations_text.draw()
     win.flip()
-    if event.getKeys(keyList=['q', 'escape']): save_and_quit(complete=True)
+    if event.getKeys(keyList=['q', 'escape']):
+        save_and_quit(complete=True)
 start_time = trialClock.getTime()
 applause.fadeOut(5000)
 while start_time + 5 > trialClock.getTime():
@@ -700,6 +705,7 @@ while start_time + 5 > trialClock.getTime():
         fireworks.draw()
     congratulations_text.draw()
     win.flip()
-    if event.getKeys(keyList=['q', 'escape']): save_and_quit(complete=True)
+    if event.getKeys(keyList=['q', 'escape']):
+        save_and_quit(complete=True)
 
 save_and_quit(complete=True)
