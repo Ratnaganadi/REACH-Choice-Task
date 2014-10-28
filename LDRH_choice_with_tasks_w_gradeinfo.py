@@ -496,6 +496,7 @@ if not just_choice:
                         break
         staircasing_times[task] = trialClock.getTime() - staircasing_start
         total_times[task] = instructions_times[task]+practice_times[task]+staircasing_times[task]
+        save()
 
     print 'instruction times', instructions_times
     print 'practice_times', practice_times
@@ -681,6 +682,7 @@ while True:
     if num_rings[this_task]>0:
         num_rings[this_task]-=1
     first_pass=False
+    save()
 
 #record choice time
 all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, 'Choice Section')
@@ -691,21 +693,14 @@ save(complete=True)
 #fireworks yay!!
 start_time = trialClock.getTime()
 applause.play()
-while start_time + 20 > trialClock.getTime():
-    if fireworks:
-        fireworks.draw()
+if fireworks:
+    fireworks.draw()
+while start_time + 20 > trialClock.getTime() and self.fireworks._player.time <= int(self.fireworks.duration):
     congratulations_text.draw()
     win.flip()
     if event.getKeys(keyList=['q', 'escape']):
         save_and_quit(complete=True)
 start_time = trialClock.getTime()
 applause.fadeOut(5000)
-while start_time + 5 > trialClock.getTime():
-    if fireworks:
-        fireworks.draw()
-    congratulations_text.draw()
-    win.flip()
-    if event.getKeys(keyList=['q', 'escape']):
-        save_and_quit(complete=True)
 
 save_and_quit(complete=True)
