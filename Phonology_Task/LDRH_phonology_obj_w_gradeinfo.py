@@ -195,19 +195,25 @@ class Phonology_Game:
             return [audio,audio_length]
             os.remove(fn)
 
+        # Ensure iteration does not exceed length of available trials:
+        if self.iteration[index] > len(trialList[index]['Stim1'])-1:
+            self.iteration[index] = 0
+
+        #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
+        count=0 #give up after 50 tries
+        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and answer==self.answer_history[-1] and count<50:
+            if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
+                self.iteration[index] = 0
+            else:
+                self.iteration[index] += 1
+            count+=1
+
         #load trial variables
         difficulty = self.trialList[index]['Difficulty']
         stim1 = self.trialList[index]['Stim1'][self.iteration[index]]
         stim2 = self.trialList[index]['Stim2'][self.iteration[index]]
         answer = self.trialList[index]['Correct Response'][self.iteration[index]]
         print stim1, stim2, answer
-
-        #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
-        count=0 #give up after 50 tries
-        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and answer==self.answer_history[-1] and count<50:
-            if self.iteration[index] == len(self.trialList[index]['Stim1'])-1: self.iteration[index] = 0
-            else: self.iteration[index] += 1
-            count+=1
 
         #update answer_history
         self.answer_history.append(answer)
@@ -277,6 +283,8 @@ class Phonology_Game:
             output.update({col:self.trialList[index][col][self.iteration[index]]})
 
         #update iteration of current difficulty
-        if self.iteration[index] == len(self.trialList[index]['Stim1'])-1: self.iteration[index] = 0
-        else: self.iteration[index] += 1
+        if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
+            self.iteration[index] = 0
+        else:
+            self.iteration[index] += 1
         return output

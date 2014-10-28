@@ -187,6 +187,10 @@ class Dots_Game():
                 difficulty = self.trialList[index]['Difficulty']
         print 'Difficulty is:', difficulty
 
+        # Ensure iteration does not exceed length of available trials:
+        if self.iteration[index] > len(trialList[index]['Correct'])-1:
+            self.iteration[index] = 0
+
         #randomize side of stimuli
         incorrect = self.dotstim_path+self.trialList[index]['Incorrect'][self.iteration[index]]
         correct = self.dotstim_path+self.trialList[index]['Correct'][self.iteration[index]]

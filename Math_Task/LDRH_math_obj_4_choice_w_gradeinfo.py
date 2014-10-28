@@ -182,6 +182,10 @@ class Math_Game:
                 difficulty = these_conditions[index]['Difficulty']
         print 'Difficulty is:', difficulty
 
+        # Ensure iteration does not exceed length of available trials:
+        if this_iteration[index] > len(these_conditions[index]['Stimulus'])-1:
+            this_iteration[index] = 0
+
         #randomize the position of the target and foil
         order= round(numpy.random.random())*2-1 #will be either +1(right) or -1(left)
         four_xpositions = [-360, -120, 120, 360]

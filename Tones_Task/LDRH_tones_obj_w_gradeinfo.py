@@ -183,7 +183,8 @@ class Tones_Game:
 
     def run_trial(self, win, thisIncrement, trialList):
         "Run one iteration of the game."
-        self.trialClock.reset(); t=0
+        self.trialClock.reset()
+        t=0
         #set the index to the current difficulty level for indexing into the conditions file
         difficulty=None
         for question in range(len(trialList)):
@@ -195,11 +196,17 @@ class Tones_Game:
             print 'could not find index for', trialList[question]['Difficulty'], 'in', range(len(trialList))
         print 'Difficulty is:', difficulty
 
+        # check current iteration is not beyond the range of current difficulty trials. Reset if so.
+        if self.iteration[index] > len(trialList[index]['soundA'])-1:
+            self.iteration[index] = 0
+
         #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
         count=0 #give up after 50 tries
         while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and trialList[index]['Corr_Answer'][self.iteration[index]]==self.answer_history[-1] and count<50:
-            if self.iteration[index] == len(trialList[index]['soundA'])-1: self.iteration[index] = 0
-            else: self.iteration[index] += 1
+            if self.iteration[index] >= len(trialList[index]['soundA'])-1:
+                self.iteration[index] = 0
+            else:
+                self.iteration[index] += 1
             count+=1
 
         #update answer_history
@@ -337,8 +344,10 @@ class Tones_Game:
             'Resp Time': choice_time}
 
         #update iteration of current difficulty
-        if self.iteration[index] == len(trialList[index]['soundA'])-1: self.iteration[index] = 0
-        else: self.iteration[index] += 1
+        if self.iteration[index] == len(trialList[index]['soundA'])-1:
+            self.iteration[index] = 0
+        else:
+            self.iteration[index] += 1
 
         return output
 
