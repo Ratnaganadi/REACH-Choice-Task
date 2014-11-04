@@ -150,14 +150,15 @@ class Tones_Game:
 
         inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
         aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
-        stim_set = [14,10,7]
+        stim_set = [3,4,5]
+        stim_repeat = [0,1,2]
 
         run_3_practice(inst_set,aud_set,stim_set)
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
             if repeat_or_continue=='repeat':
-                run_3_practice(inst_set,aud_set,stim_set)
+                run_3_practice(inst_set,aud_set,stim_repeat)
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True
