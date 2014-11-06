@@ -158,7 +158,8 @@ class Math_Game:
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,None,False,'repeat_opt')
-            if repeat_or_continue=='repeat': run_3_practice()
+            if repeat_or_continue=='repeat':
+                run_3_practice(inst_set,aud_set,stim_set)
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True
