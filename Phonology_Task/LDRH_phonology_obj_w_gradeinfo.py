@@ -201,7 +201,7 @@ class Phonology_Game:
 
         #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
         count=0 #give up after 50 tries
-        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and answer==self.answer_history[-1] and count<50:
+        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and self.trialList[index]['Correct Response'][self.iteration[index]]==self.answer_history[-1] and count<50:
             if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
                 self.iteration[index] = 0
             else:
