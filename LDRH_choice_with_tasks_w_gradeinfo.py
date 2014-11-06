@@ -746,7 +746,7 @@ start_time = trialClock.getTime()
 applause.play()
 if fireworks:
     fireworks.draw()
-while start_time + 20 > trialClock.getTime() and self.fireworks._player.time <= int(self.fireworks.duration):
+while start_time + 20 > trialClock.getTime() and fireworks._player.time <= int(fireworks.duration):
     congratulations_text.draw()
     win.flip()
     if event.getKeys(keyList=['q', 'escape']):
