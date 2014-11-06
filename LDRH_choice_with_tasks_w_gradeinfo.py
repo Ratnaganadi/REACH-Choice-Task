@@ -579,6 +579,8 @@ win.flip()
 
 preferences = Preference(task_names, number_of_choices)
 
+track_spatial_errors = []
+
 while True:
     tasks = preferences.next()
     thesePoints=0
@@ -711,6 +713,11 @@ while True:
 
         #display retry screen if incorrect trial
         if score==0:
+            if this_task["name"]=='Spatial':
+                track_spatial_errors.append(score)
+                if len(track_spatial_errors)>=2:
+                    all_thresholds[this_task["name"]] = all_thresholds[this_task["name"]]*1.2
+                    track_spatial_errors = []
             mouse.getPos()
             retry_instructions.draw()
             win.flip()
