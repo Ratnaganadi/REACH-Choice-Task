@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from psychopy import visual, core, data, event, logging, gui, sound
 from psychopy.constants import *
-import os, random, math, copy, xlwt, numpy, csv
+import os, random, math, copy, xlwt, numpy, csv, itertools
 from xlrd import open_workbook
 from xlutils.copy import copy as xlcopy
 import cPickle as pickle
@@ -29,6 +29,9 @@ just_choice = False
 
 #touchscreen? if False, uses conventional mouse
 touchscreen = True
+
+#How many alternatives in the choice phase
+number_of_choices = 2
 
 #which tasks to run
 task_names=[
@@ -491,7 +494,6 @@ if not just_choice:
                     if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) >= 0.8:
                         all_thresholds[task] = output['thisIncrement']
                         break
-                    #remove operation from being active, don't record a threshold
                     if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) <= 0.5:
                         break
         staircasing_times[task] = trialClock.getTime() - staircasing_start
@@ -523,14 +525,28 @@ elif just_choice:
 
 #CHOICE SECTION
 
+class Preference(object):
+
+    def __init__(self, items, number_of_choices):
+        self.points = 2
+        self.items = [{"name": item, "points": self.points} for item in items]
+        self.item_sequence = []
+        self.number_of_choices = number_of_choices
+
+    def next(self):
+        if not self.item_sequence:
+            self.item_sequence = [item for item in itertools.combinations(self.items, self.number_of_choices)]
+            random.shuffle(self.item_sequence)
+        return self.item_sequence.pop()
+
 #method to draw all icons, rings, and progress bar
-def draw_main_screen():
+def draw_main_screen(tasks):
     progress_frame.draw()
     progress_fill.draw()
-    for num,task in enumerate(task_names):
-        all_icons[task].draw()
-        for ring in range(0, num_rings[task]):
-            all_rings[task][ring].draw()
+    for num,task in enumerate(tasks):
+        all_icons[task["name"]].draw()
+        for ring in range(0, task["points"] - 1):
+            all_rings[task["name"]][ring].draw()
 
 #present instructions for choice task
 choice_start = trialClock.getTime()
@@ -542,19 +558,23 @@ while True:
     if event.getKeys(['escape','q']): pickle_and_quit()
 win.flip()
 
+preferences = Preference(task_names, number_of_choices)
+
 while True:
+    tasks = preferences.next()
     thesePoints=0
     progress_fill.setSize([points,50])
     #starting point =-250; position should be = -250 + 1/2 pos
     progress_fill.setPos([-300+ (points/4), 300])
 
-    xy = [('left',[-200,0]),('top-left',[-100,173]),('top-right',[100,173]),('right',[200,0]),('bottom-right',[100,-173]),('bottom-left',[-100,-173])]
+    xy = [('left',[-200,0]),('right',[200,0]),('top-left',[-100,173]),('top-right',[100,173]),('bottom-right',[100,-173]),('bottom-left',[-100,-173])]
+    xy = xy[0:number_of_choices]
     shuffle(xy)
-    for num,task in enumerate(task_names):
-        all_icons[task].setPos(xy[num][1])
-        for ring in range(0, num_rings[task]): #will give us the number of rings we want to display
-            all_rings[task][ring].setPos(xy[num][1])
-    draw_main_screen()
+    for num,task in enumerate(tasks):
+        all_icons[task["name"]].setPos(xy[num][1])
+        for ring in range(0, task["points"] - 1): #will give us the number of rings we want to display
+            all_rings[task["name"]][ring].setPos(xy[num][1])
+    draw_main_screen(tasks)
     win.flip()
 
     #draw animation of progress bar if applicable
@@ -566,7 +586,7 @@ while True:
             t = trialClock.getTime()
             if event.getKeys(["escape"]): pickle_and_quit()
         progress_frame.setLineColor('aqua')
-        progress_animation.setFillColor(progress_colors[num_rings[this_task]+1])
+        progress_animation.setFillColor(progress_colors[this_task["points"]])
         progress_animation.setSize([points,50])
         progress_animation.setPos([-300+ (points/4), 300])
         progress_animation.setOpacity(1)
@@ -578,7 +598,7 @@ while True:
                 t = trialClock.getTime()
                 progress_animation.setSize([points+(points_to_add*step/steps),50])
                 progress_animation.setPos([-300+ ((points+(points_to_add*step/steps))/4), 300])
-                draw_main_screen()
+                draw_main_screen(tasks)
                 progress_frame.draw()
                 progress_animation.draw()
                 progress_fill.draw()
@@ -597,29 +617,27 @@ while True:
             win.flip()
             core.wait(0.75)
             break
-        draw_main_screen()
+        draw_main_screen(tasks)
         win.flip()
 
     this_task = None
     mouse.getPos()
     while this_task==None:
         if click():
-            if math_icon.contains(mouse): this_task='Math'
-            elif dots_icon.contains(mouse): this_task='Dots'
-            elif reading_icon.contains(mouse): this_task='Reading'
-            elif phonology_icon.contains(mouse): this_task='Phonology'
-            elif spatial_icon.contains(mouse): this_task='Spatial'
-            elif music_icon.contains(mouse): this_task='Music'
-        if event.getKeys(['escape','q']): pickle_and_quit()
+            for task in tasks:
+                if all_icons[task["name"]].contains(mouse):
+                    this_task = task
+        if event.getKeys(['escape','q']):
+            pickle_and_quit()
 
-    print 'task chosen:', this_task
+    print 'task chosen:', this_task["name"]
 
     #show selection screen and wait 0.5 seconds
-    #draw_main_screen()
-    all_icons[this_task].draw()
+    #draw_main_screen(tasks)
+    all_icons[this_task["name"]].draw()
     progress_frame.draw()
     progress_fill.draw()
-    selection_circle.setPos(all_icons[this_task].pos)
+    selection_circle.setPos(all_icons[this_task["name"]].pos)
     selection_circle.draw()
     win.flip()
     start_time = trialClock.getTime()
@@ -627,39 +645,39 @@ while True:
         if event.getKeys(['escape','q']): pickle_and_quit()
         if trialClock.getTime() - start_time > 0.5: break
 
-    if this_task!='Math':
-        all_thresholds[this_task] = all_thresholds[this_task] if this_task in all_thresholds else low_thresh[this_task]
+    if this_task["name"]!='Math':
+        all_thresholds[this_task["name"]] = all_thresholds[this_task["name"]] if this_task["name"] in all_thresholds else low_thresh[this_task["name"]]
     else:
-        low_thresh_operations.update(all_thresholds[this_task])
-        all_thresholds[this_task] = low_thresh_operations
+        low_thresh_operations.update(all_thresholds[this_task["name"]])
+        all_thresholds[this_task["name"]] = low_thresh_operations
 
     #run game until get a correct answer
     score = None
     while score!=1:
-        if this_task=='Math':
+        if this_task["name"]=='Math':
             print all_thresholds['Math'].keys()
             operation = choice(all_thresholds['Math'].keys())
-            output = all_games[this_task].run_game(win, grade, operation, all_thresholds[this_task][operation])
+            output = all_games[this_task["name"]].run_game(win, grade, operation, all_thresholds[this_task["name"]][operation])
         else:
-            output = all_games[this_task].run_game(win, grade, all_thresholds[this_task]) #None, all_sheets[this_task]['sheet'])
+            output = all_games[this_task["name"]].run_game(win, grade, all_thresholds[this_task["name"]]) #None, all_sheets[this_task["name"]]['sheet'])
 
         score = output.get('Score', 0) if output else 0
-        thesePoints += score*(num_rings[this_task]+1)*point_intervals
+        thesePoints += score*(this_task["points"])*point_intervals
 
         #first write trial number to output
-        all_sheets[this_task]['sheet'].write(all_sheets[this_task]['row'], 0, trial_number)
+        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'], 0, trial_number)
 
         #next write the output variables
-        for col,header in enumerate(all_sheets[this_task]['headers'][1:-1]):
-            all_sheets[this_task]['sheet'].write(all_sheets[this_task]['row'],col+1,output[header])
+        for col,header in enumerate(all_sheets[this_task["name"]]['headers'][1:-1]):
+            all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+1,output[header])
 
-        all_sheets[this_task]['sheet'].write(all_sheets[this_task]['row'],len(all_sheets[this_task]['headers'])-1,VERSION)
+        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],len(all_sheets[this_task["name"]]['headers'])-1,VERSION)
 
         #increment row for output records
-        all_sheets[this_task]['row'] += 1
+        all_sheets[this_task["name"]]['row'] += 1
 
         #write output for main sheet
-        main_output = {'Trial Number':trial_number, 'Game': this_task, 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'choice','Icon_Pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task].pos[0] and tup[1][1]==all_icons[this_task].pos[1]][0]}
+        main_output = {'Trial Number':trial_number, 'Game': this_task["name"], 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'choice','Icon_Pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
         for col,header in enumerate(all_sheets['Main']['headers'][:-1]):
             all_sheets['Main']['sheet'].write(trial_number, col, main_output[header])
         all_sheets['Main']['sheet'].write(trial_number, len(all_sheets['Main']['headers'])-1, VERSION)
@@ -673,14 +691,14 @@ while True:
             retry_instructions.draw()
             win.flip()
             while True:
-                if click(): break
-                if event.getKeys(keyList=['q', 'escape']): pickle_and_quit()
+                if click():
+                    break
+                if event.getKeys(keyList=['q', 'escape']):
+                    pickle_and_quit()
 
-    if thesePoints!=0: points_to_add=thesePoints
+    if thesePoints!=0:
+        points_to_add=thesePoints
 
-    #decrease rings by 1
-    if num_rings[this_task]>0:
-        num_rings[this_task]-=1
     first_pass=False
     save()
 
