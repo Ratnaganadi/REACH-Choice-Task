@@ -196,7 +196,7 @@ class Phonology_Game:
             os.remove(fn)
 
         # Ensure iteration does not exceed length of available trials:
-        if self.iteration[index] > len(trialList[index]['Stim1'])-1:
+        if self.iteration[index] > len(self.trialList[index]['Stim1'])-1:
             self.iteration[index] = 0
 
         #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
