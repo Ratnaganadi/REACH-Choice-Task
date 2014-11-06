@@ -24,7 +24,7 @@ class Dots_Game():
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
         self.dotstim_path = 'Images/Stimuli/Dots/'
-        
+
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
@@ -40,7 +40,7 @@ class Dots_Game():
         self.dots_inst3 = sound.Sound(aud_inst_path + 'dots_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'dots_instructions.mp4', size = [1500,850])
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'dots_instructions.mp4', size = [1500,850], flipHoriz = True)
         self.audio_inst = sound.Sound(aud_inst_path + 'dots_instructions.wav')
 
         #Initialise components for routine: trial

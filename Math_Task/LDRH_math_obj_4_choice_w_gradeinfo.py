@@ -41,7 +41,7 @@ class Math_Game:
         self.math_inst3 = sound.Sound(aud_inst_path + 'math_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'math_instructions.mp4', size = [1500,850])
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'math_instructions.mp4', size = [1500,850], flipHoriz = True)
         self.audio_inst = sound.Sound(aud_inst_path + 'math_instructions.wav')
 
         #repeat and continue button
