@@ -221,7 +221,9 @@ else:
 
     #create output structure
     wb = xlwt.Workbook()
-    all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos', 'Task Version'], row=1),
+    choice_headers = [("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
+
+    all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos', 'Task Version'] + choice_headers, row=1),
         'Math': dict(sheet = wb.add_sheet('Math'), headers = ['Trial Number', 'Operation', 'Difficulty','Stimulus','Target','Foil1','Foil2','Foil3','Score','Resp Time', 'Task Version'], row=1),
         'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['Trial Number', 'Difficulty','Correct','Incorrect','Ratio','Score','Resp Time', 'Task Version'], row=1),
         'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Criteria','Target_2b','Foil_2b','Target_4b','Foil_4b1','Foil_4b2','Foil_4b3','Foil_4b4','Response','Score','Resp Time', 'Task Version'], row=1),
@@ -352,7 +354,7 @@ def run_staircase(task, operation=None):
         #write output for main sheet
         main_output = {'Trial Number':trial_number, 'Game': task, 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'threshold','Icon_Pos':'', 'Task Version': VERSION}
         for col,header in enumerate(all_sheets['Main']['headers']):
-            all_sheets['Main']['sheet'].write(trial_number, col, main_output[header])
+            all_sheets['Main']['sheet'].write(trial_number, col, main_output.get(header, ""))
 
         #update handler only if not a "same" trial from tones or phonology
         #if 'Correct Response' in output.keys() and output['Correct Response'].lower() != 'same': all_handlers[task].addData(output['Score'])
@@ -532,12 +534,29 @@ class Preference(object):
         self.items = [{"name": item, "points": self.points} for item in items]
         self.item_sequence = []
         self.number_of_choices = number_of_choices
+        self.current_options = None
+        self.preference_history = []
 
     def next(self):
         if not self.item_sequence:
             self.item_sequence = [item for item in itertools.combinations(self.items, self.number_of_choices)]
             random.shuffle(self.item_sequence)
-        return self.item_sequence.pop()
+        self.current_options = self.item_sequence.pop()
+        return self.current_options
+
+    def record_preference(self, task):
+        if not self.current_options:
+            raise Exception("There is no choice to make!")
+        if task not in self.current_options:
+            raise Exception("Invalid preference for current choices!")
+        else:
+            self.update_model(self.current_options, task)
+
+    def update_model(self, options, choice):
+        self.preference_history.append({
+            "options": options,
+            "choice": choice,
+        })
 
 #method to draw all icons, rings, and progress bar
 def draw_main_screen(tasks):
@@ -627,6 +646,7 @@ while True:
             for task in tasks:
                 if all_icons[task["name"]].contains(mouse):
                     this_task = task
+                    preferences.record_preference(this_task)
         if event.getKeys(['escape','q']):
             pickle_and_quit()
 
@@ -678,9 +698,13 @@ while True:
 
         #write output for main sheet
         main_output = {'Trial Number':trial_number, 'Game': this_task["name"], 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'choice','Icon_Pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
-        for col,header in enumerate(all_sheets['Main']['headers'][:-1]):
-            all_sheets['Main']['sheet'].write(trial_number, col, main_output[header])
-        all_sheets['Main']['sheet'].write(trial_number, len(all_sheets['Main']['headers'])-1, VERSION)
+        choice_output = {("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
+        main_output.update(choice_output)
+        for col,header in enumerate(all_sheets['Main']['headers']):
+            if header=="Task Version":
+                all_sheets['Main']['sheet'].write(trial_number, col, VERSION)
+            else:
+                all_sheets['Main']['sheet'].write(trial_number, col, main_output[header])
 
         #increment trial number
         trial_number+=1
