@@ -374,6 +374,8 @@ def run_staircase(task, operation=None):
 
         output['thisIncrement'] = thisIncrement
 
+        save()
+
     except StopIteration:
         output={}
         output['Score'] = 'StopIteration'
