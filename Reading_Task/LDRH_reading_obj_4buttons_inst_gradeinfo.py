@@ -44,7 +44,7 @@ class Reading_Game:
         self.general_inst_last = sound.Sound(aud_inst_path + 'general_inst_last.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'reading_instructions.mp4', size = [1500,850])
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'reading_instructions.mp4', size = [1500,850], flipHoriz = True)
         self.audio_inst = sound.Sound(aud_inst_path + 'reading_instructions.wav')
 
         #foil & target button, speaker stimuli

@@ -41,7 +41,7 @@ class Star_Game():
         self.star_inst3 = sound.Sound(self.aud_inst_path + 'star_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + 'stars_video_instructions.mp4', size = [1500,850])
+        self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + 'stars_video_instructions.mp4', size = [1500,850], flipHoriz = True)
         self.audio_inst = sound.Sound(self.aud_inst_path + 'stars_instructions.wav')
 
         #repeat and continue button
@@ -150,7 +150,7 @@ class Star_Game():
 
             print 'with_practice', with_practice
 
-            if with_practice==True: 
+            if with_practice==True:
                 output = self.run_game(win, "", stim_condition) #run first practice trial
 
                 print 'run practice'
@@ -210,7 +210,7 @@ class Star_Game():
         self.circletwinkle.setPos([x,y]); self.circletwinkle.setRadius([sz/2]); self.circletwinkle.setLineColor('#f50af2')
         self.circledrag.setPos([0,0]); self.circledrag.setRadius([sz/2]); self.circledrag.setLineColor('white')
         self.drag.setPos([0,0]); self.drag.setSize([sz, sz]); self.drag.setImage(self.image_path + '/star2.png')
-        
+
         print 'degree:', degree
         print 'radians:', radians
         print 'x, y:', x, y
@@ -318,7 +318,7 @@ if __name__=='__main__':
     fb=feedback.fb(win)
 
     #step through staircase to find threshold
-    for thisIncrement in staircase: 
+    for thisIncrement in staircase:
         output = game.run_game(win, "", thisIncrement)
 
         staircase.addData(output['Score'])

@@ -36,7 +36,7 @@ class Tones_Game:
         # self.tones_inst3 = sound.Sound(aud_inst_path + 'tones_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'music_instructions.mp4', size = [1500,850])
+        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'music_instructions.mp4', size = [1500,850], flipHoriz = True)
         self.audio_inst = sound.Sound(aud_inst_path + 'music_instructions.wav')
 
         #repeat and continue button
