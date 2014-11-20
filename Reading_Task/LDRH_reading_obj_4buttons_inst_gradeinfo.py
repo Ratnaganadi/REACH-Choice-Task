@@ -258,50 +258,55 @@ class Reading_Game:
 
         c=['look_alike','sound_alike','sound_look_alike','no_sound_look']
 
-        two_xpositions = [-220,220]
-        four_xpositions = [-360, -120, 120, 360]
+        # xpositions_2b = [-220,220]
+        # xpositions_4b = [-360, -120, 120, 360]
         #putting text and button variables in a list
-        text_2b = [self.target2b, self.foil2b]
-        text_4b = [self.target4b, self.foil4b1, self.foil4b2, self.foil4b3]
-        button_2b = [self.target_2button, self.foil_2button]
-        button_4b = [self.target_4button, self.foil_4button1, self.foil_4button2, self.foil_4button3]
+        # text_2b = [self.target2b, self.foil2b]
+        # text_4b = [self.target4b, self.foil4b1, self.foil4b2, self.foil4b3]
+        # button_2b = [self.target_2button, self.foil_2button]
+        # button_4b = [self.target_4button, self.foil_4button1, self.foil_4button2, self.foil_4button3]
 
-        if difficulty <= 3: #for grade k, 1a, 1b
-            criteria = str(self.trialList[n]['Criteria'][self.iteration[n]]) # target_header = 'Target_'+criteria; foil_header = 'Foil_'+criteria
-            index_value = self.iteration[n] - self.iteration[n]*int(self.iteration[n]/len(self.trialList[n]['Target_'+criteria]))
-            try:
-                self.target_string =  str(self.trialList[n]['Target_'+criteria][index_value])
-                self.foil_string = str(self.trialList[n]['Foil_'+criteria][index_value])
-            except IndexError:
-                index_value = 0
-                self.target_string =  str(self.trialList[n]['Target_'+criteria][index_value])
-                self.foil_string = str(self.trialList[n]['Foil_'+criteria][index_value])
-            string_2b = [self.target_string, self.foil_string]
-            # target_word = self.target_string
-            shuffle(two_xpositions)
-            twoButton = [self.target_string,string_2b,text_2b,two_xpositions,button_2b]
-            B = twoButton
-            feedback_screen = [self.speaker] + button_2b + text_2b
+        target = str(self.trialList[n]['Target'][self.iteration[n]])
+        foil1 = str(self.trialList[n]['Foil_look_alike'][self.iteration[n]])
+        foil2 = str(self.trialList[n]['Foil_sound_alike'][self.iteration[n]])
+        foil3 = str(self.trialList[n]['Foil_sound_look_alike'][self.iteration[n]])
+        foil4 = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]])
+        tfList = [target,foil1,foil2,foil3,foil4]
 
-        elif difficulty > 3:
-            #not done yet!!!
-            criteria = ''
-            self.target4b_string = str(self.trialList[n]['Target_4button'][self.iteration[n]])
-            self.foil4b1_string = str(self.trialList[n]['Foil_look_alike'][self.iteration[n]])
-            self.foil4b2_string = str(self.trialList[n]['Foil_sound_alike'][self.iteration[n]])
-            foil4b3 = str(self.trialList[n]['Foil_sound_look_alike'][self.iteration[n]])
-            foil4b4 = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]])
-            if foil4b3!='': self.foil4b3_string = foil4b3
-            elif foil4b3=='': self.foil4b3_string = foil4b4
-            string_4b = [self.target4b_string, self.foil4b1_string, self.foil4b2_string, self.foil4b3_string]
 
-            shuffle(four_xpositions)
-            fourButton = [self.target4b_string,string_4b,text_4b,four_xpositions,button_4b]
-            B = fourButton
-            feedback_screen = [self.speaker] + button_4b + text_4b
+        if difficulty <= 5:
+            self.target_string = target
+            for foiltmp in [foil1,foil2,foil3,foil4]:
+                if len(foiltmp)==1: self.foil_string = foiltmp
 
-            # draw_buttons(1,'no-speaker','yes-flip',string_4b,text_4b,four_xpositions,button_4b)
-            # draw_buttons(1.5,'yes-speaker','yes-flip',string_4b,text_4b,four_xpositions,button_4b)
+            extrastring = [self.foil_string]*3
+            strings = [self.target_string, self.foil_string]
+            texts = [self.target2b, self.foil2b]
+            xposs = [-220,220]
+            button = [self.target_2button, self.foil_2button] 
+
+        elif difficulty > 5: 
+            self.target4b_string = target
+            self.foil4b1_string = foil1
+            self.foil4b2_string = foil2
+            for foiltmp in [foil3,foil4]:
+                if len(foiltmp)==1: self.foil4b3_string =foiltmp
+
+            extrastring = []
+            strings = [self.target4b_string, self.foil4b1_string, self.foil4b2_string, self.foil4b3_string]
+            texts = [self.target4b, self.foil4b1, self.foil4b2, self.foil4b3]
+            xposs = [-360, -120, 120, 360]
+            button = [self.target_4button, self.foil_4button1, self.foil_4button2, self.foil_4button3]
+        
+        for tftmp,selftmp in zip(tflist,strings+extrastring):
+            if len(tftmp!=0): selftmp = tftmp
+        shuffle(xposs)
+        buttons = [self.target4b_string,strings,texts,xposs,button]
+        B = buttons
+        feedback_screen = [self.speaker] + buttons[4] + buttons[2]
+
+        # draw_buttons(1,'no-speaker','yes-flip',string_4b,text_4b,xpositions_4b,button_4b)
+        # draw_buttons(1.5,'yes-speaker','yes-flip',string_4b,text_4b,xpositions_4b,button_4b)
 
         if task_phase=='instructions':
             play_with_psychopy(self.reading_inst1,'no_drawing')
@@ -334,8 +339,8 @@ class Reading_Game:
                 if 'escape' in event.getKeys(): return 'QUIT'
 
         else:
-            draw_buttons(1,'no-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,two_xpositions,button_2b)
-            draw_buttons(1.5,'yes-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,two_xpositions,button_2b)
+            draw_buttons(1,'no-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
+            draw_buttons(1.5,'yes-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
 
             #play audio + buttons
             if practice_set=='practice_set1':
