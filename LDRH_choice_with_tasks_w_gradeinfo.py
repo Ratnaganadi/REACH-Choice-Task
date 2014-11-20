@@ -463,12 +463,12 @@ if not just_choice:
                         streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["Score"]]
 
                         #handle streak breaking
-                        if len(streaks[operation][output['thisIncrement']]) > 9:
-                            if sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) >= 0.8:
-                                all_thresholds[task][operation] = output['thisIncrement']
-                                active_operations.remove(operation)
-                            #remove operation from being active, don't record a threshold
-                            if sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) <= 0.5:
+                        if (len(streaks[operation][output['thisIncrement']]) > 9) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) >= 0.8):
+                            all_thresholds[task][operation] = output['thisIncrement']
+                            active_operations.remove(operation)
+                        #remove operation from being active, don't record a threshold
+                        if output['thisIncrement']==len(all_conditions[task][operation])-1:
+                            if (len(streaks[operation][output['thisIncrement']]) > 3) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) <= 0.5):
                                 active_operations.remove(operation)
 
                 #add new operation if applicable
