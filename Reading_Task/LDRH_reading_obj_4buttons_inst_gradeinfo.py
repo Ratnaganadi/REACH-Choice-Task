@@ -267,41 +267,42 @@ class Reading_Game:
         # button_4b = [self.target_4button, self.foil_4button1, self.foil_4button2, self.foil_4button3]
 
         target = str(self.trialList[n]['Target'][self.iteration[n]])
-        foil1 = str(self.trialList[n]['Foil_look_alike'][self.iteration[n]])
-        foil2 = str(self.trialList[n]['Foil_sound_alike'][self.iteration[n]])
-        foil3 = str(self.trialList[n]['Foil_sound_look_alike'][self.iteration[n]])
-        foil4 = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]])
+        foil1 = str(self.trialList[n]['Foil_look_alike'][self.iteration[n]]) #n=0 #don't look alike, sound alike
+        foil2 = str(self.trialList[n]['Foil_sound_alike'][self.iteration[n]]) #n=1 #look_alike, don't sound alike
+        foil3 = str(self.trialList[n]['Foil_sound_look_alike'][self.iteration[n]]) #n=2 #look alike, sound alike
+        foil4 = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]]) #n=3 #don't look, don't sound alike
         tfList = [target,foil1,foil2,foil3,foil4]
 
 
         if difficulty <= 5:
             self.target_string = target
             for foiltmp in [foil1,foil2,foil3,foil4]:
-                if len(foiltmp)==1: self.foil_string = foiltmp
+                if len(foiltmp)!=0: self.foil_string = foiltmp
 
-            extrastring = [self.foil_string]*3
+            # extrastring = [self.foil_string,self.foil_string,self.foil_string]
             strings = [self.target_string, self.foil_string]
             texts = [self.target2b, self.foil2b]
             xposs = [-220,220]
-            button = [self.target_2button, self.foil_2button] 
+            button = [self.target_2button, self.foil_2button]
+            buttons = [self.target_string,strings,texts,xposs,button]
 
         elif difficulty > 5: 
             self.target4b_string = target
             self.foil4b1_string = foil1
             self.foil4b2_string = foil2
             for foiltmp in [foil3,foil4]:
-                if len(foiltmp)==1: self.foil4b3_string =foiltmp
+                if len(foiltmp)!=0: self.foil4b3_string =foiltmp
 
             extrastring = []
             strings = [self.target4b_string, self.foil4b1_string, self.foil4b2_string, self.foil4b3_string]
             texts = [self.target4b, self.foil4b1, self.foil4b2, self.foil4b3]
             xposs = [-360, -120, 120, 360]
             button = [self.target_4button, self.foil_4button1, self.foil_4button2, self.foil_4button3]
+            buttons = [self.target4b_string,strings,texts,xposs,button]
         
-        for tftmp,selftmp in zip(tflist,strings+extrastring):
-            if len(tftmp!=0): selftmp = tftmp
+        # for tftmp,selftmp in zip(tflist,strings+extrastring):
+        #     if len(tftmp!=0): selftmp = tftmp
         shuffle(xposs)
-        buttons = [self.target4b_string,strings,texts,xposs,button]
         B = buttons
         feedback_screen = [self.speaker] + buttons[4] + buttons[2]
 
@@ -362,14 +363,14 @@ class Reading_Game:
             while thisResp == None and timer<15:
                 self.mouse_moved=self.mouse.mouseMoved()
                 # self.mouse_pos=self.mouse.getPos()
-                if difficulty <= 3:
+                if difficulty <= 5:
                     if self.mouse_moved and (self.target_2button.contains(self.mouse)):
                         score, thisResp = (1,'correct')
                         self.target2b.setColor('yellow')
                     elif self.mouse_moved and self.foil_2button.contains(self.mouse):
                         score, thisResp = (0,'incorrect')
                         self.foil2b.setColor('yellow')
-                elif difficulty > 3:
+                elif difficulty > 5:
                     if self.mouse_moved and (self.target_4button.contains(self.mouse)):
                         score, thisResp = (1,'correct')
                         self.target4b.setColor('yellow')
@@ -407,25 +408,28 @@ class Reading_Game:
             self.fixation.draw()
             win.flip()
             core.wait(1)
-
-        if difficulty <=3:
-            output = {'Difficulty':difficulty,'Grade':grade,'Criteria':criteria,'Target_2b':self.target_string,'Foil_2b':self.foil_string,'Target_4b':None,'Foil_4b1':None,'Foil_4b2':None,'Foil_4b3':None,'Foil_4b4':None,'Response':thisResp,'Score':score,'Resp Time':choice_time}
-        elif difficulty >3:
-            output = {'Difficulty':difficulty,'Grade':grade,'Criteria':criteria,'Target_2b':None,'Foil_2b':None,'Target_4b': self.target4b_string,'Foil_4b1': self.foil4b1_string,'Foil_4b2': self.foil4b2_string,'Foil_4b3': foil4b3,'Foil_4b4': foil4b4, 'Response':thisResp,'Score':score,'Resp Time':choice_time}
-
-        #update iteration of current difficulty
-        if difficulty <=3:
-            if (self.iteration[n] == len(self.trialList[n]["Criteria"])-1):
-                self.iteration[n] = 0
-            else:
-                self.iteration[n] += 1
-                print 'iteration:', self.iteration[n]
-        elif difficulty >3:
-            if (self.iteration[n] == len(self.trialList[n]['Target_4button'])-1):
-                self.iteration[n] = 0
-            else:
-                self.iteration[n] += 1
-                print 'iteration:', self.iteration[n]
+#n=0 #don't look alike, sound alike
+#n=1 #look_alike, don't sound alike
+#n=2 #look alike, sound alike
+#n=3 #don't look, don't sound alike
+        output = {'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil_sound_alike':foil1,'Foil_look_alike':foil2,'Foil_sound_look_alike':foil3,'Foil_no_sound_look':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
+        
+        if (self.iteration[n] == len(self.trialList[n]['Target'])-1): self.iteration[n] = 0
+        else: self.iteration[n] += 1
+        print 'iteration:', self.iteration[n]
+        # #update iteration of current difficulty
+        # if difficulty <=3:
+        #     if (self.iteration[n] == len(self.trialList[n]["Criteria"])-1):
+        #         self.iteration[n] = 0
+        #     else:
+        #         self.iteration[n] += 1
+        #         print 'iteration:', self.iteration[n]
+        # elif difficulty >3:
+        #     if (self.iteration[n] == len(self.trialList[n]['Target_4button'])-1):
+        #         self.iteration[n] = 0
+        #     else:
+        #         self.iteration[n] += 1
+        #         print 'iteration:', self.iteration[n]
         print '*'
         # if self.iteration[#indexNo] == len(self.trialList[#indexNo]['Target_'+criteria])-1: self.iteration[#indexNo] = 0
         # else: self.iteration[#indexNo] += 1

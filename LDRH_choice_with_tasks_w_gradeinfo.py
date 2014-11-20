@@ -105,7 +105,7 @@ else: pdata=None
 win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=True) #Window
 trialClock=core.Clock()
 image_choice_path = 'Images/Choice/'
-audio_path = 'Audio/'
+audio_path = 'Audio/General/'
 aud_inst_path = 'Audio/Instructions/'
 
 retry_instructions = visual.TextStim(win=win, text='Touch anywhere to try again.', height=28)
@@ -180,7 +180,7 @@ all_conditions = {
         'division': importConditions('Math_Task/math_stims_division.csv')
         },
     'Dots': importConditions('Dots_Task/dots_conds2.csv'),
-    'Reading': importConditions('Reading_Task/stimulus_gradelist_newlysorted4_more_g4.csv'),
+    'Reading': importConditions('Reading_Task/readingstim_anagram_new.csv'),
     'Phonology': importConditions('Phonology_Task/phonology_stims_new.csv'),
     'Spatial': None,
     'Music': importConditions('Tones_Task/tones_stims_new.csv')}
@@ -230,7 +230,8 @@ else:
     all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos', 'Task Version'] + choice_headers, row=1),
         'Math': dict(sheet = wb.add_sheet('Math'), headers = ['Trial Number', 'Operation', 'Difficulty','Stimulus','Target','Foil1','Foil2','Foil3','Score','Resp Time', 'Task Version'], row=1),
         'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['Trial Number', 'Difficulty','Correct','Incorrect','Ratio','Score','Resp Time', 'Task Version'], row=1),
-        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Criteria','Target_2b','Foil_2b','Target_4b','Foil_4b1','Foil_4b2','Foil_4b3','Foil_4b4','Response','Score','Resp Time', 'Task Version'], row=1),
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Target','Foil_sound_alike','Foil_look_alike','Foil_sound_look_alike','Foil_no_sound_look','Response','Score','Resp Time', 'Task Version'], row=1),
+        
         'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference', 'Task Version'], row=1),
         'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['Difficulty', 'Score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance', 'Task Version'], row=1),
         'Music': dict(sheet = wb.add_sheet('Music'), headers = ['Trial Number', 'Difficulty', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','Score','Resp Time', 'Task Version'], row=1),
