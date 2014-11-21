@@ -419,7 +419,7 @@ class Reading_Game:
 #n=1 #look_alike, don't sound alike
 #n=2 #look alike, sound alike
 #n=3 #don't look, don't sound alike
-        output = {'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil_sound_alike':foil1,'Foil_look_alike':foil2,'Foil_sound_look_alike':foil3,'Foil_no_sound_look':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
+        output = {'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil1':foil1,'Foil2':foil2,'Foil3':foil3,'Foil4':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
         
         if (self.iteration[n] == len(self.trialList[n]['Target'])-1): self.iteration[n] = 0
         else: self.iteration[n] += 1

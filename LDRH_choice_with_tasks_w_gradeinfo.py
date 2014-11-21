@@ -169,8 +169,7 @@ else:
     all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos', 'Task Version'] + choice_headers, row=1),
         'Math': dict(sheet = wb.add_sheet('Math'), headers = ['Trial Number', 'Operation', 'Difficulty','Stimulus','Target','Foil1','Foil2','Foil3','Score','Resp Time', 'Task Version'], row=1),
         'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['Trial Number', 'Difficulty','Correct','Incorrect','Ratio','Score','Resp Time', 'Task Version'], row=1),
-        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Target','Foil_sound_alike','Foil_look_alike','Foil_sound_look_alike','Foil_no_sound_look','Response','Score','Resp Time', 'Task Version'], row=1),
-        
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Target','Foil1','Foil2','Foil3','Foil4','Response','Score','Resp Time', 'Task Version'], row=1),
         'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference', 'Task Version'], row=1),
         'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['Difficulty', 'Score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance', 'Task Version'], row=1),
         'Music': dict(sheet = wb.add_sheet('Music'), headers = ['Trial Number', 'Difficulty', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','Score','Resp Time', 'Task Version'], row=1),
