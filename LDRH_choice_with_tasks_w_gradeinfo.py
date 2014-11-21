@@ -102,60 +102,6 @@ if os.path.isfile('data.p') and pickle_enabled:
     else: pdata=None
 else: pdata=None
 
-# Initialize things regardless of pickle
-win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=True) #Window
-trialClock=core.Clock()
-image_choice_path = 'Images/Choice/'
-audio_path = 'Audio/General/'
-aud_inst_path = 'Audio/Instructions/'
-
-retry_instructions = visual.TextStim(win=win, text='Touch anywhere to try again.', height=28)
-#choice_instructions = visual.TextStim(win=win, height=28, wrapWidth=800, text=
-#    "Now we are going to play all of the games together. In this next part you can choose which game you want to play by touching one of the game buttons on the screen. Each time you play, you will earn points that will fill up the colored bar at the top of the screen. Each game button will have colored rings. The more rings there are, the more points you'll earn for playing that game. For example, a game button with four rings will give you a lot of points. But another game that has less rings or no rings will give you less points. You can still play the game button that has no rings. You will win when the colored bar on top is fully colored! \n\n\n\n\nTouch anywhere on the screen to play.")
-instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'choice_instructions.mp4', size = [1500,850], flipHoriz = True)
-audio_inst = sound.Sound(aud_inst_path + 'choice_instructions.wav')
-math_icon = visual.ImageStim(win=win, image = image_choice_path + 'math.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-dots_icon = visual.ImageStim(win=win, image = image_choice_path + 'panamath.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-reading_icon = visual.ImageStim(win=win, image = image_choice_path + 'reading.png', units = 'pix', ori = 0, pos = [0,0], size = [126, 120], opacity = 1, mask =None, interpolate = True)
-phonology_icon = visual.ImageStim(win=win, image = image_choice_path + 'phonology2.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-spatial_icon = visual.ImageStim(win=win, image = image_choice_path + 'stars.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-music_icon = visual.ImageStim(win=win, image = image_choice_path + 'music.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-selection_circle = visual.ImageStim(win=win, image = image_choice_path + 'selection_circle.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
-progress_frame = visual.Rect(win=win, units='pix',pos=[0,300],size=[1206,56],lineColor='white',fillColor=None,lineWidth=3)
-progress_fill = visual.Rect(win=win, units='pix',pos=[0,300],size=[0,30], fillColor='lime', lineColor='lime')
-progress_animation = visual.Rect(win=win, units='pix',pos=[0,300],size=[0,30], fillColor='lime')
-math_operations = ['addition','subtraction','multiplication','division']
-math_benchmarks = {'subtraction': {'addition': {'thresh': 3, 'count': 0}}, 'multiplication': {'addition': {'thresh': 5, 'count': 0}, 'subtraction': {'thresh': 3, 'count': 0}}, 'division': {'multiplication': {'thresh': 3, 'count': 0}}}
-
-congratulations_text = visual.TextStim(win=win, text="You did it! You win!", height=38, pos = [0,200])
-
-try:
-    fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', pos = [0,-100])
-except AttributeError:
-    fireworks = None
-
-applause = sound.Sound(audio_path + 'applause.wav')
-applause.setVolume(0.6)
-
-score = visual.TextStim(win, units = 'pix', ori=0, font=u'Arial', pos=[0, -10], color=u'white', text='000')
-cash_register = sound.Sound(value= audio_path + 'cash_register.wav')
-cash_register.setVolume(0.2)
-mouse=event.Mouse(win=win)
-mouse.setVisible(0)
-mouse.getPos()
-point_intervals=12
-
-#create rings and store in dictionary
-colors_for_rings=['red','orange','light_orange','yellow']
-all_rings = {'Math': {}, 'Dots': {}, 'Reading': {}, 'Phonology': {}, 'Spatial': {}, 'Music': {}}
-for ring in range(len(colors_for_rings)):
-    all_rings['Math'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)
-    all_rings['Dots'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
-    all_rings['Reading'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
-    all_rings['Phonology'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
-    all_rings['Spatial'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
-    all_rings['Music'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
-
 def can_evaluate(value):
     try:
         eval(value)
@@ -186,16 +132,6 @@ all_conditions = {
     'Spatial': None,
     'Music': importConditions('Tones_Task/tones_stims_new.csv')}
 
-#initialize games
-all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
-    'Music': Tones_Script.Tones_Game(win, all_conditions['Music']),
-    'Dots': Dots_Script.Dots_Game(win, all_conditions['Dots']),
-    'Reading': Reading_Script.Reading_Game(win, all_conditions['Reading']),
-    'Phonology': Phonology_Script.Phonology_Game(win, all_conditions['Phonology']),
-    'Spatial': Star_Script.Star_Game(win)}
-
-#dictionary of icons
-all_icons = {'Math': math_icon, 'Music': music_icon, 'Reading': reading_icon, 'Dots': dots_icon, 'Phonology': phonology_icon, 'Spatial': spatial_icon}
 #[Music, Phonology, Dots, Reading, Spatial]
 low_thresh = {
     'Music':len(all_conditions['Music'])-1,
@@ -205,6 +141,8 @@ low_thresh = {
     'Spatial':150
 }
 low_thresh_operations = {'addition': len(all_conditions['Math']['addition'])-1}
+
+math_operations = ['addition','subtraction','multiplication','division']
 
 #load pickled data if applicable
 if pdata:
@@ -281,6 +219,87 @@ else:
     #create list to randomize order of presentation
     # shuffle(task_names)
     staircased = []
+
+if just_choice:
+    for task in task_names:
+        if task=='Math':
+            for operation in math_operations:
+                all_thresholds[operation] = all_handlers[task][operation].startVal
+        else:
+            all_thresholds[task] = all_handlers[task].startVal
+    dialog=gui.DlgFromDict(dictionary=all_thresholds,title="Thresholds (set to -1 to exclude)")
+    if dialog.OK==False:
+        core.quit() #user pressed cancel
+    all_thresholds["Math"] = {}
+    for operation in math_operations:
+        if all_thresholds[operation] > -1:
+            all_thresholds["Math"][operation] = all_thresholds[operation]
+        del all_thresholds[operation]
+
+# Initialize things regardless of pickle
+win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=True) #Window
+trialClock=core.Clock()
+image_choice_path = 'Images/Choice/'
+audio_path = 'Audio/General/'
+aud_inst_path = 'Audio/Instructions/'
+
+retry_instructions = visual.TextStim(win=win, text='Touch anywhere to try again.', height=28)
+#choice_instructions = visual.TextStim(win=win, height=28, wrapWidth=800, text=
+#    "Now we are going to play all of the games together. In this next part you can choose which game you want to play by touching one of the game buttons on the screen. Each time you play, you will earn points that will fill up the colored bar at the top of the screen. Each game button will have colored rings. The more rings there are, the more points you'll earn for playing that game. For example, a game button with four rings will give you a lot of points. But another game that has less rings or no rings will give you less points. You can still play the game button that has no rings. You will win when the colored bar on top is fully colored! \n\n\n\n\nTouch anywhere on the screen to play.")
+instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'choice_instructions.mp4', size = [1500,850], flipHoriz = True)
+audio_inst = sound.Sound(aud_inst_path + 'choice_instructions.wav')
+math_icon = visual.ImageStim(win=win, image = image_choice_path + 'math.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+dots_icon = visual.ImageStim(win=win, image = image_choice_path + 'panamath.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+reading_icon = visual.ImageStim(win=win, image = image_choice_path + 'reading.png', units = 'pix', ori = 0, pos = [0,0], size = [126, 120], opacity = 1, mask =None, interpolate = True)
+phonology_icon = visual.ImageStim(win=win, image = image_choice_path + 'phonology2.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+spatial_icon = visual.ImageStim(win=win, image = image_choice_path + 'stars.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+music_icon = visual.ImageStim(win=win, image = image_choice_path + 'music.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+selection_circle = visual.ImageStim(win=win, image = image_choice_path + 'selection_circle.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
+progress_frame = visual.Rect(win=win, units='pix',pos=[0,300],size=[1206,56],lineColor='white',fillColor=None,lineWidth=3)
+progress_fill = visual.Rect(win=win, units='pix',pos=[0,300],size=[0,30], fillColor='lime', lineColor='lime')
+progress_animation = visual.Rect(win=win, units='pix',pos=[0,300],size=[0,30], fillColor='lime')
+
+math_benchmarks = {'subtraction': {'addition': {'thresh': 3, 'count': 0}}, 'multiplication': {'addition': {'thresh': 5, 'count': 0}, 'subtraction': {'thresh': 3, 'count': 0}}, 'division': {'multiplication': {'thresh': 3, 'count': 0}}}
+
+congratulations_text = visual.TextStim(win=win, text="You did it! You win!", height=38, pos = [0,200])
+
+try:
+    fireworks = visual.MovieStim(win=win, filename=audio_path + 'fireworks.mp4', pos = [0,-100])
+except AttributeError:
+    fireworks = None
+
+applause = sound.Sound(audio_path + 'applause.wav')
+applause.setVolume(0.6)
+
+score = visual.TextStim(win, units = 'pix', ori=0, font=u'Arial', pos=[0, -10], color=u'white', text='000')
+cash_register = sound.Sound(value= audio_path + 'cash_register.wav')
+cash_register.setVolume(0.2)
+mouse=event.Mouse(win=win)
+mouse.setVisible(0)
+mouse.getPos()
+point_intervals=12
+
+#create rings and store in dictionary
+colors_for_rings=['red','orange','light_orange','yellow']
+all_rings = {'Math': {}, 'Dots': {}, 'Reading': {}, 'Phonology': {}, 'Spatial': {}, 'Music': {}}
+for ring in range(len(colors_for_rings)):
+    all_rings['Math'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)
+    all_rings['Dots'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Reading'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Phonology'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Spatial'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+    all_rings['Music'][ring] = visual.ImageStim(win=win, image = image_choice_path + '%s_ring.png' %colors_for_rings[ring], units = 'pix', ori = 0, pos = [0,0], size = [134+(ring*17), 134+(ring*17)], opacity = 1, mask =None, interpolate = True)#copy.copy(all_rings['Math'][ring])
+
+#initialize games
+all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
+    'Music': Tones_Script.Tones_Game(win, all_conditions['Music']),
+    'Dots': Dots_Script.Dots_Game(win, all_conditions['Dots']),
+    'Reading': Reading_Script.Reading_Game(win, all_conditions['Reading']),
+    'Phonology': Phonology_Script.Phonology_Game(win, all_conditions['Phonology']),
+    'Spatial': Star_Script.Star_Game(win)}
+
+#dictionary of icons
+all_icons = {'Math': math_icon, 'Music': music_icon, 'Reading': reading_icon, 'Dots': dots_icon, 'Phonology': phonology_icon, 'Spatial': spatial_icon}
 
 #method to get clicks
 if touchscreen:
@@ -523,21 +542,6 @@ if not just_choice:
         all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, total_times[task])
         all_sheets['Task_Times']['row']+=1
 
-elif just_choice:
-    for task in task_names:
-        if task=='Math':
-            for operation in math_operations:
-                all_thresholds[operation] = all_handlers[task][operation].startVal
-        else:
-            all_thresholds[task] = all_handlers[task].startVal
-    dialog=gui.DlgFromDict(dictionary=all_thresholds,title="Thresholds (set to -1 to exclude)")
-    if dialog.OK==False:
-        core.quit() #user pressed cancel
-    all_thresholds["Math"] = {}
-    for operation in math_operations:
-        if all_thresholds[operation] > -1:
-            all_thresholds["Math"][operation] = all_thresholds[operation]
-        del all_thresholds[operation]
 
 #CHOICE SECTION
 
