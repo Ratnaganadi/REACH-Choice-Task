@@ -16,11 +16,11 @@ class Phonology_Game:
         self.dir = os.path.dirname(__file__)
 
         #directory holding stimuli, images and audio
-        self.stim_dir = 'final_phonemes'
         image_path = 'Images/Tasks/'
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
+        self.phonologystim_dir = 'Audio/Stimuli/Phonology/'
 
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
@@ -187,7 +187,7 @@ class Phonology_Game:
 
         def get_stims(stim):
             phonemes = [stim[x:x+2] for x in [0,2,4]]
-            stim_files = [join(self.dir, self.stim_dir, phoneme.upper()+'.wav') for phoneme in phonemes]
+            stim_files = [join(self.dir, self.phonologystim_dir, phoneme.upper()+'.wav') for phoneme in phonemes]
             fn = join(self.temp_dir,'%s.wav'%stim)
             self.concat_wavs(stim_files, fn)
             audio = sound.Sound(value=fn)

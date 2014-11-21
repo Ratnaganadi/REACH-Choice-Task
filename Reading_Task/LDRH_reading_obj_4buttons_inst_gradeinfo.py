@@ -26,6 +26,7 @@ class Reading_Game:
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
+        self.readingstim_path = 'Audio/Stimuli/Reading'
 
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
@@ -315,10 +316,12 @@ class Reading_Game:
             play_with_psychopy(self.reading_inst2,'no_drawing')
             draw_buttons(0,'yes_speaker','yes_flip',B[1],B[2],B[3],B[4])
 
-            audio_touchfn = concat_wavs([self.fn+'/wav_files/touch_word.wav'],0.4)
+            audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
             play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
             os.remove(audio_touchfn)
-            audio_fn = concat_wavs([self.fn+'/wav_files/{}.wav'.format(B[0])],0.2)
+            if difficulty==2:
+                audio_fn = concat_wavs([self.readingstim_path+'sound_'+'{}.wav'.format(B[0])],0.2)
+            else: audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
             os.remove(audio_fn)
 
             play_with_psychopy(self.reading_inst3,'no_drawing')
@@ -345,13 +348,17 @@ class Reading_Game:
 
             #play audio + buttons
             if practice_set=='practice_set1':
-                audio_touchfn = concat_wavs([self.fn+'/wav_files/touch_word.wav'],0.4)
+                audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
                 play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
                 os.remove(audio_touchfn)
-                audio_fn = concat_wavs([self.fn+'/wav_files/{}.wav'.format(B[0])],0.2)
+                if difficulty==2:
+                    audio_fn = concat_wavs([self.readingstim_path+'sound_'+'{}.wav'.format(B[0])],0.2)
+                else: audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
                 play_with_button(audio_fn,B[1],B[2],B[3],B[4])
             elif (practice_set=='practice_set2') or (practice_set=='trial_set'):
-                audio_fn = concat_wavs([self.fn+'/wav_files/{}.wav'.format(B[0])],0.2)
+                if difficulty==2:
+                    audio_fn = concat_wavs([self.readingstim_path+'sound_'+'{}.wav'.format(B[0])],0.2)
+                else: audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
                 play_with_button(audio_fn,B[1],B[2],B[3],B[4])
 
             #start the timer for the response
