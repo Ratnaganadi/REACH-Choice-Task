@@ -24,9 +24,6 @@ except ImportError as e:
 #enable pickling of data
 pickle_enabled = False
 
-#if you want to skip the first homing phase of the task
-just_choice = False
-
 #touchscreen? if False, uses conventional mouse
 touchscreen = True
 
@@ -44,10 +41,14 @@ task_names=[
 ]
 
 #store info about the experiment session
-expName='REaCh Task'; expInfo={'participant':'','grade':'(k,1,2,3,4,or 5)'}
+expName='REaCh Task'
+expInfo={'participant':'','grade':'(k,1,2,3,4,or 5)', 'choice': False}
 dlg=gui.DlgFromDict(dictionary=expInfo,title=expName)
-if dlg.OK==False: core.quit() #user pressed cancel
-expInfo['date']=data.getDateStr(); expInfo['expName']=expName
+if dlg.OK==False:
+    core.quit() #user pressed cancel
+expInfo['date']=data.getDateStr()
+expInfo['expName']=expName
+just_choice = expInfo['choice']
 # Setup files for saving
 if not os.path.isdir('data'):
     os.makedirs('data')  # if this fails (e.g. permissions) we will get error
@@ -525,12 +526,18 @@ if not just_choice:
 elif just_choice:
     for task in task_names:
         if task=='Math':
-            all_thresholds[task] = {}
             for operation in math_operations:
-                all_thresholds[task][operation] = all_handlers[task][operation].startVal
+                all_thresholds[operation] = all_handlers[task][operation].startVal
         else:
             all_thresholds[task] = all_handlers[task].startVal
-
+    dialog=gui.DlgFromDict(dictionary=all_thresholds,title="Thresholds (set to -1 to exclude)")
+    if dialog.OK==False:
+        core.quit() #user pressed cancel
+    all_thresholds["Math"] = {}
+    for operation in math_operations:
+        if all_thresholds[operation] > -1:
+            all_thresholds["Math"][operation] = all_thresholds[operation]
+        del all_thresholds[operation]
 
 #CHOICE SECTION
 
