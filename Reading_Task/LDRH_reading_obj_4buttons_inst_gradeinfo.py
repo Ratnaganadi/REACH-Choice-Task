@@ -26,10 +26,10 @@ class Reading_Game:
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
-        self.readingstim_path = 'Audio/Stimuli/Reading'
+        self.readingstim_path = 'Audio/Stimuli/Reading/'
 
         #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will words on the left and the right side of the screen, then you will hear a spoken word. Touch the word you hear.')
@@ -105,26 +105,28 @@ class Reading_Game:
     def run_practice(self, win, grade):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,repeat_option, practice_set):
+        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
             # self.repeat_button.draw() # self.continue_button.draw()
-            if repeat_option=='no_repeat_option':
-                text_cue.draw()
-                aud_cue.play()
-                win.flip() #display instructions
+            if option=='no_repeat_option':
+                if text_cue!=None and aud_cue!=None:
+                    text_cue.draw()
+                    aud_cue.play()
+                    win.flip() #display instructions
 
-                #wait 1 seconds before checking for touch
-                start_time = self.trialClock.getTime()
-                while start_time+1 > self.trialClock.getTime():
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    #wait 1 seconds before checking for touch
+                    start_time = self.trialClock.getTime()
+                    while start_time+1 > self.trialClock.getTime():
+                        if 'escape' in event.getKeys(): return 'QUIT'
 
-                #check for a touch
-                cont=False
-                self.mouse.getPos()
-                while cont==False:
-                    if self.click(): aud_cue.stop(); cont=True
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    #check for a touch
+                    cont=False
+                    self.mouse.getPos()
+                    while cont==False:
+                        if self.click(): aud_cue.stop(); cont=True
+                        if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                else: win.flip()
 
-            elif repeat_option=='repeat_opt':
+            elif option=='repeat_opt':
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
@@ -157,11 +159,9 @@ class Reading_Game:
             #draw practice instructions, and do sub practipractice_setce
             for txt,aud,stim in zip(inst,audio,stimuli):
                 run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',practice_set)
-            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,2,True,'no_repeat_option',practice_set)
-            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,3,True,'no_repeat_option',practice_set)
 
-        inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
-        aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
+        inst_set=[self.practice_cue1,None,None]
+        aud_set=[self.practice_aud1,None,None]
         stim_set = [8,6,5]
 
         "!!!Don't forget to put in stim_set based on grade level here when the letter level is ready!!!"
@@ -285,7 +285,7 @@ class Reading_Game:
             texts = [self.target2b, self.foil2b]
             xposs = [-220,220]
             button = [self.target_2button, self.foil_2button]
-            buttons = [self.target_string,strings,texts,xposs,button]
+            # buttons = [self.target_string,strings,texts,xposs,button]
 
         elif difficulty > 5: 
             self.target4b_string = target
@@ -299,11 +299,13 @@ class Reading_Game:
             texts = [self.target4b, self.foil4b1, self.foil4b2, self.foil4b3]
             xposs = [-360, -120, 120, 360]
             button = [self.target_4button, self.foil_4button1, self.foil_4button2, self.foil_4button3]
-            buttons = [self.target4b_string,strings,texts,xposs,button]
+            # buttons = [self.target4b_string,strings,texts,xposs,button]
         
         # for tftmp,selftmp in zip(tflist,strings+extrastring):
         #     if len(tftmp!=0): selftmp = tftmp
         shuffle(xposs)
+        if difficulty==2: buttons = ['sound_'+target.lower(),strings,texts,xposs,button]
+        else: buttons = [target.lower(),strings,texts,xposs,button]
         B = buttons
         feedback_screen = [self.speaker] + buttons[4] + buttons[2]
 
@@ -319,9 +321,7 @@ class Reading_Game:
             audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
             play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
             os.remove(audio_touchfn)
-            if difficulty==2:
-                audio_fn = concat_wavs([self.readingstim_path+'sound_'+'{}.wav'.format(B[0])],0.2)
-            else: audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+            audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
             os.remove(audio_fn)
 
             play_with_psychopy(self.reading_inst3,'no_drawing')
@@ -351,14 +351,10 @@ class Reading_Game:
                 audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
                 play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
                 os.remove(audio_touchfn)
-                if difficulty==2:
-                    audio_fn = concat_wavs([self.readingstim_path+'sound_'+'{}.wav'.format(B[0])],0.2)
-                else: audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+                audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
                 play_with_button(audio_fn,B[1],B[2],B[3],B[4])
             elif (practice_set=='practice_set2') or (practice_set=='trial_set'):
-                if difficulty==2:
-                    audio_fn = concat_wavs([self.readingstim_path+'sound_'+'{}.wav'.format(B[0])],0.2)
-                else: audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+                audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
                 play_with_button(audio_fn,B[1],B[2],B[3],B[4])
 
             #start the timer for the response

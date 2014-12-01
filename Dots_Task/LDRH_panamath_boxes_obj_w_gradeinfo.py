@@ -26,7 +26,7 @@ class Dots_Game():
         self.dotstim_path = 'Images/Stimuli/Dots/'
 
         #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
@@ -97,26 +97,28 @@ class Dots_Game():
     def run_practice(self, win, grade):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,repeat_option):
+        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
             # self.repeat_button.draw() # self.continue_button.draw()
-            if repeat_option=='no_repeat_option':
-                text_cue.draw()
-                aud_cue.play()
-                win.flip() #display instructions
+            if option=='no_repeat_option':
+                if text_cue!=None and aud_cue!=None:
+                    text_cue.draw()
+                    aud_cue.play()
+                    win.flip() #display instructions
 
-                #wait 1 seconds before checking for touch
-                start_time = self.trialClock.getTime()
-                while start_time+1 > self.trialClock.getTime():
-                    if 'escape' in event.getKeys(): return 'QUIT'
+                    #wait 1 seconds before checking for touch
+                    start_time = self.trialClock.getTime()
+                    while start_time+1 > self.trialClock.getTime():
+                        if 'escape' in event.getKeys(): return 'QUIT'
 
-                #check for a touch
-                cont=False
-                self.mouse.getPos()
-                while cont==False:
-                    if self.click(): aud_cue.stop(); cont=True
-                    if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                    #check for a touch
+                    cont=False
+                    self.mouse.getPos()
+                    while cont==False:
+                        if self.click(): aud_cue.stop(); cont=True
+                        if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                else: win.flip()
 
-            elif repeat_option=='repeat_opt':
+            elif option=='repeat_opt':
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
@@ -150,12 +152,9 @@ class Dots_Game():
             #draw practice instructions, and do sub practice
             for txt,aud,stim in zip(inst,audio,stimuli):
                 run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue1,self.practice_aud1,39,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,30,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue2,self.practice_aud2,35,True,'no_repeat_option')
 
-        inst_set=[self.practice_cue1,self.practice_cue2,self.practice_cue2]
-        aud_set=[self.practice_aud1,self.practice_aud2,self.practice_aud2]
+        inst_set=[self.practice_cue1,None,None]
+        aud_set=[self.practice_aud1,None,None]
         stim_set = [39,30,35]
 
         run_3_practice(inst_set,aud_set,stim_set)

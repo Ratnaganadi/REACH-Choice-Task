@@ -42,7 +42,7 @@ task_names=[
 
 #store info about the experiment session
 expName='REaCh Task'
-expInfo={'participant':'','grade':'(k,1,2,3,4,or 5)', 'choice': False}
+expInfo={'participant':'','grade':'', 'choice': False}
 dlg=gui.DlgFromDict(dictionary=expInfo,title=expName)
 if dlg.OK==False:
     core.quit() #user pressed cancel

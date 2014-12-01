@@ -28,7 +28,7 @@ class Star_Game():
         self.practice_instructions4 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's do some more practice")
         self.try_again = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's try that again.")
 
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="         Let's do some practice.\n\n\n\nTouch anywhere to begin.")
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
         self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
@@ -88,32 +88,28 @@ class Star_Game():
     def run_practice(self, win, grade):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,score,with_practice,repeat_option):
+        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
             # self.repeat_button.draw() # self.continue_button.draw()
-            if repeat_option=='no_repeat_option':
-                text_cue.draw()
-                if aud_cue:
+            if option=='no_repeat_option':
+                if text_cue!=None and aud_cue!=None:
+                    text_cue.draw()
                     aud_cue.play()
-                win.flip() #display instructions
+                    win.flip() #display instructions
 
-                #wait 1 seconds before checking for touch
-                start_time = self.trialClock.getTime()
-                while start_time+1 > self.trialClock.getTime():
-                    if 'escape' in event.getKeys(): return 'QUIT'
-                #check for a touch
-                cont=False
-                self.mouse.getPos()
-                while cont==False:
-                    if self.click():
-                        if aud_cue:
-                            aud_cue.stop()
-                        cont=True
-                    if 'escape' in event.getKeys():
-                        if aud_cue:
-                            aud_cue.stop()
-                        return 'QUIT'
+                    #wait 1 seconds before checking for touch
+                    start_time = self.trialClock.getTime()
+                    while start_time+1 > self.trialClock.getTime():
+                        if 'escape' in event.getKeys(): return 'QUIT'
 
-            elif repeat_option=='repeat_opt':
+                    #check for a touch
+                    cont=False
+                    self.mouse.getPos()
+                    while cont==False:
+                        if self.click(): aud_cue.stop(); cont=True
+                        if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                else: win.flip()
+
+            elif option=='repeat_opt':
                 self.repeat_button.draw()
                 self.continue_button.draw()
                 text_cue.draw()
@@ -173,12 +169,10 @@ class Star_Game():
             #draw practice instructions, and do sub practice
             for txt,stim,score in zip(inst,stimuli,score_conds):
                 run_sub_practice(self,win,txt,None,stim,score,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue,self.practice_aud2,100,0,True,'no_repeat_option')
-            # run_sub_practice(self,win,self.practice_cue,self.practice_aud2,115,1,True,'no_repeat_option')
 
-        run_3_practice([self.practice_instructions1,self.practice_cue2,self.practice_cue2],[150,100,115],[1,0,1])
-        run_3_practice([self.practice_instructions2,self.practice_cue2],[250,200],[1,1])
-        run_3_practice([self.practice_instructions3,self.practice_cue2],[200,150],[1,1])
+        run_3_practice([self.practice_instructions1,None,None],[150,100,115],[1,0,1])
+        run_3_practice([self.practice_instructions2,None],[250,200],[1,1])
+        run_3_practice([self.practice_instructions3,None],[200,150],[1,1])
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,None,False,'repeat_opt')
