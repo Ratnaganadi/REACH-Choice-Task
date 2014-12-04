@@ -88,12 +88,12 @@ class Star_Game():
     def run_practice(self, win, grade):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
+        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,score,with_practice,option):
             # self.repeat_button.draw() # self.continue_button.draw()
             if option=='no_repeat_option':
-                if text_cue!=None and aud_cue!=None:
+                if text_cue!=None:
                     text_cue.draw()
-                    aud_cue.play()
+                    if aud_cue: aud_cue.play()
                     win.flip() #display instructions
 
                     #wait 1 seconds before checking for touch
@@ -105,8 +105,12 @@ class Star_Game():
                     cont=False
                     self.mouse.getPos()
                     while cont==False:
-                        if self.click(): aud_cue.stop(); cont=True
-                        if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
+                        if self.click(): 
+                            if aud_cue: aud_cue.stop()
+                            cont=True
+                        if 'escape' in event.getKeys(): 
+                            if aud_cue: aud_cue.stop()
+                            return 'QUIT'
                 else: win.flip()
 
             elif option=='repeat_opt':

@@ -105,7 +105,7 @@ class Reading_Game:
     def run_practice(self, win, grade):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
+        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,practice_itm):
             # self.repeat_button.draw() # self.continue_button.draw()
             if option=='no_repeat_option':
                 if text_cue!=None and aud_cue!=None:
@@ -153,28 +153,24 @@ class Reading_Game:
             print 'with_practice', with_practice
 
             #run practice trial if with_practice is true
-            if with_practice==True: output = self.run_trial(win, stim_condition,practice_set,'practice'); print 'run practice'
+            if with_practice==True: output = self.run_trial(win, stim_condition,practice_itm,'practice'); print 'run practice'
 
-        def run_3_practice(inst,audio,stimuli,practice_set):
-            #draw practice instructions, and do sub practipractice_setce
+        def run_3_practice(inst,audio,stimuli,practice_itm):
+            #draw practice instructions, and do sub practice
             for txt,aud,stim in zip(inst,audio,stimuli):
-                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',practice_set)
+                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',practice_itm)
 
-        inst_set=[self.practice_cue1,None,None]
-        aud_set=[self.practice_aud1,None,None]
-        stim_set = [8,6,5]
+        inst_set=[self.practice_cue1,None,None,None,None]
+        aud_set=[self.practice_aud1,None,None,None,None]
+        stim_set = [10,9,8,6,5]
+        practice_item = ['practice_ltr','practice_sound','practice_word','practice_other','practice_other']
 
-        "!!!Don't forget to put in stim_set based on grade level here when the letter level is ready!!!"
-
-        run_3_practice(inst_set,aud_set,stim_set,'practice_set1')
-        run_3_practice(inst_set,aud_set,stim_set,'practice_set2')
-        # run_3_practice('practice_set1')
-        # run_3_practice('practice_set2')
+        run_3_practice(inst_set,aud_set,stim_set,practice_item)
         go_to_choice=False
         while go_to_choice==False:
-            repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt', 'practice_set1')
+            repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt', 'practice_itm1')
             if repeat_or_continue=='repeat':
-                run_3_practice(inst_set,aud_set,stim_set,'practice_set1')
+                run_3_practice(inst_set,aud_set,stim_set,practice_item)
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True
@@ -184,7 +180,7 @@ class Reading_Game:
         "Run one iteration of the game without touch"
         return self.run_trial(win, thisIncrement, 'trial_set', 'game')
 
-    def run_trial(self, win, index,practice_set, task_phase):
+    def run_trial(self, win, index, practice_itm, task_phase):
         "Run one iteration of the game."
 
         def draw_buttons(time,top,change,string_ls,text_ls,xpositions,button_ls):
@@ -345,17 +341,32 @@ class Reading_Game:
         else:
             draw_buttons(1,'no-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
             draw_buttons(1.5,'yes-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
-
+            
+            ['practice_ltr','practice_sound','practice_word','practice_other','practice_other']
             #play audio + buttons
-            if practice_set=='practice_set1':
-                audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
+
+            touch_prompt = None
+            if practice_itm=='practice_ltr': touch_prompt='touch_letter.wav'
+            elif practice_itm=='practice_sound': touch_prompt='touch_sound.wav'
+            elif practice_itm=='practice_word': touch_prompt='touch_word.wav'
+            
+            if touch_prompt!=None:
+                audio_touchfn = concat_wavs([self.readingstim_path + touch_prompt],0.4)
                 play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
                 os.remove(audio_touchfn)
-                audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
-                play_with_button(audio_fn,B[1],B[2],B[3],B[4])
-            elif (practice_set=='practice_set2') or (practice_set=='trial_set'):
-                audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
-                play_with_button(audio_fn,B[1],B[2],B[3],B[4])
+
+            audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+            play_with_button(audio_fn,B[1],B[2],B[3],B[4])
+
+            # if practice_itm=='practice_itm1':
+            #     audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
+            #     play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
+            #     os.remove(audio_touchfn)
+            #     audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+            #     play_with_button(audio_fn,B[1],B[2],B[3],B[4])
+            # elif (practice_itm=='practice_itm2') or (practice_itm=='trial_set'):
+            #     audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+            #     play_with_button(audio_fn,B[1],B[2],B[3],B[4])
 
             #start the timer for the response
             start_timer=self.trialClock.getTime()

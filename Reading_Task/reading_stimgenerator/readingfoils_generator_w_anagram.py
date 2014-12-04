@@ -34,7 +34,7 @@ grade_4button = grade_4b + grade_4b_anagram
 gradelevel = grade_2bletter + grade_2button + grade_4b + grade_4b_anagram
 gradelvl = ['k','grade1a','grade1b','grade2','grade3','grade4','grade5'] #grade levels names
 letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-sound = ['B','D','F','H','J','K','L','M','N','P','R','S','T','V','W','Y','Z']
+sound = ['B','D','H','J','K','S','T','Y']
 look = {'A':['K','M','N','V','W','X','Y'],'B':['D','E','H','O','P','R'],'C':['D','G','J','O','P','Q','S','U'],'D':['B','C','G','J','O','P','Q','U'],'E':['B','F','H','M','N','W'],'F':['E','H','I','L','M','N','P','T'],'G':['C','D','J','O','P','Q','U'],'H':['B','E','F','I','L','M','N','T'],'I':['F','J','L','T'],'J':['C','G','I','L','U'],'K':['A','M','N','R','V','W','X','Y','Z'],'L':['F','H','T'],'M':['A','E','F','H','K','N','V','W','X','Y','Z'],'N':['A','E','F','H','K','M','V','W','X','Y','Z'],'O':['B','C','D','G','Q','U'],'P':['B','C','D','F','R'],'Q':['C','D','G','O','U'],'R':['B','K','P'],'S':['C','Z'],'T':['F','H','I','L','Y'],'U':['C','D','G','J','O','Q','V','W','X','Y'],'V':['A','K','M','N','U','W','X','Y','Z'],'W':['A','K','M','N','U','V','X','Y','Z'],'X':['A','K','M','N','U','V','W','Y','Z'],'Y':['K','M','N','S','V','W','X','Z'],'Z':['K','M','N','V','W','X','Y']}
 
 #no audio file in google for grade word list + for toolbox + not in cmudict
