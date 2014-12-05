@@ -92,7 +92,7 @@ class Math_Game:
     def run_practice(self, win, grade):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
+        def run_sub_practice(self,win,text_cue,aud_cue,math_operation,stim_condition,with_practice,option):
             # self.repeat_button.draw() # self.continue_button.draw()
             if option=='no_repeat_option':
                 if text_cue!=None and aud_cue!=None:
