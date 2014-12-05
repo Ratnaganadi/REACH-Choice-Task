@@ -105,7 +105,7 @@ class Reading_Game:
     def run_practice(self, win, grade):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,practice_itm):
+        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,prompt_itm):
             # self.repeat_button.draw() # self.continue_button.draw()
             if option=='no_repeat_option':
                 if text_cue!=None and aud_cue!=None:
@@ -153,24 +153,24 @@ class Reading_Game:
             print 'with_practice', with_practice
 
             #run practice trial if with_practice is true
-            if with_practice==True: output = self.run_trial(win, stim_condition,practice_itm,'practice'); print 'run practice'
+            if with_practice==True: output = self.run_trial(win, stim_condition,prompt_itm,'practice'); print 'run practice'
 
-        def run_3_practice(inst,audio,stimuli,practice_itm):
+        def run_3_practice(inst,audio,stimuli,prompt_item):
             #draw practice instructions, and do sub practice
-            for txt,aud,stim in zip(inst,audio,stimuli):
-                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',practice_itm)
+            for txt,aud,stim,prompt_itm in zip(inst,audio,stimuli,prompt_item):
+                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',prompt_itm)
 
         inst_set=[self.practice_cue1,None,None,None,None]
         aud_set=[self.practice_aud1,None,None,None,None]
         stim_set = [10,9,8,6,5]
-        practice_item = ['practice_ltr','practice_sound','practice_word','practice_other','practice_other']
+        prompt_item = ['prompt_ltr','prompt_sound','prompt_word','prompt_other','prompt_other']
 
-        run_3_practice(inst_set,aud_set,stim_set,practice_item)
+        run_3_practice(inst_set,aud_set,stim_set,prompt_item)
         go_to_choice=False
         while go_to_choice==False:
-            repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt', 'practice_itm1')
+            repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt', 'prompt_itm1')
             if repeat_or_continue=='repeat':
-                run_3_practice(inst_set,aud_set,stim_set,practice_item)
+                run_3_practice(inst_set,aud_set,stim_set,prompt_item)
             elif repeat_or_continue=='continue':
                 print 'continue2'
                 go_to_choice=True
@@ -180,7 +180,7 @@ class Reading_Game:
         "Run one iteration of the game without touch"
         return self.run_trial(win, thisIncrement, 'trial_set', 'game')
 
-    def run_trial(self, win, index, practice_itm, task_phase):
+    def run_trial(self, win, index, prompt_itm, task_phase):
         "Run one iteration of the game."
 
         def draw_buttons(time,top,change,string_ls,text_ls,xpositions,button_ls):
@@ -308,124 +308,116 @@ class Reading_Game:
         # draw_buttons(1,'no-speaker','yes-flip',string_4b,text_4b,xpositions_4b,button_4b)
         # draw_buttons(1.5,'yes-speaker','yes-flip',string_4b,text_4b,xpositions_4b,button_4b)
 
-        if task_phase=='instructions':
-            play_with_psychopy(self.reading_inst1,'no_drawing')
-            draw_buttons(1,'no_speaker','no_flip',B[1],B[2],B[3],B[4])
-            play_with_psychopy(self.reading_inst2,'no_drawing')
-            draw_buttons(0,'yes_speaker','yes_flip',B[1],B[2],B[3],B[4])
+        # if task_phase=='instructions':
+        #     play_with_psychopy(self.reading_inst1,'no_drawing')
+        #     draw_buttons(1,'no_speaker','no_flip',B[1],B[2],B[3],B[4])
+        #     play_with_psychopy(self.reading_inst2,'no_drawing')
+        #     draw_buttons(0,'yes_speaker','yes_flip',B[1],B[2],B[3],B[4])
 
-            audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
+        #     audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
+        #     play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
+        #     os.remove(audio_touchfn)
+        #     audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+        #     os.remove(audio_fn)
+
+        #     play_with_psychopy(self.reading_inst3,'no_drawing')
+        #     draw_buttons(0,'yes_speaker','yes_flip',B[1],B[2],B[3],B[4])
+
+        #     win.flip()
+        #     self.message2.draw()
+        #     self.general_inst_last.play()
+
+        #     #wait a second before accepting touch
+        #     start_time=self.trialClock.getTime()
+        #     while start_time+1>self.trialClock.getTime():
+        #         if 'escape' in event.getKeys(): return 'QUIT'
+        #     #wait for a touch
+        #     self.mouse.getPos()
+        #     cont=False
+        #     while cont==False:
+        #         if self.click(): cont=True
+        #         if 'escape' in event.getKeys(): return 'QUIT'
+
+        # else:
+        draw_buttons(1,'no-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
+        draw_buttons(1.5,'yes-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
+        
+        #play audio + buttons
+        touch_prompt = None
+        if prompt_itm=='prompt_ltr': touch_prompt='touch_letter.wav'
+        elif prompt_itm=='prompt_sound': touch_prompt='touch_sound.wav'
+        elif prompt_itm=='prompt_word': touch_prompt='touch_word.wav'
+        print 'prompt_itm', prompt_itm
+        print 'touch_prompt', touch_prompt
+
+        if touch_prompt!=None:
+            audio_touchfn = concat_wavs([self.readingstim_path + touch_prompt],0.4)
             play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
             os.remove(audio_touchfn)
-            audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
-            os.remove(audio_fn)
+            print 'play touch_prompt'
 
-            play_with_psychopy(self.reading_inst3,'no_drawing')
-            draw_buttons(0,'yes_speaker','yes_flip',B[1],B[2],B[3],B[4])
-
-            win.flip()
-            self.message2.draw()
-            self.general_inst_last.play()
-
-            #wait a second before accepting touch
-            start_time=self.trialClock.getTime()
-            while start_time+1>self.trialClock.getTime():
-                if 'escape' in event.getKeys(): return 'QUIT'
-            #wait for a touch
-            self.mouse.getPos()
-            cont=False
-            while cont==False:
-                if self.click(): cont=True
-                if 'escape' in event.getKeys(): return 'QUIT'
-
-        else:
-            draw_buttons(1,'no-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
-            draw_buttons(1.5,'yes-speaker','yes-flip',B[1],B[2],B[3],B[4]) #string_2b,text_2b,xpositions_2b,button_2b)
-            
-            ['practice_ltr','practice_sound','practice_word','practice_other','practice_other']
-            #play audio + buttons
-
-            touch_prompt = None
-            if practice_itm=='practice_ltr': touch_prompt='touch_letter.wav'
-            elif practice_itm=='practice_sound': touch_prompt='touch_sound.wav'
-            elif practice_itm=='practice_word': touch_prompt='touch_word.wav'
-            
-            if touch_prompt!=None:
-                audio_touchfn = concat_wavs([self.readingstim_path + touch_prompt],0.4)
-                play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
-                os.remove(audio_touchfn)
-
-            audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
-            play_with_button(audio_fn,B[1],B[2],B[3],B[4])
-
-            # if practice_itm=='practice_itm1':
-            #     audio_touchfn = concat_wavs([self.readingstim_path+'touch_word.wav'],0.4)
-            #     play_with_button(audio_touchfn,B[1],B[2],B[3],B[4])
-            #     os.remove(audio_touchfn)
-            #     audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
-            #     play_with_button(audio_fn,B[1],B[2],B[3],B[4])
-            # elif (practice_itm=='practice_itm2') or (practice_itm=='trial_set'):
-            #     audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
-            #     play_with_button(audio_fn,B[1],B[2],B[3],B[4])
-
-            #start the timer for the response
-            start_timer=self.trialClock.getTime()
-            timer=0
-            score = None
-            thisResp = None
-            self.mouse.getPos()
-            while thisResp == None and timer<15:
-                self.mouse_moved=self.mouse.mouseMoved()
-                # self.mouse_pos=self.mouse.getPos()
-                if difficulty <= 5:
-                    if self.mouse_moved and (self.target_2button.contains(self.mouse)):
-                        score, thisResp = (1,'correct')
-                        self.target2b.setColor('yellow')
-                    elif self.mouse_moved and self.foil_2button.contains(self.mouse):
-                        score, thisResp = (0,'incorrect')
-                        self.foil2b.setColor('yellow')
-                elif difficulty > 5:
-                    if self.mouse_moved and (self.target_4button.contains(self.mouse)):
-                        score, thisResp = (1,'correct')
-                        self.target4b.setColor('yellow')
-                    elif self.mouse_moved and self.foil_4button1.contains(self.mouse):
-                        score, thisResp = (0,'incorrect')
-                        self.foil4b1.setColor('yellow')
-                    elif self.mouse_moved and self.foil_4button2.contains(self.mouse):
-                        score, thisResp = (0,'incorrect')
-                        self.foil4b2.setColor('yellow')
-                    elif self.mouse_moved and self.foil_4button3.contains(self.mouse):
-                        score, thisResp = (0,'incorrect')
-                        self.foil4b3.setColor('yellow')
-                if self.mouse_moved and self.speaker.contains(self.mouse):
-                    play_with_button(audio_fn,B[1],B[2],B[3],B[4])
-                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-                # if event.getKeys(keyList=['escape']): core.quit()
-                timer=self.trialClock.getTime()-start_timer
-
-            print ', response:', thisResp
-
-            #calculate response time
-            if timer<=15: choice_time=timer
-            else: choice_time = 'timed out'
-
-            self.scores.append(score) #store score data on scores=[]
-
-            #give feedback
-            self.fb.present_fb(win,score, feedback_screen)#[self.speaker, self.foil_2button, self.foil2b, self.target_2button, self.target2b])
-
-            # if practicing==True:
-                # "That's right! You touched the word ... That is correct!"
-                # "That's incorrect. You are supposed to touch the word ... But you touched the wrong one. Let's try some more."
+        audio_fn = concat_wavs([self.readingstim_path+'{}.wav'.format(B[0])],0.2)
+        play_with_button(audio_fn,B[1],B[2],B[3],B[4])
 
 
-            self.fixation.draw()
-            win.flip()
-            core.wait(1)
-#n=0 #don't look alike, sound alike
-#n=1 #look_alike, don't sound alike
-#n=2 #look alike, sound alike
-#n=3 #don't look, don't sound alike
+        #start the timer for the response
+        start_timer=self.trialClock.getTime()
+        timer=0
+        score = None
+        thisResp = None
+        self.mouse.getPos()
+        while thisResp == None and timer<15:
+            self.mouse_moved=self.mouse.mouseMoved()
+            # self.mouse_pos=self.mouse.getPos()
+            if difficulty <= 5:
+                if self.mouse_moved and (self.target_2button.contains(self.mouse)):
+                    score, thisResp = (1,'correct')
+                    self.target2b.setColor('yellow')
+                elif self.mouse_moved and self.foil_2button.contains(self.mouse):
+                    score, thisResp = (0,'incorrect')
+                    self.foil2b.setColor('yellow')
+            elif difficulty > 5:
+                if self.mouse_moved and (self.target_4button.contains(self.mouse)):
+                    score, thisResp = (1,'correct')
+                    self.target4b.setColor('yellow')
+                elif self.mouse_moved and self.foil_4button1.contains(self.mouse):
+                    score, thisResp = (0,'incorrect')
+                    self.foil4b1.setColor('yellow')
+                elif self.mouse_moved and self.foil_4button2.contains(self.mouse):
+                    score, thisResp = (0,'incorrect')
+                    self.foil4b2.setColor('yellow')
+                elif self.mouse_moved and self.foil_4button3.contains(self.mouse):
+                    score, thisResp = (0,'incorrect')
+                    self.foil4b3.setColor('yellow')
+            if self.mouse_moved and self.speaker.contains(self.mouse):
+                play_with_button(audio_fn,B[1],B[2],B[3],B[4])
+            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+            # if event.getKeys(keyList=['escape']): core.quit()
+            timer=self.trialClock.getTime()-start_timer
+
+        print ', response:', thisResp
+
+        #calculate response time
+        if timer<=15: choice_time=timer
+        else: choice_time = 'timed out'
+
+        self.scores.append(score) #store score data on scores=[]
+
+        #give feedback
+        self.fb.present_fb(win,score, feedback_screen)#[self.speaker, self.foil_2button, self.foil2b, self.target_2button, self.target2b])
+
+        # if practicing==True:
+            # "That's right! You touched the word ... That is correct!"
+            # "That's incorrect. You are supposed to touch the word ... But you touched the wrong one. Let's try some more."
+
+
+        self.fixation.draw()
+        win.flip()
+        core.wait(1)
+        #n=0 #don't look alike, sound alike
+        #n=1 #look_alike, don't sound alike
+        #n=2 #look alike, sound alike
+        #n=3 #don't look, don't sound alike
         output = {'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil1':foil1,'Foil2':foil2,'Foil3':foil3,'Foil4':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
         
         if (self.iteration[n] == len(self.trialList[n]['Target'])-1): self.iteration[n] = 0
