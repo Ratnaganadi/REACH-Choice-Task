@@ -46,27 +46,22 @@ class Dots_Game():
         #Initialise components for routine: trial
         self.trialClock=core.Clock()
 
+        #time constrains
+        self.timer_limit = 3
         self.t_fixcross = 1.5
-        self.t_fixline = 1.5
-        self.t_stims = 3
-        self.t_mask_initial = 1
-        self.t_mask_end = 1
 
         #repeat and continue button
         self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #INITIALIZING FIXATION POINT, MASK & BLANK#
-        self.line = visual.ShapeStim(win, name='line', units=u'pix', lineWidth = 2.0, lineColor = 'white', lineColorSpace='rgb',pos = [0,0], vertices = ((0,-300),(0,0),(0,300)),interpolate = True)
         self.fix_point=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
-        self.mask=visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[0, 0], size=[900, 600], color=[1,1,1])
-        self.left_mask = visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[-230,0],size=[400,600])
         self.right_mask = visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[230,0],size=[400,600])
         self.blank=visual.TextStim(win, ori=0, text=None)
-        self.left = visual.ImageStim(win,image=None,pos=[-230,0],size=[400,600])
-        self.right = visual.ImageStim(win,image=None,pos=[230,0],size=[400,600])
-        self.left_box = visual.ImageStim(win,image= image_path +'box.png',pos=[-230,0],size=[420,620])
-        self.right_box = visual.ImageStim(win,image= image_path +'box.png',pos=[230,0],size=[420,620])
+        self.target = visual.ImageStim(win,image=None,pos=[0,0],size=[400,600])
+        self.foil = visual.ImageStim(win,image=None,pos=[0,0],size=[400,600])
+        self.target_box = visual.ImageStim(win,image= image_path +'box.png',pos=[0,0],size=[420,620])
+        self.foil_box = visual.ImageStim(win,image= image_path +'box.png',pos=[0,0],size=[420,620])
 
         self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+100],height=28, wrapWidth=700, text='In this game you will see two boxes with dots inside, one on each side of the screen. Touch the box that has more dots.')
         self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, wrapWidth=700, text="Touch anywhere on the screen when you're ready to start.")
@@ -191,89 +186,76 @@ class Dots_Game():
             self.iteration[index] = 0
 
         #randomize side of stimuli
-        incorrect = self.dotstim_path+self.trialList[index]['Incorrect'][self.iteration[index]]
-        correct = self.dotstim_path+self.trialList[index]['Correct'][self.iteration[index]]
-        correct_side = random.choice(['left','right'])
+        target_content = self.trialList[index]['Correct'][self.iteration[index]]
+        foil_content = self.trialList[index]['Incorrect'][self.iteration[index]]
+        target_path = self.dotstim_path + target_content
+        foil_path = self.dotstim_path + foil_content
 
-        if correct_side=='left':
-            self.left.setImage(correct)
-            self.right.setImage(incorrect)
-        else:
-            self.left.setImage(incorrect)
-            self.right.setImage(correct)
+        box_pos = ['left','right']
+        shuffle(box_pos)
+        target_pos = box_pos[0]
+        foil_pos = box_pos[1]
+        xpos = {'left': -230, 'right': 230}
 
-        #draw fixation
-        self.fix_point.draw()
-        win.flip()
-        start_time=self.trialClock.getTime()
-        while self.trialClock.getTime()-start_time<(self.t_fixcross):
-            if event.getKeys(keyList=['q','escape']): return 'QUIT'
+        
+        for box,img,dots,pos in zip([self.target_box,self.foil_box],[self.target,self.foil],[target_path,foil_path],box_pos)
+            img.setImage(dots)
+            img.setPos([xpos[pos],0])
+            box.setPos([xpos[pox],0])
+            box.color = "white"
 
-        #draw line with fixation
-        self.left_box.draw()
-        self.right_box.draw()
-        #self.fix_point.draw()
-        win.flip()
-        start_time=self.trialClock.getTime()
-        while self.trialClock.getTime()-start_time<(self.t_fixline):
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+        t2 = self.t_fixcross + self.t_fixline
+        t3 = self.t_fixcross + self.t_fixline + self.timer_limit
+        score = None
+        while score!=None:
+            t = self.trialClock.getTime()
+            if t<self.t_fixcross: self.fix_point.draw()
+            if t>=self.t_fixcross and t<t2:
+                self.target_box.draw()
+                self.foil_box.draw()
+            if t>=t2 and t<=t3:
+                self.target_box.draw()
+                self.foil_box.draw()
+                self.target.draw()
+                self.foil.draw()
 
-        #draw stims
-        #self.fix_point.draw()
-        self.left_box.draw()
-        self.left.draw()
-        self.right_box.draw()
-        self.right.draw()
-        #self.line.draw()
-        win.flip()
+                start_time = self.trialClock.getTime()
+                timer = 0
 
-        #define a function to check for a response
-        def check_for_response():
-            resp=None
-            if self.click():
-                if self.right_box.contains(self.mouse): resp = 'right'
-                elif self.left_box.contains(self.mouse): resp = 'left'
-            return resp
-
-        #put stims up for 2 seconds and wait for response
-        theseKeys=[]
-        start_time=self.trialClock.getTime()
-        resp=None
-        self.mouse.getPos()
-        event.clearEvents()
-        while self.trialClock.getTime()-start_time<(self.t_stims) and resp==None:
-            resp = check_for_response()
-            resp_rt=self.trialClock.getTime()-start_time
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-
-
-        if resp==None: resp_rt='timed out'
-        score = int(correct_side==resp)
-        print score
-
-        #reset box opacity
-        #self.box.setOpacity(1)
-
-        #set pos and opacity of response box
-        if resp=='left' and resp_rt!='timed out': self.left_box.color = "gold"
-        elif resp=='right'and resp_rt!='timed out': self.right_box.color = "gold"
-        #elif resp_rt=='timed out': self.box.setOpacity(0)
+                click = self.click()
+                thisResp = None
+                self.mouse.getPos()
+                while thisResp==None:
+                    if click and self.target_box.contains(self.mouse): 
+                        score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                        self.target_box.color = "gold"
+                    elif click and self.foil_box.contains(self.mouse): 
+                        score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                        self.foil_box.color = "gold"
+                    if event.getKeys(keyList=['escape']): return 'QUIT'
+                    choice_time = self.trialClock.getTime()-start_time
+            if t>t3: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
-        self.fb.present_fb(win,score,[self.left_box,self.right_box,self.fix_point,self.left,self.right])
+        self.fb.present_fb(win,score,[self.target_box,self.foil_box,self.fix_point,self.target,self.foil])
 
-        #reset colors of boxes
-        self.left_box.color = "white"
-        self.right_box.color = "white"
-
-        #write data #self.headers = ['Difficulty','Correct','Incorrect','Ratio','Score','Resp Time','Adaptive']
-        output = {'Difficulty': difficulty, 'Correct': self.trialList[index]['Correct'][self.iteration[index]], 'Incorrect': self.trialList[index]['Incorrect'][self.iteration[index]],
-            'Ratio': self.trialList[index]['Ratio'][self.iteration[index]], 'Score': score, 'Resp Time': resp_rt}
-
+        #write data
+        output = {
+            'threshold_var': self.trialList[index]['Ratio'][self.iteration[index]],
+            'level': difficulty,
+            'score': score,
+            'resp_time': choice_time,
+            'resp': thisResp,
+            'resp_pos': thisResp_pos,
+            'target': target_content,
+            'target_pos': target_pos,
+            }
+        
         #update iteration of current difficulty
         if self.iteration[index] == len(self.trialList[index]['Incorrect'])-1: self.iteration[index] = 0
         else: self.iteration[index] += 1
 
+        print output
         return output
 
     def end_game(self,n_level,filename):

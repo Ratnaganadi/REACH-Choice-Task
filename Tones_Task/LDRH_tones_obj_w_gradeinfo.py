@@ -48,10 +48,12 @@ class Tones_Game:
         self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=image_path + 'speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
         self.same_button = visual.ImageStim(win, image= image_path + 'happy_button.png', pos=[-260, -200])
         self.different_button = visual.ImageStim(win, image= image_path + 'sad_button.png', pos=[260, -200])
-
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
         self.trialClock = core.Clock()
+
+        #time constrains
+        self.timer_limit = 12
 
         #start feedback
         self.fb=feedback.fb(win)
@@ -204,24 +206,27 @@ class Tones_Game:
         #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
         #######################
         count=0 #give up after 50 tries
-        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and trialList[index]['Corr_Answer'][self.iteration[index]]==self.answer_history[-1] and count<50:
+        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and target_content==self.answer_history[-1] and count<50:
             if self.iteration[index] >= len(trialList[index]['soundA'])-1:
                 self.iteration[index] = 0
             else:
                 self.iteration[index] += 1
             count+=1
 
-        #update answer_history
-        self.answer_history.append(trialList[index]['Corr_Answer'][self.iteration[index]])
-
-        #check for and set octave for trial
-        print eval(trialList[index]['Root'][self.iteration[index]])[0]
-        for num,key in self.tone_key.items():
-            if eval(trialList[index]['Root'][self.iteration[index]])[0] == key: root = int(num)
-        octave = eval(trialList[index]['Root'][self.iteration[index]])[1]
-
+        #load trial variables
+        difficulty = trialList[index]['Corr_Answer'][self.iteration[index]]
+        tones_root = trialList[index]['Root'][self.iteration[index]]
         raw_soundA = eval(trialList[index]['soundA'][self.iteration[index]])
         raw_soundB = eval(trialList[index]['soundB'][self.iteration[index]])
+
+        #update answer_history
+        self.answer_history.append(target_content)
+
+        #check for and set octave for trial
+        print eval(tones_root)[0]
+        for num,key in self.tone_key.items():
+            if eval(tones_root)[0] == key: root = int(num)
+        octave = eval(tones_root)[1]
         print 'soundA is', raw_soundA
         print 'soundB is', raw_soundB
 
@@ -316,34 +321,51 @@ class Tones_Game:
         thisResp=None
         score = 0
         self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-        while thisResp==None and timer<15:
-            if self.click():
-                if self.same_button.contains(self.mouse):
-                    if trialList[index]['Corr_Answer'][self.iteration[index]] == 'same': score, thisResp = (1,'same') #correct answer
-                    elif trialList[index]['Corr_Answer'][self.iteration[index]] == 'different': score, thisResp = (0,'same') #incorrect answer
-                elif self.different_button.contains(self.mouse):
-                    if trialList[index]['Corr_Answer'][self.iteration[index]] == 'same': score, thisResp = (0, 'different') #incorrect answer
-                    elif trialList[index]['Corr_Answer'][self.iteration[index]] == 'different': score, thisResp = (1, 'different') #correct answer
-            if event.getKeys(keyList=['q', 'escape']):
-                return 'QUIT'
+        while thisResp==None and timer<=self.timer_limit:
+            click = self.click()
+            #self.mouse.getPos()
+            if click and self.same_button.contains(self.mouse): #screen click for "Same" button
+                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (1,'same','left','left') #correct target_content
+                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (0,'same','left','right') #incorrect target_content
+            elif click and self.different_button.contains(self.mouse): #screen click for "Different" button
+                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (0,'different','right','left') #incorrect target_content
+                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (1,'different','right','right') #correct target_content
+            if event.getKeys(keyList=['escape']): return 'QUIT'
             timer=self.trialClock.getTime()-start_time
-        #calculate response time
-        if timer<=15: choice_time = timer
-        else: choice_time = 'timed out'
 
-        #create index for incorrect and correct strings:
-        #resp_list = {'same':self.same_text,'different':self.different_text}
-        #resp_text= resp_list[thisResp]
-        #resp_text.setColor('gold')
+        #response time
+        if timer<=self.timer_limit: choice_time = timer
+        else: score, thisResp, thisResp_pos, choice_time = (0,'timed_out','timed_out','timed_out')
+
 
         #give feedback
         self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
 
         #write data
-        #self.headers = ['Difficulty','soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','Score','Resp Time','Adaptive']
-        output = {'Difficulty': trialList[index]['Difficulty'], 'soundA': str(raw_soundA), 'soundB': str(raw_soundB), 'Details': trialList[index]['Details'][self.iteration[index]], 'Contour': trialList[index]['Contour'][self.iteration[index]],
-            'Notes Different': trialList[index]['Notes_Different'][self.iteration[index]], 'Root': str(trialList[index]['Root'][self.iteration[index]]),'Response': thisResp, 'Correct Response': trialList[index]['Corr_Answer'][self.iteration[index]], 'Score': score,
-            'Resp Time': choice_time}
+        for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]):
+            if difficulty>=lvl[0] and difficulty<=lvl[1]: threshold_var = thresh
+        
+        output = {
+            'threshold_var': threshold_var,
+            'level': difficulty,
+            'score': score,
+            'resp_time': choice_time,
+            'stim1': str(raw_soundA),
+            'stim2': str(raw_soundB),
+            'resp': thisResp,
+            'resp_pos': thisResp_pos,
+            'target': target_content,
+            'target_pos': target_pos,
+            'tones_details': trialList[index]['Details'][self.iteration[index]],
+            'tones_contour': trialList[index]['Contour'][self.iteration[index]],
+            'tones_notes_different': trialList[index]['Notes_Different'][self.iteration[index]],
+            'tones_root': str(tones_root)
+        }
+
+        output_header = ['tones_details','tones_contour','tones_notes_different']
+        stim_header = ['Details','Contour','Notes_Different']
+        for out_col,stim_col in zip(output_header,stim_header):
+            output.update({out_col:trialList[index][stim_col][self.iteration[index]]})
 
         #update iteration of current difficulty
         if self.iteration[index] == len(trialList[index]['soundA'])-1:

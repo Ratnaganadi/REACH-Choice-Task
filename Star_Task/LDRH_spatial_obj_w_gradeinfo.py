@@ -44,6 +44,12 @@ class Star_Game():
         self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + 'stars_video_instructions.mp4', size = [1500,850], flipHoriz = True)
         self.audio_inst = sound.Sound(self.aud_inst_path + 'stars_instructions.wav')
 
+        #time constrains
+        self.t_blank = 2
+        self.t_twinkle = 2
+        self.t_mask = 1
+        self.timer_limit = 12
+        
         #repeat and continue button
         self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= self.image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.continue_button=visual.ImageStim(win=win, name='continue_button', image= self.image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
@@ -216,38 +222,39 @@ class Star_Game():
         drag_started=False
         thisResp=None
         self.mouse.setVisible(0)
-        #present twinkling star and then put up mask
+
+        t1 = self.t_blank
+        t2 = self.t_blank + self.t_twinkle
+        t3 = self.t_blank + self.t_twinkle + self.t_mask
+        t4 = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
+
         while t<=5:
             t=self.trialClock.getTime()
-            if t<2: self.blank.draw()
-            if t>=2 and t<4:
+            if t<t1: self.blank.draw()
+            if t>=t1 and t<t2:
                 self.bintang.draw()
                 self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
                 self.twinkle.draw()
-            if t>=4 and t<5: self.mask.draw()
-            theseKeys = event.getKeys()
-            if len(theseKeys)>0:
-                if theseKeys[-1] in ['q','escape']: return 'QUIT'
-            win.flip()
+            if t>=t2 and t<t3: self.mask.draw()
+            if t>=t3 and t<=t4:
+                # score = None
+                first_click_time = None
+                second_click_time = None
+                status = 'NOT_STARTED'
 
-        start_time = self.trialClock.getTime()
-        score = None
-        first_click_time=None
-        second_click_time=None
-        status = 'NOT_STARTED'
-        #allow participant to move star and make response, then check if correct
-        self.mouse.setVisible(1)
-        self.mouse.getPos()
-        self.drag.setImage(self.image_path + '/star2.png')
-        while score==None:
-            t=self.trialClock.getTime()
-            if t>=5:
+                #allow participant to move star and make response, then check if correct
+                self.mouse.setVisible(1)
+                self.mouse.getPos()
+                self.drag.setImage(self.image_path + '/star2.png')
                 self.drag.draw()
+                start_time = self.trialClock.getTime()
+
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
                     if self.drag.contains(self.mouse.getPos()):
                         status='STARTED'
                         first_click_time = t - start_time
                         self.drag.setImage(self.image_path + '/star_selected.png')
+
                 if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
                     second_click_time = t - start_time
                     self.drag.setImage(self.image_path + '/star2.png')
@@ -255,31 +262,43 @@ class Star_Game():
                     x_resp = self.drag.pos[0]
                     y_resp = self.drag.pos[1]
                     distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
-                    if distance<=sz:
-                        score=1
-                    else:
-                        score=0
+                    score = int(distance<=sz)
+
                 if event.getKeys(keyList=['q', 'escape']):
                     return 'QUIT'
                 win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
-            if t>17:
-                score=0
-                if not first_click_time: first_click_time=np.nan
-                second_click_time=np.nan
-                x_resp=np.nan
-                y_resp=np.nan
-                distance=np.nan
+            if t>t4:
+                if not first_click_time: first_click_time = np.nan
+                score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
+            
+            theseKeys = event.getKeys()
+            if len(theseKeys)>0:
+                if theseKeys[-1] in ['q','escape']: return 'QUIT'
+            win.flip()
+            
 
         #give feedback
         self.fb.present_fb(win,score,[self.twinkle2,self.circletwinkle,self.drag,self.circledrag])
 
         #write data #headers are ['Trial Number', 'Difficulty','Score','Resp Time','Adaptive']
-        output = {'Difficulty': float(sz), 'Score': int(score), 'First_Click_Time': float(first_click_time), 'Second_Click_Time': float(second_click_time), 'Resp Time': float(second_click_time-first_click_time),'Star_Pos': "(%f, %f)"%(x,y),
-            'Resp_Pos': "(%f, %f)"%(x_resp, y_resp), 'Resp_Distance': float(distance)}
+
+        output = {
+            'threshold_var': float(sz),
+            'level': None,
+            'score': int(score),
+            'resp_time': float(second_click_time-first_click_time),
+            'spatial_click1': float(first_click_time),
+            'spatial_click2': float(second_click_time),
+            'resp_pos': "(%f, %f)"%(x_resp, y_resp),
+            'target_pos': "(%f, %f)"%(x,y),
+            'resp_target_dist': float(distance),
+        }
+        
         print output
         return output
+
 
     #method to get clicks
     def click(self):

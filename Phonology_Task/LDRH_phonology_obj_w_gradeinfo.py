@@ -51,6 +51,9 @@ class Phonology_Game:
         self.mouse.getPos()
         self.trialClock = core.Clock()
 
+        #time constrains
+        self.timer_limit = 12
+
         #start feedback
         self.fb=feedback.fb(win)
 
@@ -214,11 +217,11 @@ class Phonology_Game:
         difficulty = self.trialList[index]['Difficulty']
         stim1 = self.trialList[index]['Stim1'][self.iteration[index]]
         stim2 = self.trialList[index]['Stim2'][self.iteration[index]]
-        answer = self.trialList[index]['Correct Response'][self.iteration[index]]
-        print stim1, stim2, answer
+        target_content = self.trialList[index]['Correct Response'][self.iteration[index]]
+        print stim1, stim2, target_content
 
         #update answer_history
-        self.answer_history.append(answer)
+        self.answer_history.append(target_content)
 
         audio1 = get_stims(stim1)
         audio2 = get_stims(stim2)
@@ -256,22 +259,28 @@ class Phonology_Game:
         self.same_button.draw()
         self.different_button.draw()
         win.flip()
-        start_timer=self.trialClock.getTime()
+        
+        #start timer for response
+        start_time=self.trialClock.getTime()
+        timer=0
 
         #wait for response
         thisResp=None
         self.mouse.getPos()
-        while thisResp==None:
+        while thisResp==None and timer<=self.timer_limit:
             click = self.click()
             #self.mouse.getPos()
             if click and self.same_button.contains(self.mouse): #screen click for "Same" button
-                if answer == 'same': score, thisResp = (1,'same') #correct answer
-                elif answer == 'different': score, thisResp = (0,'same') #incorrect answer
+                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (1,'same','left','left') #correct target_content
+                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (0,'same','left','right') #incorrect target_content
             elif click and self.different_button.contains(self.mouse): #screen click for "Different" button
-                if answer == 'same': score, thisResp = (0, 'different') #incorrect answer
-                elif answer == 'different': score, thisResp = (1, 'different') #correct answer
+                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (0,'different','right','left') #incorrect target_content
+                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (1,'different','right','right') #correct target_content
             if event.getKeys(keyList=['escape']): return 'QUIT'
-        choice_time=self.trialClock.getTime()-start_timer
+            timer = self.trialClock.getTime()-start_time
+        #response time
+        if timer<=self.timer_limit: choice_time = timer
+        else: score, thisResp, thisResp_pos, choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
         self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
@@ -280,9 +289,31 @@ class Phonology_Game:
         #['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps',
         # 'VOT_steps','VOT_or_POA','Difference Position','Distance','Number Phonemes','Phoneme Difference']
         #output = dict(self.trialList[index])
-        output = {'Score':score,'Resp Time':choice_time,'Response':thisResp,'Stim1':stim1,'Stim2':stim2,'Correct Response':answer,'Difficulty':difficulty}
-        for col in ['POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference']:
-            output.update({col:self.trialList[index][col][self.iteration[index]]})
+
+        thresh = ['D3_PA-GA_KA-BA','D2_both__BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA__TA DA__PA-KA_BA-GA_TA-DA','D1_VOT__PA-BA_KA-GA']) 
+        threshold_var = thresh[difficulty-1]
+
+        output = {
+            'threshold_var': threshold_var,
+            'level': difficulty,
+            'score': score,
+            'resp_time': choice_time,
+            'stim1': stim1,
+            'stim2': stim2,
+            'resp': thisResp,
+            'resp_pos': thisResp_pos,
+            'target': target_content,
+            'target_pos': target_pos,
+        }
+        
+        output_header = ['phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist']
+        stim_header = ['Phoneme Difference','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance']
+        for out_col,stim_col in zip(output_header,stim_header):
+            output.update({out_col:self.trialList[index][stim_col][self.iteration[index]]})
+        
+        # output = {'Score':score,'Resp Time':choice_time,'Response':thisResp,'Stim1':stim1,'Stim2':stim2,'Correct Response':answer,'Difficulty':difficulty}
+        # for col in ['POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference']:
+        #     output.update({col:self.trialList[index][col][self.iteration[index]]})
 
         #update iteration of current difficulty
         if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:

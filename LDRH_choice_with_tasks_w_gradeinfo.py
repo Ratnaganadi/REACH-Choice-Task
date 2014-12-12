@@ -52,6 +52,7 @@ just_choice = expInfo['choice']
 # Setup files for saving
 if not os.path.isdir('data'):
     os.makedirs('data')  # if this fails (e.g. permissions) we will get error
+subject_ID = (str(expInfo['participant'])).split('_')[0]
 grade = str(expInfo['grade'])
 filename = 'data' + os.path.sep + '%s_%s' %(expInfo['participant'], expInfo['date'])
 ppt = expInfo['participant']
@@ -164,16 +165,27 @@ else:
 
     #create output structure
     wb = xlwt.Workbook()
-    choice_headers = [("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
+    choice_headers = [("choice_task_{choice}".format(choice=i+1), "choice_points_{choice}".format(choice=i+1), "choice_pos_{choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
 
-    all_sheets = {'Main': dict(sheet = wb.add_sheet('Main'), headers=['Trial Number', 'Game', 'Difficulty', 'Score','Type','Icon_Pos', 'Task Version'] + choice_headers, row=1),
-        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['Trial Number', 'Operation', 'Difficulty','Stimulus','Target','Foil1','Foil2','Foil3','Score','Resp Time', 'Task Version'], row=1),
-        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['Trial Number', 'Difficulty','Correct','Incorrect','Ratio','Score','Resp Time', 'Task Version'], row=1),
-        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['Trial Number', 'Difficulty','Grade','Target','Foil1','Foil2','Foil3','Foil4','Response','Score','Resp Time', 'Task Version'], row=1),
-        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference', 'Task Version'], row=1),
-        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['Difficulty', 'Score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance', 'Task Version'], row=1),
-        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['Trial Number', 'Difficulty', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','Score','Resp Time', 'Task Version'], row=1),
-        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['Task','Instructions','Practice','Staircase','Total', 'Task Version'],row=1)}
+    all_sheets = {
+        # 'Main': dict(sheet = wb.add_sheet('Main'), headers = 'subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'], row=1),
+        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
+        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
+        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
+        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
+        'Dots' dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1)
+        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total', 'task_version'],row=1)}
+    }
+    # all_sheets = {
+    #     'Main': dict(sheet = wb.add_sheet('Main'), headers=['trial_number', 'task', 'level', 'score','type','choice_icon_pos', 'task_version'] + choice_headers, row=1),
+    #     'Math': dict(sheet = wb.add_sheet('Math'), headers = ['trial_number', 'Operation', 'level','Stimulus','Target','Foil1','Foil2','Foil3','score','Resp Time', 'task_version'], row=1),
+    #     'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['trial_number', 'level','Correct','Incorrect','Ratio','score','Resp Time', 'task_version'], row=1),
+    #     'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['trial_number', 'level','Grade','Target','Foil1','Foil2','Foil3','Foil4','Response','score','Resp Time', 'task_version'], row=1),
+    #     'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['trial_number', 'level','Stim1','Stim2','Response','Correct Response','score','Resp Time','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference', 'task_version'], row=1),
+    #     'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['level', 'score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance', 'task_version'], row=1),
+    #     'Music': dict(sheet = wb.add_sheet('Music'), headers = ['trial_number', 'level', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','score','Resp Time', 'task_version'], row=1),
+    #     'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total', 'task_version'],row=1)}
 
     #initialize headers for each sheet
     for key in all_sheets.keys():
@@ -366,32 +378,37 @@ def run_staircase(task, operation=None):
         if output=='QUIT': pickle_and_quit()
 
         #first write trial number to output, then write the output variables
-        all_sheets[task]['sheet'].write(all_sheets[task]['row'], 0, trial_number)
-        for col,header in enumerate(all_sheets[task]['headers'][1:]):
+        header_for_all = [subject_ID,task,'threshold',trial_number]
+        for col,header in enumerate(header_for_all):
+            all_sheets[task]['sheet'].write(all_sheets[task]['row'],col,header)
+        # all_sheets[task]['sheet'].write(all_sheets[task]['row'], 0, trial_number)
+
+        for col,header in enumerate(all_sheets[task]['headers'][4:]):
             if header=="Task Version":
-                all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+1, VERSION)
+                all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+4, VERSION)
             else:
-                all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+1, output[header])
+                all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+4, output[header])
         #increment row on output structure
         all_sheets[task]['row'] += 1
 
         #write output for main sheet
-        main_output = {'Trial Number':trial_number, 'Game': task, 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'threshold','Icon_Pos':'', 'Task Version': VERSION}
+        "!!!!!!!!!!! LOOK AT IT AGAIN !!!!!!!!!!!!"
+        main_output = {'trial_number':trial_number, 'task': task, 'level': output['level'],'score':output['score'],'type':'threshold','choice_icon_pos':'', 'task_version': VERSION}
         for col,header in enumerate(all_sheets['Main']['headers']):
             all_sheets['Main']['sheet'].write(trial_number, col, main_output.get(header, ""))
 
         #update handler only if not a "same" trial from tones or phonology
-        #if 'Correct Response' in output.keys() and output['Correct Response'].lower() != 'same': all_handlers[task].addData(output['Score'])
+        #if 'Correct Response' in output.keys() and output['Correct Response'].lower() != 'same': all_handlers[task].addData(output['score'])
         #else: print 'same trial-- did not update stairhandler'
-        handler.addData(output['Score'])
+        handler.addData(output['score'])
 
         # This code is to boost the staircase level of 'lower' operations when a student is successful on
         # more difficult operations. As a first pass, this simply records a success in *all* operations up to the one
         # that the student achieves the success in.
-        if operation and output['Score']:
+        if operation and output['score']:
             operations = ['addition', 'subtraction', 'multiplication', 'division']
             for operation_name in operations[0:operations.index(operation)]:
-                all_handlers[task][operation_name].addData(output['Score'])
+                all_handlers[task][operation_name].addData(output['score'])
 
         #increment trial number
         trial_number+=1
@@ -402,7 +419,7 @@ def run_staircase(task, operation=None):
 
     except StopIteration:
         output={}
-        output['Score'] = 'StopIteration'
+        output['score'] = 'StopIteration'
         output['thisIncrement'] = handler.intensities[-1]
 
     return output
@@ -453,14 +470,14 @@ if not just_choice:
                         output = run_staircase(task, operation=operation)
 
                         for new_operation, reqs in math_benchmarks.items():
-                            if operation in reqs.keys() and output['Score'] and (len(all_conditions[task][operation]) - output['thisIncrement']) >= reqs[operation]['thresh']: reqs[operation]['count']+=1
+                            if operation in reqs.keys() and output['score'] and (len(all_conditions[task][operation]) - output['thisIncrement']) >= reqs[operation]['thresh']: reqs[operation]['count']+=1
                         for new_operation, reqs in math_benchmarks.items():
                             if False not in [benchmark['count'] >=3 for req_operation, benchmark in reqs.items()]:
                                 active_operations.append(new_operation)
                                 math_benchmarks.pop(new_operation)
                                 print '{} is now active'.format(new_operation)
                         #separate logic for OR case with multiplication
-                        if operation=='addition' and output['Score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6:
+                        if operation=='addition' and output['score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6:
                             add_count_for_mult+=1
 
                         if 'multiplication' not in active_operations and 'multiplication' in math_benchmarks.keys() and add_count_for_mult >= 3:
@@ -469,7 +486,7 @@ if not just_choice:
                             print '{} is now active'.format(new_operation)
 
                         #handle StopIterations
-                        if output['Score']=='StopIteration':
+                        if output['score']=='StopIteration':
                             if sum(streaks.get(operation, {}).get(output['thisIncrement'], []))/float(len(streaks.get(operation, {}).get(output['thisIncrement'], []))) >= 0.8:
                                 all_thresholds[task][operation] = output['thisIncrement']
                             else:
@@ -505,7 +522,7 @@ if not just_choice:
                 output = run_staircase(task)
 
                 #handle StopIterations
-                if output['Score']=='StopIteration':
+                if output['score']=='StopIteration':
                     #record threshold and remove operation
                     if sum(streaks.get(output['thisIncrement'], []))/float(len(streaks.get(output['thisIncrement'], []))) >= 0.8:
                         all_thresholds[task] = output['thisIncrement']
@@ -706,7 +723,7 @@ while True:
         else:
             output = all_games[this_task["name"]].run_game(win, grade, all_thresholds[this_task["name"]]) #None, all_sheets[this_task["name"]]['sheet'])
 
-        score = output.get('Score', 0) if output else 0
+        score = output.get('score', 0) if output else 0
         thesePoints += score*(this_task["points"])*point_intervals
 
         #first write trial number to output
@@ -722,7 +739,7 @@ while True:
         all_sheets[this_task["name"]]['row'] += 1
 
         #write output for main sheet
-        main_output = {'Trial Number':trial_number, 'Game': this_task["name"], 'Difficulty': output['Difficulty'],'Score':output['Score'],'Type':'choice','Icon_Pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
+        main_output = {'trial_number':trial_number, 'task': this_task["name"], 'level': output['level'],'score':output['score'],'type':'choice','choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
         choice_output = {("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
         main_output.update(choice_output)
         for col,header in enumerate(all_sheets['Main']['headers']):

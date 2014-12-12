@@ -399,7 +399,9 @@ class Reading_Game:
 
         #calculate response time
         if timer<=15: choice_time=timer
-        else: choice_time = 'timed out'
+        else: 
+            choice_time = 'timed out'
+            score = 0
 
         self.scores.append(score) #store score data on scores=[]
 
