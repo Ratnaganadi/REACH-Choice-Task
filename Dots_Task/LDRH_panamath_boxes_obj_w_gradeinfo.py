@@ -196,7 +196,6 @@ class Dots_Game():
         target_pos = box_pos[0]
         foil_pos = box_pos[1]
         xpos = {'left': -230, 'right': 230}
-
         
         for box,img,dots,pos in zip([self.target_box,self.foil_box],[self.target,self.foil],[target_path,foil_path],box_pos)
             img.setImage(dots)
@@ -204,16 +203,17 @@ class Dots_Game():
             box.setPos([xpos[pox],0])
             box.color = "white"
 
+        t1 = self.t_fixcross
         t2 = self.t_fixcross + self.t_fixline
-        t3 = self.t_fixcross + self.t_fixline + self.timer_limit
+        tf = self.t_fixcross + self.t_fixline + self.timer_limit
         score = None
-        while score!=None:
+        while score==None:
             t = self.trialClock.getTime()
-            if t<self.t_fixcross: self.fix_point.draw()
-            if t>=self.t_fixcross and t<t2:
+            if t<=t1: self.fix_point.draw()
+            if t>t1 and t<=t2:
                 self.target_box.draw()
                 self.foil_box.draw()
-            if t>=t2 and t<=t3:
+            if t>t2 and t<=tf:
                 self.target_box.draw()
                 self.foil_box.draw()
                 self.target.draw()
@@ -234,7 +234,7 @@ class Dots_Game():
                         self.foil_box.color = "gold"
                     if event.getKeys(keyList=['escape']): return 'QUIT'
                     choice_time = self.trialClock.getTime()-start_time
-            if t>t3: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+            if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
         self.fb.present_fb(win,score,[self.target_box,self.foil_box,self.fix_point,self.target,self.foil])

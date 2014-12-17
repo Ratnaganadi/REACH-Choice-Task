@@ -49,20 +49,23 @@ class Math_Game:
         self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #create stimuli
-        self.foil1 = visual.TextStim(win, pos=[0,0],height=70, text='Foil1')
-        self.foil2 = visual.TextStim(win, pos=[0,0],height=70, text='Foil2')
-        self.foil3 = visual.TextStim(win, pos=[0,0],height=70, text='Foil3')
-        self.foils = [self.foil1,self.foil2,self.foil3]
-        self.target = visual.TextStim(win, pos=[0,0],height=70, text='Target.')
         self.text_stimulus = visual.TextStim(win, pos=[0,200],height=80, text='Stimulus.')
         self.dot_stimulus = visual.ImageStim(win,image=None,pos=[0,180],size=[260,260])
         self.fixation = visual.ImageStim(win, color='black', image=None, mask='circle',size=5)
-        self.foil1_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
-        self.foil2_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')
-        self.foil3_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')
-        self.target_button4 = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
-        self.foil1_button2 = visual.ImageStim(win, image= image_path + '/general_button.png')
-        self.target_button2 = visual.ImageStim(win,image= image_path + '/general_button.png')
+        
+        #for texts
+        self.target = visual.TextStim(win, pos=[0,0],height=70, text='Target.')
+        self.foil1 = visual.TextStim(win, pos=[0,0],height=70, text='Foil1')
+        self.foil2 = visual.TextStim(win, pos=[0,0],height=70, text='Foil2')
+        self.foil3 = visual.TextStim(win, pos=[0,0],height=70, text='Foil3')
+        
+        #for 2 & 4 buttons
+        self.target_2button = visual.ImageStim(win,image= image_path + '/general_button.png')
+        self.foil_2button = visual.ImageStim(win, image= image_path + '/general_button.png')
+        self.target_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
+        self.foil1_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
+        self.foil2_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')
+        self.foil3_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')
 
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
@@ -187,25 +190,41 @@ class Math_Game:
             this_iteration[index] = 0
 
         #randomize the position of the target and foil
-        order= round(numpy.random.random())*2-1 #will be either +1(right) or -1(left)
-        four_xpositions = [-360, -120, 120, 360]
-        two_xpositions = [-260, 260]
-        if these_conditions[index]['Foil2'] and these_conditions[index]['Foil3']:
-            number_options=4
-            xpositions = four_xpositions
-            target_button = self.target_button4
-            foil_buttons = [self.foil1_button4, self.foil2_button4, self.foil3_button4]
-            foils = [self.foil1,self.foil2,self.foil3]
-        else:
-            number_options=2
-            xpositions = two_xpositions
-            target_button = self.target_button2
-            foil_buttons = [self.foil1_button2]
-            foils = [self.foil1]
+        four_xpositions = {-360:'left', -120:'mid-left', 120:'mid-right', 360:'right'}
+        two_xpositions = {-260:'left', 260:'right'}
+        target_string = str(these_conditions[index]['Correct'][this_iteration[index]])
+        foil1_string = str(these_conditions[index]['Foil1'][this_iteration[index]])
+        foil2_string = str(these_conditions[index]['Foil2'][this_iteration[index]])
+        foil3_string = str(these_conditions[index]['Foil3'][this_iteration[index]])
 
+        self.text_2blist = [self.target,self.foil1]
+        # self.text_4blist = [self.target,self.foil1,self.foil2,self.foil3]
+        self.button_2blist = [self.target_2button,self.foil_2button]
+        # self.button_4blist = [self.target_4button,self.foil1_4button,self.foil2_4button,self.foil3_4button]
+
+        if foil2_string!='' and foil3_string!='':
+            foil_string = [foil1_string,foil2_string,foil3_string]
+            foil_text = [self.foil1,self.foil2,self.foil3]
+            foil_button = [self.foil1_4button,self.foil2_4button,self.foil3_4button]
+            target_button = self.target_4bbutton
+            pos = four_xpositions
+            xpositions = four_xpositions.keys()
+
+        else:
+            foil_string = [foil1_string]
+            foil_text = [self.foil1]
+            foil_button = [self.foil_2button]
+            target_button = self.target_2button
+            pos = two_xpositions
+            xpositions = two_xpositions.keys()
+
+        points = [1,0,0,0]
         shuffle(xpositions)
-        for xpos,button,object in zip(xpositions, [target_button]+foil_buttons, [self.target]+foils):
-            object.setPos([xpos,-200])
+        object_var = zip(points,[target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
+        for pts,string,text,xpos,button in object_var:
+            text.setText(string)
+            test.setColor('white')
+            text.setPos([xpos,-200])
             button.setPos([xpos,-200])
 
         #set the text for the stimuli
@@ -221,75 +240,50 @@ class Math_Game:
             self.text_stimulus.setText(stim_string)#[self.iteration[index]]))
             self.stimulus=self.text_stimulus
 
-        # set target and foils
-        target_string = str(these_conditions[index]['Correct'][this_iteration[index]])
-        self.target.setText(target_string)#[self.iteration[index]]))
-        self.target.setColor('white')
 
-        foil1_string = str(these_conditions[index]['Foil1'][this_iteration[index]])
-        self.foil1.setText(foil1_string)
-        self.foil1.setColor('white')
+        score==None
+        t = self.trialClock.getTime()
+        while score==None:
+            if t<=tf:
+                self.stimulus.draw()
+                self.fixation.draw()
 
-        if number_options==4:
-            foil2_string = str(these_conditions[index]['Foil2'][this_iteration[index]])
-            self.foil2.setText(foil2_string)
-            self.foil2.setColor('white')
-            foil3_string = str(these_conditions[index]['Foil3'][this_iteration[index]])
-            self.foil3.setText(foil3_string)
-            self.foil3.setColor('white')
-        else:
-            foil2_string=''
-            foil3_string=''
+                for text,button in zip([self.target]+foil_text,[target_button]+foil_button):
+                    button.draw()
+                    text.draw()
 
-        for i,foil in enumerate(foils):
-            foil.setText( str(these_conditions[index]['Foil{}'.format(i+1)][this_iteration[index]]) )#[self.iteration[index]]))
-            foil.setColor('white')
-        self.target.setText(str(these_conditions[index]['Correct'][this_iteration[index]]))#[self.iteration[index]]))
-        self.target.setColor('white')
+                start_time = self.trialClock.getTime()
+                timer = 0
 
-        #draw all stimuli
-        self.stimulus.draw()
-        target_button.draw()
-        self.target.draw()
-        self.fixation.draw()
-        for button, foil in zip(foil_buttons, foils):
-            button.draw()
-            foil.draw()
-        win.flip()
-
-        #start the timer for the response
-        start_time=self.trialClock.getTime()
-        timer=0
-
-        #get response
-        score=None
-        self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-        while score==None and timer<=12:
-            if self.click():
-                if target_button.contains(self.mouse):
-                    score=1
-                    self.target.setColor('gold')
-                    response_chosen = self.target.text
-                for button, foil in zip(foil_buttons, foils):
-                    if button.contains(self.mouse):
-                        score=0
-                        foil.setColor('gold')
-                        response_chosen = foil.text
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-            timer=self.trialClock.getTime()-start_time
-        #calculate response time
-        if timer<12: response_time = timer
-        else:
-            response_time = 'timed out'
-            score=0
-            response_chosen = None
+                click = self.click()
+                thisResp = None
+                self.mouse.getPos()
+                while thisResp==None:
+                    for pts,string,text,xpos,button in object_var:
+                        if click: and button.contains(self.mouse):
+                            score,thisResp,thisResp_pos = (pts,string,pos[xpos])
+                            text.setColor('gold')
+                    if event.getKeys(keyList=['escape']): return 'QUIT'
+                    choice_time = self.trialClock.getTime()-start_time
+            if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
         self.fb.present_fb(win,score,[self.stimulus,target_button,self.target]+[foil_button for foil_button in foil_buttons]+[foil for foil in foils]) #[self.foil1_button,self.foil2_button,self.foil3_button,self.target_button,self.foil1,self.foil2, self.foil3,self.target])
 
-        #write data #headers are ['Difficulty','Stimulus','Target','Foil','Score','Resp Time','Adaptive']
-        output = {'Difficulty': difficulty, 'Stimulus': stim_string, 'Target': target_string, 'Foil1': foil1_string,'Foil2': foil2_string,'Foil3': foil3_string, 'Response Chosen': response_chosen, 'Score': score,
-            'Resp Time': response_time, 'Operation': operation}
+        #write data
+        output = {
+            'threshold_var': operation,
+            'level': difficulty,
+            'score': score,
+            'resp_time': choice_time,
+            'stim': stim_string,
+            'resp': thisResp,
+            'resp_pos': thisResp_pos
+        }
+        output_header = ['target','foil1','foil2','foil3']
+        for var,string,xpos in zip(output_header,[target_string]+foil_string,xpositions):
+            output[var] = string
+            output[var+'_pos'] = pos[xpos]
 
         #update iteration of current difficulty
         if this_iteration[index] == len(these_conditions[index]['Correct'])-1: this_iteration[index] = 0

@@ -53,8 +53,10 @@ class Tones_Game:
         self.trialClock = core.Clock()
 
         #time constrains
-        self.timer_limit = 12
-
+        self.t_initialspeaker = 1
+        self.t_stimgap = 1
+        self.t_timer_limit = 12
+        
         #start feedback
         self.fb=feedback.fb(win)
 
@@ -214,10 +216,14 @@ class Tones_Game:
             count+=1
 
         #load trial variables
-        difficulty = trialList[index]['Corr_Answer'][self.iteration[index]]
+        difficulty = self.trialList[index]['Difficulty']
         tones_root = trialList[index]['Root'][self.iteration[index]]
         raw_soundA = eval(trialList[index]['soundA'][self.iteration[index]])
         raw_soundB = eval(trialList[index]['soundB'][self.iteration[index]])
+        target_content = trialList[index]['Corr_Answer'][self.iteration[index]]
+        contents = ['same','different']
+        contents.remove(target_content)
+        foil_content = contents
 
         #update answer_history
         self.answer_history.append(target_content)
@@ -272,71 +278,56 @@ class Tones_Game:
             soundB.setVolume(note_volume)
             os.remove(fn)
 
-        #draw the center dot
-        self.speaker.draw()
-        win.flip()
+        sounds = [[soundA,raw_soundA],[soundB,raw_soundB]]
+        shuffle(sounds)
+        stim1 = sounds[0][0]
+        stim2 = sounds[1][0]
+        raw_stim1 = str(sounds[0][1])
+        raw_stim2 = str(sounds[1][1])
+        t_stim1 = stim1.getDuration()
+        t_stim2 = stim2.getDuration()
 
-        #play the stimuli
-        core.wait(1.0)
-        self.speaker_playing.draw()
-        win.flip()
+        t1 = self.t_initialspeaker
+        t2 = self.t_initialspeaker + t_stim1
+        t3 = self.t_initialspeaker + t_stim1 + self.t_stimgap
+        t4 = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2
+        tf = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2 + self.t_timer_limit
 
-        #play first melody
-        sounds = [soundA, soundB]
-        this_sound = sounds.pop(choice([0,1]))
-        this_sound.play()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + this_sound.getDuration():
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+        pos = {'same':'left', 'different':'right'}
+        target_pos = pos[target_content]
+        foil_pos = pos[foil_content]
 
-        #after tone is played, wait one second and then play second tone
-        self.speaker.draw()
-        win.flip()
-        core.wait(1.0)
-        self.speaker_playing.draw()
-        win.flip()
+        score=None
+        while score==None:
+            t = self.trialClock.getTime()
+            
+            if t<=t1: self.speaker.draw() #; win.flip()
+            if t>t1 and t<=t2:
+                self.speaker_playing.draw()
+                stim1.play()
+            if t>t2 and t<=t3: self.speaker.draw()
+            if t>t3 and t<=t4:
+                self.speaker_playing.draw()
+                stim2.play()
+            if t>t4 and t<=t5:
+                self.speaker.draw()
+                self.same_button.draw()
+                self.different_button_draw()
 
-        #play second melody
-        this_sound = sounds[0]
-        this_sound.play()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + this_sound.getDuration():
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+                start_time = self.trialClock.getTime()
+                timer = 0
 
-        #self.same_text.setColor('White')
-        #self.different_text.setColor('White')
-        #after the second tone has finished, put up the same and different buttons
-        self.speaker.draw()
-        self.same_button.draw()
-        #self.same_text.draw()
-        self.different_button.draw()
-        #self.different_text.draw()
-        win.flip()
-
-        #start timer for response
-        start_time=self.trialClock.getTime()
-        timer=0
-
-        #wait for response
-        thisResp=None
-        score = 0
-        self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-        while thisResp==None and timer<=self.timer_limit:
-            click = self.click()
-            #self.mouse.getPos()
-            if click and self.same_button.contains(self.mouse): #screen click for "Same" button
-                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (1,'same','left','left') #correct target_content
-                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (0,'same','left','right') #incorrect target_content
-            elif click and self.different_button.contains(self.mouse): #screen click for "Different" button
-                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (0,'different','right','left') #incorrect target_content
-                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (1,'different','right','right') #correct target_content
-            if event.getKeys(keyList=['escape']): return 'QUIT'
-            timer=self.trialClock.getTime()-start_time
-
-        #response time
-        if timer<=self.timer_limit: choice_time = timer
-        else: score, thisResp, thisResp_pos, choice_time = (0,'timed_out','timed_out','timed_out')
-
+                click = self.click()
+                thisResp = None
+                self.mouse.getPos()
+                while thisResp==None:
+                    if click and self.target_button.contains(self.mouse):
+                        score,thisResp,thisResp_pos = (1,target_content,target_pos])
+                    elif click and self.foil_button.contains(self.mouse):
+                        score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                    if event.getKeys(keyList=['escape']): return 'QUIT'
+                    choice_time=self.trialClock.getTime()-start_time
+            if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
         self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
@@ -350,8 +341,8 @@ class Tones_Game:
             'level': difficulty,
             'score': score,
             'resp_time': choice_time,
-            'stim1': str(raw_soundA),
-            'stim2': str(raw_soundB),
+            'stim1': str(raw_stim1),
+            'stim2': str(raw_stim2),
             'resp': thisResp,
             'resp_pos': thisResp_pos,
             'target': target_content,

@@ -49,7 +49,7 @@ class Star_Game():
         self.t_twinkle = 2
         self.t_mask = 1
         self.timer_limit = 12
-        
+
         #repeat and continue button
         self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= self.image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.continue_button=visual.ImageStim(win=win, name='continue_button', image= self.image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
@@ -220,23 +220,23 @@ class Star_Game():
         print 'x, y:', x, y
 
         drag_started=False
-        thisResp=None
+        score=None
         self.mouse.setVisible(0)
 
         t1 = self.t_blank
         t2 = self.t_blank + self.t_twinkle
         t3 = self.t_blank + self.t_twinkle + self.t_mask
-        t4 = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
+        tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
 
-        while t<=5:
+        while score!=None:
             t=self.trialClock.getTime()
             if t<t1: self.blank.draw()
-            if t>=t1 and t<t2:
+            if t>t1 and t<=t2:
                 self.bintang.draw()
                 self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
                 self.twinkle.draw()
-            if t>=t2 and t<t3: self.mask.draw()
-            if t>=t3 and t<=t4:
+            if t>t2 and t<=t3: self.mask.draw()
+            if t>t3 and t<=tf:
                 # score = None
                 first_click_time = None
                 second_click_time = None
@@ -269,7 +269,7 @@ class Star_Game():
                 win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
-            if t>t4:
+            if t>tf:
                 if not first_click_time: first_click_time = np.nan
                 score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
             

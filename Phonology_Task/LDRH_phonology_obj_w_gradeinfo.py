@@ -52,6 +52,8 @@ class Phonology_Game:
         self.trialClock = core.Clock()
 
         #time constrains
+        self.t_initialspeaker = 1
+        self.t_stimgap = 1
         self.timer_limit = 12
 
         #start feedback
@@ -184,12 +186,6 @@ class Phonology_Game:
             if self.trialList[question]['Difficulty'] == (len(self.trialList)-thisIncrement):
                 index = question
 
-        def play_audio(audio,audio_length):
-            audio.play()
-            start_time=self.trialClock.getTime()
-            while start_time+audio_length > self.trialClock.getTime():
-                if event.getKeys(keyList=['escape']): return 'QUIT'
-
         def get_stims(stim):
             phonemes = [stim[x:x+2] for x in [0,2,4]]
             stim_files = [join(self.phonologystim_dir, phoneme.upper()+'.wav') for phoneme in phonemes]
@@ -197,17 +193,17 @@ class Phonology_Game:
             self.concat_wavs(stim_files, fn)
             audio = sound.Sound(value=fn)
             audio_length = audio.getDuration()
-            return [audio,audio_length]
+            return [audio,audio_length,stim]
             os.remove(fn)
 
         # Ensure iteration does not exceed length of available trials:
-        if self.iteration[index] > len(self.trialList[index]['Stim1'])-1:
+        if self.iteration[index] > len(self.trialList[index]['StimA'])-1:
             self.iteration[index] = 0
 
         #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
         count=0 #give up after 50 tries
         while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and self.trialList[index]['Correct Response'][self.iteration[index]]==self.answer_history[-1] and count<50:
-            if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
+            if self.iteration[index] == len(self.trialList[index]['StimA'])-1:
                 self.iteration[index] = 0
             else:
                 self.iteration[index] += 1
@@ -215,81 +211,74 @@ class Phonology_Game:
 
         #load trial variables
         difficulty = self.trialList[index]['Difficulty']
-        stim1 = self.trialList[index]['Stim1'][self.iteration[index]]
-        stim2 = self.trialList[index]['Stim2'][self.iteration[index]]
+        stimA = self.trialList[index]['StimA'][self.iteration[index]]
+        stimB = self.trialList[index]['StimB'][self.iteration[index]]
         target_content = self.trialList[index]['Correct Response'][self.iteration[index]]
-        print stim1, stim2, target_content
+        contents = ['same','different']
+        contents.remove(target_content)
+        foil_content = contents
+        print stimA, stimB, target_content
 
         #update answer_history
         self.answer_history.append(target_content)
 
-        audio1 = get_stims(stim1)
-        audio2 = get_stims(stim2)
-        audio_order = [audio1,audio2]
+        audioA = get_stims(stimA) #getstim() returns [audio,audio_length]
+        audioB = get_stims(stimB)
+
+        audio_order = [audioA,audioB]
         shuffle(audio_order)
 
-        #draw the center dot
-        self.speaker.draw()
-        win.flip()
+        stim1 = audio_order[0][0]
+        stim2 = audio_order[1][0]
+        raw_stim1 = audio_order[0][2]
+        raw_stim2 = audio_order[1][2]
+        t_stim1 = audio_order[0][1]
+        t_stim2 = audio_order[1][1]
 
-        #wait a second
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + 1.0:
-            if event.getKeys(keyList=['escape']): return 'QUIT'
-        self.speaker_playing.draw()
-        win.flip()
+        t1 = self.t_initialspeaker
+        t2 = self.t_initialspeaker + t_stim1
+        t3 = self.t_initialspeaker + t_stim1 + self.t_stimgap
+        t4 = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2
+        tf = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2 + self.t_timer_limit
 
+        pos = {'same':'left', 'different':'right'}
+        target_pos = pos[target_content]
+        foil_pos = pos[foil_content]
 
-        play_audio(audio_order[0][0],audio_order[0][1])
+        while score==None:
+            t = self.trialClock.getTime()
+            if t<=t1:self.speaker.draw()
+            if t>t1 and t<=t2:
+                self.speaker_playing.draw()
+                stim1.play()
+            if t>t2 and t<=t3: self.speaker.draw()
+            if t>t3 and t<=t4:
+                self.speaker_playing.draw()
+                stim2.play()
+            if t>t4 and t<=t5:
+                self.speaker.draw()
+                self.same_button.draw()
+                self.different_button_draw()
 
-        #after tone is played, wait one second and then play second tone
-        self.speaker.draw()
-        win.flip()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + 1.0:
-            if event.getKeys(keyList=['escape']): return 'QUIT'
-        self.speaker_playing.draw()
-        win.flip()
+                start_time = self.trialClock.getTime()
+                timer = 0
 
-        play_audio(audio_order[1][0],audio_order[1][1])
-
-
-        #after the second tone has finished, put up the same and different buttons
-        self.speaker.draw()
-        self.same_button.draw()
-        self.different_button.draw()
-        win.flip()
-        
-        #start timer for response
-        start_time=self.trialClock.getTime()
-        timer=0
-
-        #wait for response
-        thisResp=None
-        self.mouse.getPos()
-        while thisResp==None and timer<=self.timer_limit:
-            click = self.click()
-            #self.mouse.getPos()
-            if click and self.same_button.contains(self.mouse): #screen click for "Same" button
-                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (1,'same','left','left') #correct target_content
-                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (0,'same','left','right') #incorrect target_content
-            elif click and self.different_button.contains(self.mouse): #screen click for "Different" button
-                if target_content == 'same': score, thisResp, thisResp_pos, target_pos = (0,'different','right','left') #incorrect target_content
-                elif target_content == 'different': score, thisResp, thisResp_pos, target_pos = (1,'different','right','right') #correct target_content
-            if event.getKeys(keyList=['escape']): return 'QUIT'
-            timer = self.trialClock.getTime()-start_time
-        #response time
-        if timer<=self.timer_limit: choice_time = timer
-        else: score, thisResp, thisResp_pos, choice_time = (0,'timed_out','timed_out','timed_out')
+                click = self.click()
+                thisResp = None
+                self.mouse.getPos()
+                while thisResp==None:
+                    if click and self.target_button.contains(self.mouse):
+                        score,thisResp,thisResp_pos = (1,target_content,target_pos])
+                    elif click and self.foil_button.contains(self.mouse):
+                        score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                    if event.getKeys(keyList=['escape']): return 'QUIT'
+                    choice_time=self.trialClock.getTime()-start_time
+            if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
         self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
 
         #write data
-        #['Trial Number', 'Difficulty','Stim1','Stim2','Response','Correct Response','Score','Resp Time','POA_steps',
-        # 'VOT_steps','VOT_or_POA','Difference Position','Distance','Number Phonemes','Phoneme Difference']
-        #output = dict(self.trialList[index])
-
         thresh = ['D3_PA-GA_KA-BA','D2_both__BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA__TA DA__PA-KA_BA-GA_TA-DA','D1_VOT__PA-BA_KA-GA']) 
         threshold_var = thresh[difficulty-1]
 
@@ -298,8 +287,8 @@ class Phonology_Game:
             'level': difficulty,
             'score': score,
             'resp_time': choice_time,
-            'stim1': stim1,
-            'stim2': stim2,
+            'stim1': raw_stim1,
+            'stim2': raw_stim2,
             'resp': thisResp,
             'resp_pos': thisResp_pos,
             'target': target_content,
@@ -311,12 +300,8 @@ class Phonology_Game:
         for out_col,stim_col in zip(output_header,stim_header):
             output.update({out_col:self.trialList[index][stim_col][self.iteration[index]]})
         
-        # output = {'Score':score,'Resp Time':choice_time,'Response':thisResp,'Stim1':stim1,'Stim2':stim2,'Correct Response':answer,'Difficulty':difficulty}
-        # for col in ['POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference']:
-        #     output.update({col:self.trialList[index][col][self.iteration[index]]})
-
         #update iteration of current difficulty
-        if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
+        if self.iteration[index] == len(self.trialList[index]['StimA'])-1:
             self.iteration[index] = 0
         else:
             self.iteration[index] += 1
