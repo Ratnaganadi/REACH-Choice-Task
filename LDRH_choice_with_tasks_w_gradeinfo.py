@@ -305,7 +305,7 @@ for ring in range(len(colors_for_rings)):
 all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
     'Music': Tones_Script.Tones_Game(win, all_conditions['Music']),
     'Dots': Dots_Script.Dots_Game(win, all_conditions['Dots']),
-    'Reading': Reading_Script.Reading_Game(win, all_conditions['Reading']),
+    # 'Reading': Reading_Script.Reading_Game(win, all_conditions['Reading']),
     'Phonology': Phonology_Script.Phonology_Game(win, all_conditions['Phonology']),
     'Spatial': Star_Script.Star_Game(win)}
 
@@ -448,13 +448,13 @@ if not just_choice:
         # if all_games[task].run_instructions(win)=='QUIT': pickle_and_quit()
         # instructions_times[task] = trialClock.getTime() - instructions_start
 
-        #run practice for task
-        practice_start = trialClock.getTime()
-        if hasattr(all_games[task], 'run_practice'):
-            if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
-        practice_times[task] = trialClock.getTime() - practice_start
+        # #run practice for task
+        # practice_start = trialClock.getTime()
+        # if hasattr(all_games[task], 'run_practice'):
+        #     if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
+        # practice_times[task] = trialClock.getTime() - practice_start
 
-        #run staircase; math needs special circumstances
+        # #run staircase; math needs special circumstances
         staircasing_start = trialClock.getTime()
         if task=='Math':
             if 'Math' not in all_thresholds.keys():
