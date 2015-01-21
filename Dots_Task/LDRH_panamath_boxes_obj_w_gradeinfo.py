@@ -197,7 +197,7 @@ class Dots_Game():
         foil_pos = box_pos[1]
         xpos = {'left': -230, 'right': 230}
         
-        for box,img,dots,pos in zip([self.target_box,self.foil_box],[self.target,self.foil],[target_path,foil_path],box_pos)
+        for box,img,dots,pos in zip([self.target_box,self.foil_box],[self.target,self.foil],[target_path,foil_path],box_pos):
             img.setImage(dots)
             img.setPos([xpos[pos],0])
             box.setPos([xpos[pox],0])
