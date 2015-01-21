@@ -443,10 +443,10 @@ if not just_choice:
         while trialClock.getTime()<start_time+3:
             if event.getKeys(keyList=['q', 'escape']): pickle_and_quit()
 
-        #run instructions for task
-        instructions_start = trialClock.getTime()
-        if all_games[task].run_instructions(win)=='QUIT': pickle_and_quit()
-        instructions_times[task] = trialClock.getTime() - instructions_start
+        # #run instructions for task
+        # instructions_start = trialClock.getTime()
+        # if all_games[task].run_instructions(win)=='QUIT': pickle_and_quit()
+        # instructions_times[task] = trialClock.getTime() - instructions_start
 
         #run practice for task
         practice_start = trialClock.getTime()
