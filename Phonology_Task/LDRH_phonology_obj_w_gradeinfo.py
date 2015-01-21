@@ -54,7 +54,7 @@ class Phonology_Game:
         #time constrains
         self.t_initialspeaker = 1
         self.t_stimgap = 1
-        self.timer_limit = 12
+        self.t_timer_limit = 12
 
         #start feedback
         self.fb=feedback.fb(win)
