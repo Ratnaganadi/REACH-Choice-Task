@@ -5,7 +5,7 @@ from os.path import join, isfile
 from PIL import Image
 import random
 from random import choice, shuffle
-from base_game import Base_Game
+# from base_game import Base_Game
 if __name__ != '__main__': from Feedback import feedback
 
 touchscreen = True
