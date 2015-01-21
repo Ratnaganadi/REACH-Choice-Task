@@ -197,13 +197,13 @@ class Phonology_Game:
             os.remove(fn)
 
         # Ensure iteration does not exceed length of available trials:
-        if self.iteration[index] > len(self.trialList[index]['StimA'])-1:
+        if self.iteration[index] > len(self.trialList[index]['Stim1'])-1:
             self.iteration[index] = 0
 
         #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
         count=0 #give up after 50 tries
         while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and self.trialList[index]['Correct Response'][self.iteration[index]]==self.answer_history[-1] and count<50:
-            if self.iteration[index] == len(self.trialList[index]['StimA'])-1:
+            if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
                 self.iteration[index] = 0
             else:
                 self.iteration[index] += 1
@@ -211,8 +211,8 @@ class Phonology_Game:
 
         #load trial variables
         difficulty = self.trialList[index]['Difficulty']
-        stimA = self.trialList[index]['StimA'][self.iteration[index]]
-        stimB = self.trialList[index]['StimB'][self.iteration[index]]
+        stimA = self.trialList[index]['Stim1'][self.iteration[index]]
+        stimB = self.trialList[index]['Stim2'][self.iteration[index]]
         target_content = self.trialList[index]['Correct Response'][self.iteration[index]]
         contents = ['same','different']
         contents.remove(target_content)
@@ -301,7 +301,7 @@ class Phonology_Game:
             output.update({out_col:self.trialList[index][stim_col][self.iteration[index]]})
         
         #update iteration of current difficulty
-        if self.iteration[index] == len(self.trialList[index]['StimA'])-1:
+        if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
             self.iteration[index] = 0
         else:
             self.iteration[index] += 1
