@@ -49,6 +49,7 @@ class Dots_Game():
         #time constrains
         self.timer_limit = 3
         self.t_fixcross = 1.5
+        self.t_fixline = 1.5
 
         #repeat and continue button
         self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
