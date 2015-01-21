@@ -268,7 +268,7 @@ class Phonology_Game:
                 self.mouse.getPos()
                 while thisResp==None:
                     if click and self.target_button.contains(self.mouse):
-                        score,thisResp,thisResp_pos = (1,target_content,target_pos])
+                        score,thisResp,thisResp_pos = (1,target_content,target_pos)
                     elif click and self.foil_button.contains(self.mouse):
                         score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
                     if event.getKeys(keyList=['escape']): return 'QUIT'
