@@ -200,7 +200,7 @@ class Dots_Game():
         for box,img,dots,pos in zip([self.target_box,self.foil_box],[self.target,self.foil],[target_path,foil_path],box_pos):
             img.setImage(dots)
             img.setPos([xpos[pos],0])
-            box.setPos([xpos[pox],0])
+            box.setPos([xpos[pos],0])
             box.color = "white"
 
         t1 = self.t_fixcross
