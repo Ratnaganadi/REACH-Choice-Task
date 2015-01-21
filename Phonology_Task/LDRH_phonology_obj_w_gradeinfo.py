@@ -244,7 +244,8 @@ class Phonology_Game:
         pos = {'same':'left', 'different':'right'}
         target_pos = pos[target_content]
         foil_pos = pos[foil_content]
-
+        score = None
+        
         while score==None:
             t = self.trialClock.getTime()
             if t<=t1:self.speaker.draw()
