@@ -214,11 +214,9 @@ class Phonology_Game:
         stimA = self.trialList[index]['Stim1'][self.iteration[index]]
         stimB = self.trialList[index]['Stim2'][self.iteration[index]]
         target_content = self.trialList[index]['Correct Response'][self.iteration[index]]
-        print 'target_content',target_content
         contents = ['same','different']
         contents.remove(target_content)
-        foil_content = contents
-        print 'foil_content',foil_content
+        foil_content = contents[0]
         print stimA, stimB, target_content
 
         #update answer_history
