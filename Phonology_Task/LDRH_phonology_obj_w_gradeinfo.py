@@ -279,7 +279,7 @@ class Phonology_Game:
         self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
 
         #write data
-        thresh = ['D3_PA-GA_KA-BA','D2_both__BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA__TA DA__PA-KA_BA-GA_TA-DA','D1_VOT__PA-BA_KA-GA']) 
+        thresh = ['D3_PA-GA_KA-BA','D2_both_BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA_TA-DA_PA-KA_BA-GA_TA-DA','D1_VOT_PA-BA_KA-GA']
         threshold_var = thresh[difficulty-1]
 
         output = {
