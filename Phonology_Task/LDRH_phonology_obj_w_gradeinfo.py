@@ -245,7 +245,8 @@ class Phonology_Game:
         target_pos = pos[target_content]
         foil_pos = pos[foil_content]
         score = None
-        
+
+        win.flip()
         while score==None:
             t = self.trialClock.getTime()
             if t<=t1:self.speaker.draw()
@@ -256,7 +257,7 @@ class Phonology_Game:
             if t>t3 and t<=t4:
                 self.speaker_playing.draw()
                 stim2.play()
-            if t>t4 and t<=t5:
+            if t>t4 and t<=tf:
                 self.speaker.draw()
                 self.same_button.draw()
                 self.different_button_draw()
