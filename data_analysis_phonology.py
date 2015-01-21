@@ -2,6 +2,8 @@ import os, math, csv, xlwt, glob
 import numpy as np
 import pandas as pd
 import pprint as pp
+# import pkg_resources
+# pkg_resources.require("matplotlib")
 import matplotlib.pyplot as plt
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -59,7 +61,7 @@ def calculate_accuracy_then_save(datalist,task_type,subject,var,name):
         accuracy_byVar= float(total_score/total_trial)
         outrow={}
         if subject!=None: 
-            if name=='Accuracy_byPhoneme': outrow = {'Type':task_type,'Subject_ID':subject,var:key,'POA_step':poa_vot[key][0],'VOT_step':poa_vot[key][1],'Total_Score':total_score,'Total_Trial':total_trial,'Accuracy':accuracy_byVar}
+            if name=='Accuracy_byPhoneme': outrow = {'Type':task_type,'Subject_ID':subject,var:key,'POA_step':poa_vot[key][0],'VOT_step':poa_vot[key][1],'Total_Score':total_score,'Total_Trial':total_trial,'Accuracy':accuracy_byVar}; print outrow
             else: outrow = {'Type':task_type,'Subject_ID':subject,var:key,'Total_Score':total_score,'Total_Trial':total_trial,'Accuracy':accuracy_byVar}
         else: 
             poa = ''; vot = ''

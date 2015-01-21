@@ -70,6 +70,9 @@ class Math_Game:
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
 
+        #time constrains
+        self.t_timer_limit = 12
+
         #start feedback
         self.fb=feedback.fb(win)
 
@@ -197,16 +200,16 @@ class Math_Game:
         foil2_string = str(these_conditions[index]['Foil2'][this_iteration[index]])
         foil3_string = str(these_conditions[index]['Foil3'][this_iteration[index]])
 
-        self.text_2blist = [self.target,self.foil1]
+        # self.text_2blist = [self.target,self.foil1]
         # self.text_4blist = [self.target,self.foil1,self.foil2,self.foil3]
-        self.button_2blist = [self.target_2button,self.foil_2button]
+        # self.button_2blist = [self.target_2button,self.foil_2button]
         # self.button_4blist = [self.target_4button,self.foil1_4button,self.foil2_4button,self.foil3_4button]
 
         if foil2_string!='' and foil3_string!='':
             foil_string = [foil1_string,foil2_string,foil3_string]
             foil_text = [self.foil1,self.foil2,self.foil3]
             foil_button = [self.foil1_4button,self.foil2_4button,self.foil3_4button]
-            target_button = self.target_4bbutton
+            target_button = self.target_4button
             pos = four_xpositions
             xpositions = four_xpositions.keys()
 
@@ -240,7 +243,7 @@ class Math_Game:
             self.text_stimulus.setText(stim_string)#[self.iteration[index]]))
             self.stimulus=self.text_stimulus
 
-
+        tf = self.t_timer_limit
         score==None
         t = self.trialClock.getTime()
         while score==None:
@@ -260,7 +263,7 @@ class Math_Game:
                 self.mouse.getPos()
                 while thisResp==None:
                     for pts,string,text,xpos,button in object_var:
-                        if click: and button.contains(self.mouse):
+                        if click and button.contains(self.mouse):
                             score,thisResp,thisResp_pos = (pts,string,pos[xpos])
                             text.setColor('gold')
                     if event.getKeys(keyList=['escape']): return 'QUIT'
