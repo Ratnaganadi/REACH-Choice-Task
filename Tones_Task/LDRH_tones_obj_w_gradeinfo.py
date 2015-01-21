@@ -333,7 +333,7 @@ class Tones_Game:
         self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
 
         #write data
-        for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]):
+        for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]]):
             if difficulty>=lvl[0] and difficulty<=lvl[1]: threshold_var = thresh
         
         output = {
