@@ -247,7 +247,7 @@ class Star_Game():
         self.mouse.getPos()
         self.drag.setImage(self.image_path + '/star2.png')
         while score==None:
-            # t=self.trialClock.getTime()
+            t=self.trialClock.getTime()
             if t>=5:
                 self.drag.draw()
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
