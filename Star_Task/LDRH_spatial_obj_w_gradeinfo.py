@@ -237,17 +237,12 @@ class Star_Game():
         # present twinkling star and then put up mask
         while t<=t3:
             t=self.trialClock.getTime()
-            if t<=t1: 
-                self.blank.draw()
-                print 'blankdraw'
+            if t<=t1: self.blank.draw()
             if t>t1 and t<=t2:
                 self.bintang.draw()
                 self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
                 self.twinkle.draw()
-                print 'twinkle'
-            if t>t2 and t<=t3: 
-                self.mask.draw()
-                print 'mask'
+            if t>t2 and t<=t3: self.mask.draw()
             theseKeys = event.getKeys()
             if len(theseKeys)>0:
                 if theseKeys[-1] in ['q','escape']: return 'QUIT'

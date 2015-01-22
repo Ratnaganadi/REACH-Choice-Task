@@ -208,24 +208,32 @@ class Dots_Game():
         t2 = self.t_fixcross + self.t_fixline
         tf = self.t_fixcross + self.t_fixline + self.timer_limit
         score = None
-        while score==None:
+        while t<=t2:
             t = self.trialClock.getTime()
             if t<=t1: self.fix_point.draw()
             if t>t1 and t<=t2:
                 self.target_box.draw()
                 self.foil_box.draw()
+            theseKeys = event.getKeys()
+            if len(theseKeys)>0:
+                if theseKeys[-1] in ['q','escape']: return 'QUIT'
+            win.flip()
+
+        start_time = self.trialClock.getTime()
+        timer = 0
+        click = self.click()
+        thisResp = None
+        self.mouse.getPos()
+
+        while score==None:
             if t>t2 and t<=tf:
+                t = self.trialClock.getTime()
+
                 self.target_box.draw()
                 self.foil_box.draw()
                 self.target.draw()
                 self.foil.draw()
 
-                start_time = self.trialClock.getTime()
-                timer = 0
-
-                click = self.click()
-                thisResp = None
-                self.mouse.getPos()
                 while thisResp==None:
                     if click and self.target_box.contains(self.mouse): 
                         score,thisResp,thisResp_pos = (1,target_content,target_pos)
