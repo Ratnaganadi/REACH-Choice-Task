@@ -224,7 +224,7 @@ class Star_Game():
         thisResp=None
         self.mouse.setVisible(0)
         #present twinkling star and then put up mask
-        while score==None:
+        while t<=5:
             t=self.trialClock.getTime()
             if t<2: self.blank.draw()
             if t>=2 and t<4:
@@ -237,16 +237,16 @@ class Star_Game():
                 if theseKeys[-1] in ['q','escape']: return 'QUIT'
             win.flip()
 
-            start_time = self.trialClock.getTime()
-            score = None
-            first_click_time=None
-            second_click_time=None
-            status = 'NOT_STARTED'
-            #allow participant to move star and make response, then check if correct
-            self.mouse.setVisible(1)
-            self.mouse.getPos()
-            self.drag.setImage(self.image_path + '/star2.png')
-        # while score==None:
+        start_time = self.trialClock.getTime()
+        score = None
+        first_click_time=None
+        second_click_time=None
+        status = 'NOT_STARTED'
+        #allow participant to move star and make response, then check if correct
+        self.mouse.setVisible(1)
+        self.mouse.getPos()
+        self.drag.setImage(self.image_path + '/star2.png')
+        while score==None:
             # t=self.trialClock.getTime()
             if t>=5:
                 self.drag.draw()
@@ -279,7 +279,7 @@ class Star_Game():
                 y_resp=np.nan
                 distance=np.nan
 
-
+                
         # drag_started=False
         # score=None
         # self.mouse.setVisible(0)
