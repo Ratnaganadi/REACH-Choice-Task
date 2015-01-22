@@ -253,12 +253,11 @@ class Star_Game():
                 if theseKeys[-1] in ['q','escape']: return 'QUIT'
             win.flip()
 
-        start_time = self.trialClock.getTime()
+        
         #allow participant to move star and make response, then check if correct
-        self.mouse.setVisible(1)
-        self.mouse.getPos()
         while score==None:
-            t=self.trialClock.getTime()
+            start_time = self.trialClock.getTime()
+            self.mouse.getPos()
             if t>t3 and t<=tf:
                 self.drag.draw()
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
