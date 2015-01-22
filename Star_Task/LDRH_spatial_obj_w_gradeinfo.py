@@ -221,34 +221,45 @@ class Star_Game():
 
 
         drag_started=False
-        thisResp=None
+        score=None
         self.mouse.setVisible(0)
-        #present twinkling star and then put up mask
-        while t<=5:
+
+        first_click_time = None
+        second_click_time = None
+        status = 'NOT_STARTED'
+        self.drag.setImage(self.image_path + '/star2.png')
+
+        t1 = self.t_blank
+        t2 = self.t_blank + self.t_twinkle
+        t3 = self.t_blank + self.t_twinkle + self.t_mask
+        tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
+        # present twinkling star and then put up mask
+
+        while t<=t3:
             t=self.trialClock.getTime()
-            if t<2: self.blank.draw()
-            if t>=2 and t<4:
+            if t<=t1: 
+                self.blank.draw()
+                print 'blankdraw'
+            if t>t1 and t<=t2:
                 self.bintang.draw()
                 self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
                 self.twinkle.draw()
-            if t>=4 and t<5: self.mask.draw()
+                print 'twinkle'
+            if t>t2 and t<=t3: 
+                self.mask.draw()
+                print 'mask'
             theseKeys = event.getKeys()
             if len(theseKeys)>0:
                 if theseKeys[-1] in ['q','escape']: return 'QUIT'
             win.flip()
 
         start_time = self.trialClock.getTime()
-        score = None
-        first_click_time=None
-        second_click_time=None
-        status = 'NOT_STARTED'
         #allow participant to move star and make response, then check if correct
         self.mouse.setVisible(1)
         self.mouse.getPos()
-        self.drag.setImage(self.image_path + '/star2.png')
         while score==None:
             t=self.trialClock.getTime()
-            if t>=5:
+            if t>t3 and t<=tf:
                 self.drag.draw()
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
                     if self.drag.contains(self.mouse.getPos()):
@@ -271,7 +282,7 @@ class Star_Game():
                 win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
-            if t>17:
+            if t>tf:
                 score=0
                 if not first_click_time: first_click_time=np.nan
                 second_click_time=np.nan
@@ -279,35 +290,7 @@ class Star_Game():
                 y_resp=np.nan
                 distance=np.nan
 
-                
-        # drag_started=False
-        # score=None
-        # self.mouse.setVisible(0)
 
-        # first_click_time = None
-        # second_click_time = None
-        # status = 'NOT_STARTED'
-        # self.drag.setImage(self.image_path + '/star2.png')
-
-        # t1 = self.t_blank
-        # t2 = self.t_blank + self.t_twinkle
-        # t3 = self.t_blank + self.t_twinkle + self.t_mask
-        # tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
-
-        # while score==None:
-        #     t=self.trialClock.getTime()
-        #     if t<=t1: 
-        #         self.blank.draw()
-        #         print 'blankdraw'
-        #     if t>t1 and t<=t2:
-        #         self.bintang.draw()
-        #         self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
-        #         self.twinkle.draw()
-        #         print 'twinkle'
-        #     if t>t2 and t<=t3: 
-        #         self.mask.draw()
-        #         print 'mask'
-        #     win.flip()
 
         #     #allow participant to move star and make response, then check if correct
         #     self.mouse.setVisible(1)
