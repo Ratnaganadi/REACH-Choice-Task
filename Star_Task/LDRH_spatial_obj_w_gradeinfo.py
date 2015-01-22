@@ -230,7 +230,7 @@ class Star_Game():
 
         while t<=tf:
             t=self.trialClock.getTime()
-            if t=<t1: 
+            if t<=t1: 
                 self.blank.draw()
                 print 'blankdraw'
             if t>t1 and t<=t2:
@@ -242,16 +242,15 @@ class Star_Game():
                 self.mask.draw()
                 print 'mask'
             win.flip()
-            if t>t3 and t<=tf:
-                # score = None
-                first_click_time = None
-                second_click_time = None
-                status = 'NOT_STARTED'
+            first_click_time = None
+            second_click_time = None
+            status = 'NOT_STARTED'
 
-                #allow participant to move star and make response, then check if correct
-                self.mouse.setVisible(1)
-                self.mouse.getPos()
-                self.drag.setImage(self.image_path + '/star2.png')
+            #allow participant to move star and make response, then check if correct
+            self.mouse.setVisible(1)
+            self.mouse.getPos()
+            self.drag.setImage(self.image_path + '/star2.png')
+            if t>t3 and t<=tf:
                 self.drag.draw()
                 start_time = self.trialClock.getTime()
 
