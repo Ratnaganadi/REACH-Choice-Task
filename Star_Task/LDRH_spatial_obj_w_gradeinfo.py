@@ -228,11 +228,9 @@ class Star_Game():
         t3 = self.t_blank + self.t_twinkle + self.t_mask
         tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
 
-        t=0; self.trialClock.reset()
-        # frameN=-1
-        while t<=tf and score==None:
+        while t<=tf:
             t=self.trialClock.getTime()
-            if t<t1: 
+            if t=<t1: 
                 self.blank.draw()
                 print 'blankdraw'
             if t>t1 and t<=t2:
@@ -243,6 +241,7 @@ class Star_Game():
             if t>t2 and t<=t3: 
                 self.mask.draw()
                 print 'mask'
+            win.flip()
             if t>t3 and t<=tf:
                 # score = None
                 first_click_time = None
@@ -273,6 +272,7 @@ class Star_Game():
 
                 if event.getKeys(keyList=['q', 'escape']):
                     return 'QUIT'
+                win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
 
