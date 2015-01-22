@@ -230,7 +230,7 @@ class Star_Game():
 
         t=0; self.trialClock.reset()
         # frameN=-1
-        while t<=tf and score!=None:
+        while t<=tf and score==None:
             t=self.trialClock.getTime()
             if t<t1: 
                 self.blank.draw()
