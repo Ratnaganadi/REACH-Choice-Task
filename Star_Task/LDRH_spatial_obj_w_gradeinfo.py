@@ -228,6 +228,8 @@ class Star_Game():
         t3 = self.t_blank + self.t_twinkle + self.t_mask
         tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
 
+        t=0; self.trialClock.reset()
+        # frameN=-1
         while t<=tf and score!=None:
             t=self.trialClock.getTime()
             if t<t1: 
