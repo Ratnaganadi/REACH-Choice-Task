@@ -228,14 +228,19 @@ class Star_Game():
         t3 = self.t_blank + self.t_twinkle + self.t_mask
         tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
 
-        while score!=None:
+        while t<=tf and score!=None:
             t=self.trialClock.getTime()
-            if t<t1: self.blank.draw()
+            if t<t1: 
+                self.blank.draw()
+                print 'blankdraw'
             if t>t1 and t<=t2:
                 self.bintang.draw()
                 self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
                 self.twinkle.draw()
-            if t>t2 and t<=t3: self.mask.draw()
+                print 'twinkle'
+            if t>t2 and t<=t3: 
+                self.mask.draw()
+                print 'mask'
             if t>t3 and t<=tf:
                 # score = None
                 first_click_time = None
@@ -266,18 +271,22 @@ class Star_Game():
 
                 if event.getKeys(keyList=['q', 'escape']):
                     return 'QUIT'
-                win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
-            if t>tf:
-                if not first_click_time: first_click_time = np.nan
-                score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
-            
+
+                print 'dragging'
+
             theseKeys = event.getKeys()
             if len(theseKeys)>0:
                 if theseKeys[-1] in ['q','escape']: return 'QUIT'
-            win.flip()
-            
+
+        if t>tf:
+            if not first_click_time: first_click_time = np.nan
+            score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
+            print 'done'
+        
+        
+        win.flip()  
 
         #give feedback
         self.fb.present_fb(win,score,[self.twinkle2,self.circletwinkle,self.drag,self.circledrag])
