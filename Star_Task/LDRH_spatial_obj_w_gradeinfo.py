@@ -252,10 +252,12 @@ class Star_Game():
             self.mouse.setVisible(1)
             self.mouse.getPos()
             if t>t3 and t<=tf:
-                self.drag.draw()
                 start_time = self.trialClock.getTime()
-
+                self.drag.draw()
+                
+                print status
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
+                    print 'pressed'
                     if self.drag.contains(self.mouse.getPos()):
                         status='STARTED'
                         first_click_time = t - start_time
