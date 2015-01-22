@@ -219,51 +219,42 @@ class Star_Game():
         print 'radians:', radians
         print 'x, y:', x, y
 
+
         drag_started=False
-        score=None
+        thisResp=None
         self.mouse.setVisible(0)
-
-        first_click_time = None
-        second_click_time = None
-        status = 'NOT_STARTED'
-        self.drag.setImage(self.image_path + '/star2.png')
-
-        t1 = self.t_blank
-        t2 = self.t_blank + self.t_twinkle
-        t3 = self.t_blank + self.t_twinkle + self.t_mask
-        tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
-
+        #present twinkling star and then put up mask
         while score==None:
             t=self.trialClock.getTime()
-            if t<=t1: 
-                self.blank.draw()
-                print 'blankdraw'
-            if t>t1 and t<=t2:
+            if t<2: self.blank.draw()
+            if t>=2 and t<4:
                 self.bintang.draw()
                 self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
                 self.twinkle.draw()
-                print 'twinkle'
-            if t>t2 and t<=t3: 
-                self.mask.draw()
-                print 'mask'
+            if t>=4 and t<5: self.mask.draw()
+            theseKeys = event.getKeys()
+            if len(theseKeys)>0:
+                if theseKeys[-1] in ['q','escape']: return 'QUIT'
             win.flip()
 
+            start_time = self.trialClock.getTime()
+            score = None
+            first_click_time=None
+            second_click_time=None
+            status = 'NOT_STARTED'
             #allow participant to move star and make response, then check if correct
             self.mouse.setVisible(1)
             self.mouse.getPos()
-            if t>t3 and t<=tf:
-                start_time = self.trialClock.getTime()
+            self.drag.setImage(self.image_path + '/star2.png')
+        # while score==None:
+            # t=self.trialClock.getTime()
+            if t>=5:
                 self.drag.draw()
-                
-                print status
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
-                    print 'pressed'
                     if self.drag.contains(self.mouse.getPos()):
                         status='STARTED'
                         first_click_time = t - start_time
                         self.drag.setImage(self.image_path + '/star_selected.png')
-                        print status
-
                 if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
                     second_click_time = t - start_time
                     self.drag.setImage(self.image_path + '/star2.png')
@@ -271,21 +262,89 @@ class Star_Game():
                     x_resp = self.drag.pos[0]
                     y_resp = self.drag.pos[1]
                     distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
-                    score = int(distance<=sz)
-                    print 'dragging'
-
+                    if distance<=sz:
+                        score=1
+                    else:
+                        score=0
                 if event.getKeys(keyList=['q', 'escape']):
                     return 'QUIT'
                 win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
+            if t>17:
+                score=0
+                if not first_click_time: first_click_time=np.nan
+                second_click_time=np.nan
+                x_resp=np.nan
+                y_resp=np.nan
+                distance=np.nan
 
-                print 'here'
 
-            if t>tf:
-                if not first_click_time: first_click_time = np.nan
-                score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
-                print 'done'
+        # drag_started=False
+        # score=None
+        # self.mouse.setVisible(0)
+
+        # first_click_time = None
+        # second_click_time = None
+        # status = 'NOT_STARTED'
+        # self.drag.setImage(self.image_path + '/star2.png')
+
+        # t1 = self.t_blank
+        # t2 = self.t_blank + self.t_twinkle
+        # t3 = self.t_blank + self.t_twinkle + self.t_mask
+        # tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
+
+        # while score==None:
+        #     t=self.trialClock.getTime()
+        #     if t<=t1: 
+        #         self.blank.draw()
+        #         print 'blankdraw'
+        #     if t>t1 and t<=t2:
+        #         self.bintang.draw()
+        #         self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
+        #         self.twinkle.draw()
+        #         print 'twinkle'
+        #     if t>t2 and t<=t3: 
+        #         self.mask.draw()
+        #         print 'mask'
+        #     win.flip()
+
+        #     #allow participant to move star and make response, then check if correct
+        #     self.mouse.setVisible(1)
+        #     self.mouse.getPos()
+        #     start_time = self.trialClock.getTime()
+        #     if t>t3 and t<=tf:
+        #         self.drag.draw()
+                
+        #         print status
+        #         if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
+        #             print 'pressed'
+        #             if self.drag.contains(self.mouse.getPos()):
+        #                 status='STARTED'
+        #                 first_click_time = t - start_time
+        #                 self.drag.setImage(self.image_path + '/star_selected.png')
+        #                 print status
+
+        #         if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
+        #             second_click_time = t - start_time
+        #             self.drag.setImage(self.image_path + '/star2.png')
+        #             self.drag.setPos(self.mouse.getPos())
+        #             x_resp = self.drag.pos[0]
+        #             y_resp = self.drag.pos[1]
+        #             distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
+        #             score = int(distance<=sz)
+        #             print 'dragging'
+
+        #         if event.getKeys(keyList=['q', 'escape']):
+        #             return 'QUIT'
+        #         win.flip()
+        #         self.circledrag.setPos(self.drag.pos)
+        #         self.circletwinkle.setPos(self.twinkle2.pos)
+
+        #     if t>tf:
+        #         if not first_click_time: first_click_time = np.nan
+        #         score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
+        #         print 'done'
         
         
         # win.flip()  
