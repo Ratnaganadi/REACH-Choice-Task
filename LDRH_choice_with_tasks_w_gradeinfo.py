@@ -525,7 +525,7 @@ if not just_choice:
                             continue
 
                         #keep track of streaks
-                        streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["Score"]]
+                        streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["score"]]
 
                         #handle streak breaking
                         if (len(streaks[operation][output['thisIncrement']]) > 9) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) >= 0.8):
@@ -560,7 +560,7 @@ if not just_choice:
                     break
 
                 #keep track of streaks
-                streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []) + [output["Score"]]
+                streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []) + [output["score"]]
 
                 print 'pos_streak:', streaks[output['thisIncrement']]
                 #handle streak breaking
@@ -768,7 +768,7 @@ while True:
         all_sheets[this_task["name"]]['row'] += 1
 
         #write output for main sheet
-        main_output = {'trial_number':trial_number, 'task': this_task["name"], 'level': output['level'],'score':output['score'],'type':'choice','choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
+        main_output = {'trial_number':trial_number,'task': this_task["name"],'level': output['level'],'score':output['score'],'type':'choice','choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
         choice_output = {("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
         main_output.update(choice_output)
         for col,header in enumerate(all_sheets['Main']['headers']):
