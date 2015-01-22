@@ -168,7 +168,7 @@ else:
     choice_headers = [("choice_task_{choice}".format(choice=i+1), "choice_points_{choice}".format(choice=i+1), "choice_pos_{choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
 
     all_sheets = {
-        'Main': dict(sheet = wb.add_sheet('Main'), headers = 'subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'], row=1),
+        'Main': dict(sheet = wb.add_sheet('Main'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'], row=1),
         'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
         'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
         'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
@@ -394,7 +394,7 @@ def run_staircase(task, operation=None):
         #write output for main sheet
         "!!!!!!!!!!! LOOK AT IT AGAIN !!!!!!!!!!!!"
         main_output = {
-        'subject_ID': ,
+        'subject_ID': subject_ID,
         'task': task,
         'type': 'threshold',
         'trial_number': trial_number,
