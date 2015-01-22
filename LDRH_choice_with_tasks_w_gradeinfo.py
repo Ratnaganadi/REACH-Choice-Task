@@ -384,7 +384,7 @@ def run_staircase(task, operation=None):
         # all_sheets[task]['sheet'].write(all_sheets[task]['row'], 0, trial_number)
 
         for col,header in enumerate(all_sheets[task]['headers'][4:]):
-            if header=="Task Version":
+            if header=="task_version":
                 all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+4, VERSION)
             else:
                 all_sheets[task]['sheet'].write(all_sheets[task]['row'],col+4, output[header])
@@ -743,7 +743,7 @@ while True:
         choice_output = {("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
         main_output.update(choice_output)
         for col,header in enumerate(all_sheets['Main']['headers']):
-            if header=="Task Version":
+            if header=="task_version":
                 all_sheets['Main']['sheet'].write(trial_number, col, VERSION)
             else:
                 all_sheets['Main']['sheet'].write(trial_number, col, main_output[header])

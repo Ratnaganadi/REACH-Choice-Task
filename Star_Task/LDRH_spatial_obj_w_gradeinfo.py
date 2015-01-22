@@ -281,53 +281,7 @@ class Star_Game():
             if t>tf:
                 # score=0
                 if not first_click_time: first_click_time=np.nan
-                score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
-                # second_click_time=np.nan
-                # x_resp=np.nan
-                # y_resp=np.nan
-                # distance=np.nan
-
-
-
-        #     #allow participant to move star and make response, then check if correct
-        #     self.mouse.setVisible(1)
-        #     self.mouse.getPos()
-        #     start_time = self.trialClock.getTime()
-        #     if t>t3 and t<=tf:
-        #         self.drag.draw()
-                
-        #         print status
-        #         if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
-        #             print 'pressed'
-        #             if self.drag.contains(self.mouse.getPos()):
-        #                 status='STARTED'
-        #                 first_click_time = t - start_time
-        #                 self.drag.setImage(self.image_path + '/star_selected.png')
-        #                 print status
-
-        #         if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
-        #             second_click_time = t - start_time
-        #             self.drag.setImage(self.image_path + '/star2.png')
-        #             self.drag.setPos(self.mouse.getPos())
-        #             x_resp = self.drag.pos[0]
-        #             y_resp = self.drag.pos[1]
-        #             distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
-        #             score = int(distance<=sz)
-        #             print 'dragging'
-
-        #         if event.getKeys(keyList=['q', 'escape']):
-        #             return 'QUIT'
-        #         win.flip()
-        #         self.circledrag.setPos(self.drag.pos)
-        #         self.circletwinkle.setPos(self.twinkle2.pos)
-
-        #     if t>tf:
-        #         if not first_click_time: first_click_time = np.nan
-        #         score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
-        #         print 'done'
-        
-        
-        # win.flip()  
+                score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan,np.nan)
 
         #give feedback
         self.fb.present_fb(win,score,[self.twinkle2,self.circletwinkle,self.drag,self.circledrag])
