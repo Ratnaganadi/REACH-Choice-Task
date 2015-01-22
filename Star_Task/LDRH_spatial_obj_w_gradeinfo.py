@@ -220,21 +220,21 @@ class Star_Game():
         print 'x, y:', x, y
 
 
-        drag_started=False
+        #initializing variables
         score=None
         self.mouse.setVisible(0)
-
         first_click_time = None
         second_click_time = None
         status = 'NOT_STARTED'
         self.drag.setImage(self.image_path + '/star2.png')
 
+        #time constrains
         t1 = self.t_blank
         t2 = self.t_blank + self.t_twinkle
         t3 = self.t_blank + self.t_twinkle + self.t_mask
         tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
+        
         # present twinkling star and then put up mask
-
         while t<=t3:
             t=self.trialClock.getTime()
             if t<=t1: 
@@ -253,12 +253,12 @@ class Star_Game():
                 if theseKeys[-1] in ['q','escape']: return 'QUIT'
             win.flip()
 
-        
         #allow participant to move star and make response, then check if correct
+        self.mouse.getPos()
+        start_time = self.trialClock.getTime()
         while score==None:
-            start_time = self.trialClock.getTime()
-            self.mouse.getPos()
             if t>t3 and t<=tf:
+                t=self.trialClock.getTime()
                 self.drag.draw()
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
                     if self.drag.contains(self.mouse.getPos()):
@@ -272,22 +272,20 @@ class Star_Game():
                     x_resp = self.drag.pos[0]
                     y_resp = self.drag.pos[1]
                     distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
-                    if distance<=sz:
-                        score=1
-                    else:
-                        score=0
+                    score = int(distance<=sz)
                 if event.getKeys(keyList=['q', 'escape']):
                     return 'QUIT'
                 win.flip()
                 self.circledrag.setPos(self.drag.pos)
                 self.circletwinkle.setPos(self.twinkle2.pos)
             if t>tf:
-                score=0
+                # score=0
                 if not first_click_time: first_click_time=np.nan
-                second_click_time=np.nan
-                x_resp=np.nan
-                y_resp=np.nan
-                distance=np.nan
+                score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan)
+                # second_click_time=np.nan
+                # x_resp=np.nan
+                # y_resp=np.nan
+                # distance=np.nan
 
 
 
