@@ -2,7 +2,7 @@ from psychopy import gui, visual, core, data, event, logging, sound, info, misc
 import time, numpy, os, sys, tempfile, wave#,xlwt
 from os.path import join, isfile
 from math import floor, log
-from random import randint, choice
+from random import randint, choice, shuffle
 from numpy import linspace,sin,pi,int16
 from scipy.io.wavfile import write
 if __name__ != '__main__': from Feedback import feedback
@@ -21,6 +21,9 @@ class Tones_Game:
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
+        #get temp directory
+        self.temp_dir = tempfile.gettempdir()
+        self.stim_dir = 'Audio/Stimuli/Tones'
 
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
@@ -80,9 +83,6 @@ class Tones_Game:
         #list to keep track of history of answers
         self.answer_history = []
 
-        #get temp directory
-        self.temp_dir = tempfile.gettempdir()
-        self.stim_dir = 'Tones_Task/notes'
 
     def run_instructions(self, win):
         "Display the instructions for the game."
@@ -223,7 +223,7 @@ class Tones_Game:
         target_content = trialList[index]['Corr_Answer'][self.iteration[index]]
         contents = ['same','different']
         contents.remove(target_content)
-        foil_content = contents
+        foil_content = contents[0]
 
         #update answer_history
         self.answer_history.append(target_content)
@@ -305,7 +305,9 @@ class Tones_Game:
             if t>t1 and t<=t2:
                 self.speaker_playing.draw()
                 stim1.play()
-            if t>t2 and t<=t3: self.speaker.draw()
+            if t>t2 and t<=t3: 
+                stim1.stop()
+                self.speaker.draw()
             if t>t3 and t<=t4:
                 self.speaker_playing.draw()
                 stim2.play()
@@ -315,8 +317,10 @@ class Tones_Game:
         timer = 0
         thisResp = None
         self.mouse.getPos()
+
         while score==None:
             if t>t4 and t<=tf:
+                stim2.stop()
                 self.speaker.draw()
                 self.same_button.draw()
                 self.different_button_draw()
