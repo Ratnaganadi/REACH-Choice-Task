@@ -197,6 +197,7 @@ class Dots_Game():
         target_pos = box_pos[0]
         foil_pos = box_pos[1]
         xpos = {'left': -230, 'right': 230}
+        self.mouse.setVisible(0)
         
         for box,img,dots,pos in zip([self.target_box,self.foil_box],[self.target,self.foil],[target_path,foil_path],box_pos):
             img.setImage(dots)
@@ -221,19 +222,19 @@ class Dots_Game():
 
         start_time = self.trialClock.getTime()
         timer = 0
-        click = self.click()
         thisResp = None
-        self.mouse.getPos()
 
         while score==None:
+            t = self.trialClock.getTime()
             if t>t2 and t<=tf:
-                t = self.trialClock.getTime()
-
                 self.target_box.draw()
                 self.foil_box.draw()
                 self.target.draw()
                 self.foil.draw()
-
+                win.flip()
+                
+                click = self.click()
+                # self.mouse.getPos()
                 while thisResp==None:
                     if click and self.target_box.contains(self.mouse): 
                         score,thisResp,thisResp_pos = (1,target_content,target_pos)
@@ -243,6 +244,8 @@ class Dots_Game():
                         self.foil_box.color = "gold"
                     if event.getKeys(keyList=['escape']): return 'QUIT'
                     choice_time = self.trialClock.getTime()-start_time
+
+                
             if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
