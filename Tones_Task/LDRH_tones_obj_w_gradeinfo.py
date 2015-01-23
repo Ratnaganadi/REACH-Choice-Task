@@ -309,6 +309,7 @@ class Tones_Game:
             if t>t3 and t<=t4:
                 self.speaker_playing.draw()
                 stim2.play()
+            win.flip()
         
         start_time = self.trialClock.getTime()
         timer = 0
@@ -319,6 +320,7 @@ class Tones_Game:
                 self.speaker.draw()
                 self.same_button.draw()
                 self.different_button_draw()
+                win.flip()
 
                 while thisResp==None:
                     if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and self.target_button.contains(self.mouse):
