@@ -298,7 +298,7 @@ class Tones_Game:
         foil_pos = pos[foil_content]
 
         score=None
-        while score==None:
+        while t<=4:
             t = self.trialClock.getTime()
 
             if t<=t1: self.speaker.draw() #; win.flip()
@@ -309,21 +309,21 @@ class Tones_Game:
             if t>t3 and t<=t4:
                 self.speaker_playing.draw()
                 stim2.play()
+        
+        start_time = self.trialClock.getTime()
+        timer = 0
+        thisResp = None
+        self.mouse.getPos()
+        while score==None:
             if t>t4 and t<=tf:
                 self.speaker.draw()
                 self.same_button.draw()
                 self.different_button_draw()
 
-                start_time = self.trialClock.getTime()
-                timer = 0
-
-                click = self.click()
-                thisResp = None
-                self.mouse.getPos()
                 while thisResp==None:
-                    if click and self.target_button.contains(self.mouse):
+                    if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and self.target_button.contains(self.mouse):
                         score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                    elif click and self.foil_button.contains(self.mouse):
+                    elif (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and self.foil_button.contains(self.mouse):
                         score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
                     if event.getKeys(keyList=['escape']): return 'QUIT'
                     choice_time=self.trialClock.getTime()-start_time

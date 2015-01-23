@@ -278,26 +278,19 @@ class Math_Game:
             'stim': stim_string,
             'resp': thisResp,
             'resp_pos': thisResp_pos
-            # 'target': target_string,
-            # 'target_pos': xpositions[0],
-            # 'foil1': foil1_string,
-            # 'foil1_pos': xpositions[1],
-            # 'foil2': foil2_string,
-            # 'foil3': foil3_string
+            'target': target_string,
+            'target_pos': xpositions[0],
+            'foil1': foil1_string,
+            'foil1_pos': xpositions[1],
+            'foil2': foil2_string,
+            'foil3': foil3_string
         }
 
-        # if foil2_string=='' and foil3_string=='':
-        #     output['foil2_pos'] = ''
-        #     output['foil3_pos'] = ''
-        # else:
-        #     output['foil2_pos'] = xpositions[2]
-        #     output['foil3_pos'] = xpositions[3]
-
-        output_header = ['target','foil1','foil2','foil3']
+        
         if foil2_string=='' and foil3_string=='': xpositions.extend(['',''])
-        for var,string,xpos in zip(output_header,[target_string]+foil_string,xpositions):
-            output[var] = string
-            output[var+'_pos'] = pos[xpos]
+        output['foil2_pos'] = xpositions[2]
+        output['foil3_pos'] = xpositions[3]
+
 
         #update iteration of current difficulty
         if this_iteration[index] == len(these_conditions[index]['Correct'])-1: this_iteration[index] = 0
