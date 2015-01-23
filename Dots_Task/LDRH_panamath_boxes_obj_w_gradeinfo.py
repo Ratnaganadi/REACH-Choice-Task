@@ -234,7 +234,6 @@ class Dots_Game():
                 self.foil.draw()
                 win.flip()
 
-                # click = self.click()
                 while thisResp==None:
                     if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
                         if self.target_box.contains(self.mouse): 
@@ -243,13 +242,6 @@ class Dots_Game():
                         elif self.foil_box.contains(self.mouse): 
                             score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
                             self.foil_box.color = "gold"
-
-                    # if click and self.target_box.contains(self.mouse): 
-                    #     score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                    #     self.target_box.color = "gold"
-                    # elif click and self.foil_box.contains(self.mouse): 
-                    #     score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                    #     self.foil_box.color = "gold"
                     if event.getKeys(keyList=['escape']): return 'QUIT'
                     choice_time = self.trialClock.getTime()-start_time
 

@@ -245,6 +245,11 @@ class Math_Game:
 
         tf = self.t_timer_limit
         score==None
+        start_time = self.trialClock.getTime()
+        timer = 0
+        thisResp = None
+        self.mouse.getPos()
+
         t = self.trialClock.getTime()
         while score==None:
             if t<=tf:
@@ -254,16 +259,11 @@ class Math_Game:
                 for text,button in zip([self.target]+foil_text,[target_button]+foil_button):
                     button.draw()
                     text.draw()
-
-                start_time = self.trialClock.getTime()
-                timer = 0
-
-                click = self.click()
-                thisResp = None
-                self.mouse.getPos()
+                win.flip()
+                
                 while thisResp==None:
                     for pts,string,text,xpos,button in object_var:
-                        if click and button.contains(self.mouse):
+                        if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and button.contains(self.mouse):
                             score,thisResp,thisResp_pos = (pts,string,pos[xpos])
                             text.setColor('gold')
                     if event.getKeys(keyList=['escape']): return 'QUIT'
