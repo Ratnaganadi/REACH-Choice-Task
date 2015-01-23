@@ -197,23 +197,19 @@ class Math_Game:
         two_xpositions = {-260:'left', 260:'right'}
         target_string = str(these_conditions[index]['Correct'][this_iteration[index]])
         foil1_string = str(these_conditions[index]['Foil1'][this_iteration[index]])
-        foil2_string = str(these_conditions[index]['Foil2'][this_iteration[index]])
-        foil3_string = str(these_conditions[index]['Foil3'][this_iteration[index]])
-
-        # self.text_2blist = [self.target,self.foil1]
-        # self.text_4blist = [self.target,self.foil1,self.foil2,self.foil3]
-        # self.button_2blist = [self.target_2button,self.foil_2button]
-        # self.button_4blist = [self.target_4button,self.foil1_4button,self.foil2_4button,self.foil3_4button]
-
-        if foil2_string!='' and foil3_string!='':
+        
+        if these_conditions[index]['Foil2'] and these_conditions[index]['Foil3']:
+            foil2_string = str(these_conditions[index]['Foil2'][this_iteration[index]])
+            foil3_string = str(these_conditions[index]['Foil3'][this_iteration[index]])
             foil_string = [foil1_string,foil2_string,foil3_string]
             foil_text = [self.foil1,self.foil2,self.foil3]
             foil_button = [self.foil1_4button,self.foil2_4button,self.foil3_4button]
             target_button = self.target_4button
             pos = four_xpositions
             xpositions = four_xpositions.keys()
-
         else:
+            foil2_string = ''
+            foil3_string = ''
             foil_string = [foil1_string]
             foil_text = [self.foil1]
             foil_button = [self.foil_2button]
@@ -226,7 +222,7 @@ class Math_Game:
         object_var = zip(points,[target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
         for pts,string,text,xpos,button in object_var:
             text.setText(string)
-            test.setColor('white')
+            text.setColor('white')
             text.setPos([xpos,-200])
             button.setPos([xpos,-200])
 
@@ -244,7 +240,7 @@ class Math_Game:
             self.stimulus=self.text_stimulus
 
         tf = self.t_timer_limit
-        score==None
+        score=None
         start_time = self.trialClock.getTime()
         timer = 0
         thisResp = None
@@ -260,7 +256,7 @@ class Math_Game:
                     button.draw()
                     text.draw()
                 win.flip()
-                
+
                 while thisResp==None:
                     for pts,string,text,xpos,button in object_var:
                         if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and button.contains(self.mouse):
@@ -271,7 +267,7 @@ class Math_Game:
             if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
-        self.fb.present_fb(win,score,[self.stimulus,target_button,self.target]+[foil_button for foil_button in foil_buttons]+[foil for foil in foils]) #[self.foil1_button,self.foil2_button,self.foil3_button,self.target_button,self.foil1,self.foil2, self.foil3,self.target])
+        self.fb.present_fb(win,score,[self.stimulus,target_button,self.target]+foil_button+foil_text)
 
         #write data
         output = {
