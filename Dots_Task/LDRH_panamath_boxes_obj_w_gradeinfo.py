@@ -223,6 +223,7 @@ class Dots_Game():
         start_time = self.trialClock.getTime()
         timer = 0
         thisResp = None
+        self.mouse.getPos()
 
         while score==None:
             t = self.trialClock.getTime()
@@ -232,16 +233,23 @@ class Dots_Game():
                 self.target.draw()
                 self.foil.draw()
                 win.flip()
-                
-                click = self.click()
-                # self.mouse.getPos()
+
+                # click = self.click()
                 while thisResp==None:
-                    if click and self.target_box.contains(self.mouse): 
-                        score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                        self.target_box.color = "gold"
-                    elif click and self.foil_box.contains(self.mouse): 
-                        score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                        self.foil_box.color = "gold"
+                    if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
+                        if self.target_box.contains(self.mouse): 
+                            score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                            self.target_box.color = "gold"
+                        elif self.foil_box.contains(self.mouse): 
+                            score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                            self.foil_box.color = "gold"
+
+                    # if click and self.target_box.contains(self.mouse): 
+                    #     score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                    #     self.target_box.color = "gold"
+                    # elif click and self.foil_box.contains(self.mouse): 
+                    #     score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                    #     self.foil_box.color = "gold"
                     if event.getKeys(keyList=['escape']): return 'QUIT'
                     choice_time = self.trialClock.getTime()-start_time
 
