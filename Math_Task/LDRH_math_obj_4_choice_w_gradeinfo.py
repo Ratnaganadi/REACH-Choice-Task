@@ -277,7 +277,7 @@ class Math_Game:
             'resp_time': choice_time,
             'stim': stim_string,
             'resp': thisResp,
-            'resp_pos': thisResp_pos
+            'resp_pos': thisResp_pos,
             'target': target_string,
             'target_pos': xpositions[0],
             'foil1': foil1_string,
