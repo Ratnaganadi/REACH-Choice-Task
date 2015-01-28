@@ -248,6 +248,7 @@ class Phonology_Game:
 
         while score==None:
             t = self.trialClock.getTime()
+            
             if t<=t1:self.speaker.draw(); print 't1'
             if t>t1 and t<=t2:
                 self.speaker_playing.draw()

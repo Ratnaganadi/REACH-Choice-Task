@@ -117,7 +117,7 @@ for filename in filenames:
     ##calculating and writing outputs for mean_perID
     if gen_accuracy!=[]:
         mean_perID = float(sum(gen_accuracy)/len(gen_accuracy))
-        print 'mean_perID',mean_perID
+        # print 'mean_perID',mean_perID
         mean_all.append(mean_perID) #appending mean_perID to a list
         outrow_perID = {'Type':'threshold','Subject_ID':subject_id,'Accuracy':float(mean_perID)}
         write_to_file('Mean_perID',outrow_perID,'no_extra_row')
