@@ -1,3 +1,6 @@
+from psychopy import visual, core, data, event, logging, gui, sound
+import os
+
 class task_functions:
     
     def run_instructions(self, win):

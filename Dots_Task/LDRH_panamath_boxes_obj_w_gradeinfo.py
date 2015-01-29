@@ -97,8 +97,9 @@ class Dots_Game(task_functions):
         inst_set=[self.practice_cue1,None,None]
         aud_set=[self.practice_aud1,None,None]
         stim_set = [39,30,35]
+        stim_repeat = stim_set
 
-        return self.run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat)
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat)
         # def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
         #     # self.repeat_button.draw() # self.continue_button.draw()
         #     if option=='no_repeat_option':
