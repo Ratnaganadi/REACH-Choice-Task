@@ -258,10 +258,11 @@ class Math_Game:
                 win.flip()
 
                 while thisResp==None:
-                    for pts,string,text,xpos,button in object_var:
-                        if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and button.contains(self.mouse):
-                            score,thisResp,thisResp_pos = (pts,string,pos[xpos])
-                            text.setColor('gold')
+                    if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                        for pts,string,text,xpos,button in object_var:
+                            if button.contains(self.mouse):
+                                score,thisResp,thisResp_pos = (pts,string,pos[xpos])
+                                text.setColor('gold')
                     if event.getKeys(keyList=['escape']): return 'QUIT'
                     choice_time = self.trialClock.getTime()-start_time
             if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
