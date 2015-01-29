@@ -11,7 +11,7 @@ if __name__ != '__main__': from Feedback import feedback
 #touchscreen or not
 touchscreen = True
 
-class Tones_Game:
+class Tones_Game(task_functions):
 
     def __init__(self, win, conditions):
         "Initialize the stimuli and import conditions"
@@ -103,7 +103,7 @@ class Tones_Game:
         stim_repeat = [5,4,3]
         var = None
 
-        return self.run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat,var)
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat,var)
         
 
         # def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):

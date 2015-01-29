@@ -105,7 +105,7 @@ class Math_Game(task_functions):
         stim_repeat = stim_set
         var = 'addition'
 
-        return self.run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat,var)
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat,var)
         # def run_sub_practice(self,win,text_cue,aud_cue,math_operation,stim_condition,with_practice,option):
         #     # self.repeat_button.draw() # self.continue_button.draw()
         #     if option=='no_repeat_option':

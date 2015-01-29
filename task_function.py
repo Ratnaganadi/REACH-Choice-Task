@@ -12,10 +12,10 @@ class task_functions:
             win.flip()
         win.flip()
 
-    def run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat):
+    def run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat, var):
         "Run practice"
 
-        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
+        def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,var):
             # self.repeat_button.draw() # self.continue_button.draw()
             if option=='no_repeat_option':
                 if text_cue!=None and aud_cue!=None:
@@ -63,15 +63,15 @@ class task_functions:
 
             print 'with_practice', with_practice
             if with_practice==True:
-                output = self.run_game(win, "", stim_condition)
+                output = self.run_game(win, "", stim_condition,var)
                 print 'run practice' #run first practice trial
 
-        def run_3_practice(inst,audio,stimuli):
+        def run_3_practice(inst,audio,stimuli,var):
             #draw practice instructions, and do sub practice
             for txt,aud,stim in zip(inst,audio,stimuli):
-                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option')
+                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',var)
 
-        run_3_practice(inst_set,aud_set,stim_set)
+        run_3_practice(inst_set,aud_set,stim_set,var)
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
