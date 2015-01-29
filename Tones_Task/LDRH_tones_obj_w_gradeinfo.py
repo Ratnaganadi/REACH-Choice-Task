@@ -204,16 +204,6 @@ class Tones_Game:
         if self.iteration[index] > len(trialList[index]['soundA'])-1:
             self.iteration[index] = 0
 
-        #######################
-        #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
-        #######################
-        count=0 #give up after 50 tries
-        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and target_content==self.answer_history[-1] and count<50:
-            if self.iteration[index] >= len(trialList[index]['soundA'])-1:
-                self.iteration[index] = 0
-            else:
-                self.iteration[index] += 1
-            count+=1
 
         #load trial variables
         difficulty = self.trialList[index]['Difficulty']
@@ -224,6 +214,17 @@ class Tones_Game:
         contents = ['same','different']
         contents.remove(target_content)
         foil_content = contents[0]
+
+        #######################
+        #check history to make sure we don't get more than three identical answers in a row; modify iteration if needed
+        #######################
+        count=0 #give up after 50 tries
+        while len(self.answer_history)>=3 and len(set(self.answer_history[-3:]))==1 and target_content==self.answer_history[-1] and count<50:
+            if self.iteration[index] >= len(trialList[index]['soundA'])-1:
+                self.iteration[index] = 0
+            else:
+                self.iteration[index] += 1
+            count+=1
 
         #update answer_history
         self.answer_history.append(target_content)
@@ -285,7 +286,7 @@ class Tones_Game:
         stim1 = sounds[0][0]
         stim2 = sounds[1][0]
 
-        pos = {'same':['left',self.same_button], 'different':['right',self.different_button}
+        pos = {'same':['left',self.same_button], 'different':['right',self.different_button]}
         target_pos = pos[target_content][0]
         foil_pos = pos[foil_content][0]
         self.target_button = pos[target_content][1]
