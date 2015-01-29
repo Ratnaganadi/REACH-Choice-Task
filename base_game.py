@@ -1,4 +1,4 @@
-class Base_Game:
+class task_functions:
     
     def run_instructions(self, win):
         "Display the instructions for the game."

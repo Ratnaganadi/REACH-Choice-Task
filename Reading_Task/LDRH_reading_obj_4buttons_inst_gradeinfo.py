@@ -5,12 +5,12 @@ from os.path import join, isfile
 from PIL import Image
 import random
 from random import choice, shuffle
-# from base_game import Base_Game
+from task_functions import Task_Functions
 if __name__ != '__main__': from Feedback import feedback
 
 touchscreen = True
 
-class Reading_Game():
+class Reading_Game(Task_Functions):
 
     def __init__(self, win, conditions):
         self.fn = os.path.dirname(__file__)
