@@ -330,10 +330,9 @@ class Tones_Game:
         score = 0
         self.mouse.getPos() #called to prevent last movement of mouse from triggering click
         while thisResp==None and choice_time<=self.t_timer_limit:
-            if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and self.target_button.contains(self.mouse):
-                score,thisResp,thisResp_pos = (1,target_content,target_pos)
-            elif (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and self.foil_button.contains(self.mouse):
-                score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+            if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
             if event.getKeys(keyList=['escape']): return 'QUIT'
             choice_time=self.trialClock.getTime()-start_time
 
