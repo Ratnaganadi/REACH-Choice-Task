@@ -94,11 +94,8 @@ class Tones_Game(task_functions):
         stim_repeat = [13,16,10] #[5,4,3]
         var = ''
         score_cond = [None,None,None]
-
-        practice_var = [inst_set,aud_set,stim_set,score_cond]
-        practice_rep_var = [inst_set,aud_set,stim_repeat,score_cond]
-
-        return self.run_practice_functions(win, grade, practice_var, practice_rep_var, var)
+        
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
 
     def concat_wavs(self, infiles, outfile):
         data=[]

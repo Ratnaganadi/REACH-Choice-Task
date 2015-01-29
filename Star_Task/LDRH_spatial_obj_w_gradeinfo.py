@@ -94,20 +94,15 @@ class Star_Game(task_functions):
 
     def run_practice(self, win, grade):
         "Run practice"
-        inst_set = [[self.practice_instructions1,None,None],[self.practice_instructions2,None],[self.practice_instructions3,None]]
-        aud_set = [[None,None,None],[None,None],[None,None]]
+        inst_set = [[self.practice_instructions1,None,None],[self.practice_instructions2,None],[self.practice_instructions3,None],[self.practice_instructions4,self.practice_cue2]]
+        aud_set = [[None,None,None],[None,None],[None,None],None,None]]
         stim_set = [[150,100,115],[250,200],[200,150]]
-        var = ''
-        score_cond = [[1,0,1],[1,1],[1,1]]
-        inst_rep = [self.practice_instructions4,self.practice_cue2]
-        aud_rep = [None,None]
+        var = 'star_task'
+        score_cond = [[1,0,1],[1,1],[1,1],[1,1]]
         stim_repeat = [200,150]
-        score_rep = [1,1]
-        practice_var = [inst_set,aud_set,stim_set,score_cond]
-        practice_rep_var = [inst_rep,aud_rep,stim_repeat,score_rep]
-
-        return self.run_practice_functions(win, grade, practice_var, practice_rep_var, var)
         
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
+
 
         # def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,score,with_practice,option):
         #     # self.repeat_button.draw() # self.continue_button.draw()

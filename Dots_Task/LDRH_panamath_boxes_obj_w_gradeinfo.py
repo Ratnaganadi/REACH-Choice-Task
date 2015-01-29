@@ -91,11 +91,8 @@ class Dots_Game(task_functions):
         stim_repeat = stim_set
         var = ''
         score_cond = [None,None,None]
-
-        practice_var = [inst_set,aud_set,stim_set,score_cond]
-        practice_rep_var = [inst_set,aud_set,stim_repeat,score_cond]
-
-        return self.run_practice_functions(win, grade, practice_var, practice_rep_var, var)
+        
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
 
     def run_game(self, win, grade, thisIncrement, var):
         "Run one iteration of the game with self.trialList as conditions."
