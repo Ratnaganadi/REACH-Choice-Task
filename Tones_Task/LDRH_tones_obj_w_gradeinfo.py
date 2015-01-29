@@ -101,7 +101,7 @@ class Tones_Game(task_functions):
         aud_set=[self.practice_aud1,None,None]
         stim_set = [2,1,0]
         stim_repeat = [5,4,3]
-        var = None
+        var = ''
 
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat,var)
         
@@ -191,9 +191,8 @@ class Tones_Game(task_functions):
             output.writeframes(data[i][1])
         output.close()
 
-    def run_game(self, win, grade, thisIncrement):
+    def run_game(self, win, grade, thisIncrement,var):
         "Run one iteration of the game with self.trialList as conditions."
-        var = None
         return self.run_trial(win, thisIncrement, trialList=self.trialList, var)
 
     def run_trial(self, win, thisIncrement, trialList, var):

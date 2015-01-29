@@ -373,8 +373,8 @@ def run_staircase(task, operation=None):
         thisIncrement = handler.next()
         print 'thisIncrement:', thisIncrement
         #run game-- output is a dictionary of values
-        if operation: output = all_games[task].run_game(win, grade, operation, thisIncrement)
-        else: output = all_games[task].run_game(win, grade, thisIncrement)
+        if operation: output = all_games[task].run_game(win, grade, thisIncrement, operation)
+        else: output = all_games[task].run_game(win, grade, thisIncrement, "")
         if output=='QUIT': pickle_and_quit()
 
         #first write trial number to output, then write the output variables
@@ -748,9 +748,9 @@ while True:
         if this_task["name"]=='Math':
             print all_thresholds['Math'].keys()
             operation = choice(all_thresholds['Math'].keys())
-            output = all_games[this_task["name"]].run_game(win, grade, operation, all_thresholds[this_task["name"]][operation])
+            output = all_games[this_task["name"]].run_game(win, grade, all_thresholds[this_task["name"]][operation], operation)
         else:
-            output = all_games[this_task["name"]].run_game(win, grade, all_thresholds[this_task["name"]]) #None, all_sheets[this_task["name"]]['sheet'])
+            output = all_games[this_task["name"]].run_game(win, grade, all_thresholds[this_task["name"]], "") #None, all_sheets[this_task["name"]]['sheet'])
 
         score = output.get('score', 0) if output else 0
         thesePoints += score*(this_task["points"])*point_intervals

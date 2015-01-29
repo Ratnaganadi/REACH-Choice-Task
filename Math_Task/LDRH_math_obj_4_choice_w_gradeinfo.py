@@ -178,7 +178,7 @@ class Math_Game(task_functions):
         #         go_to_choice=True
         #     if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
 
-    def run_game(self, win, grade, operation, thisIncrement):
+    def run_game(self, win, grade, thisIncrement, operation):
         "Run one iteration of the game with self.trialList as conditions."
         return self.run_trial(win, thisIncrement, operation)
 
