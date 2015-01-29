@@ -20,7 +20,7 @@ class task_functions:
             if option=='no_repeat_option':
                 if text_cue!=None and aud_cue!=None:
                     text_cue.draw()
-                    aud_cue.play()
+                    if aud_cue: aud_cue.play()
                     win.flip() #display instructions
 
                     #wait 1 seconds before checking for touch
@@ -92,11 +92,11 @@ class task_functions:
 
         def run_3_practice(inst,audio,stimuli,score_cond,var):
             #draw practice instructions, and do sub practice
-            for txt,aud,stim in zip(inst,audio,stimuli,score_cond):
-                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',score_cond,var)
+            for txt,aud,stim,score in zip(inst,audio,stimuli,score_cond):
+                run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',score,var)
 
         # for inst,aud,stim,score in zip (practice_var[0],practice_var[1],practice_var[2],practice_var[3]):
-        if var = 'star_task':
+        if var=='star_task':
             run_3_practice(inst_set[0],aud_set[0],stim_set[0],score_cond[0],var)
             run_3_practice(inst_set[1],aud_set[1],stim_set[1],score_cond[1],var)
             run_3_practice(inst_set[2],aud_set[2],stim_set[2],score_cond[2],var)

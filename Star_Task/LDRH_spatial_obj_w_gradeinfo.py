@@ -95,7 +95,7 @@ class Star_Game(task_functions):
     def run_practice(self, win, grade):
         "Run practice"
         inst_set = [[self.practice_instructions1,None,None],[self.practice_instructions2,None],[self.practice_instructions3,None],[self.practice_instructions4,self.practice_cue2]]
-        aud_set = [[None,None,None],[None,None],[None,None],None,None]]
+        aud_set = [[None,None,None],[None,None],[None,None],[None,None]]
         stim_set = [[150,100,115],[250,200],[200,150]]
         var = 'star_task'
         score_cond = [[1,0,1],[1,1],[1,1],[1,1]]

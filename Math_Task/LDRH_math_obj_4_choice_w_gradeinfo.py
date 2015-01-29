@@ -96,7 +96,6 @@ class Math_Game(task_functions):
         stim_set = [13,11,11]
         stim_repeat = stim_set
         var = 'addition'
-        var = ''
         score_cond = [None,None,None]
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
