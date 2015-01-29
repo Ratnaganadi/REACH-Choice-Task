@@ -285,9 +285,11 @@ class Tones_Game:
         stim1 = sounds[0][0]
         stim2 = sounds[1][0]
 
-        pos = {'same':'left', 'different':'right'}
-        target_pos = pos[target_content]
-        foil_pos = pos[foil_content]
+        pos = {'same':['left',self.same_button], 'different':['right',self.different_button}
+        target_pos = pos[target_content][0]
+        foil_pos = pos[foil_content][0]
+        self.target_button = pos[target_content][1]
+        self.foil_button = pos[foil_content][1]
         
         #draw speaker
         self.speaker.draw()
@@ -316,8 +318,8 @@ class Tones_Game:
             if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
         self.speaker.draw()
-        self.same_button.draw()
-        self.different_button.draw()
+        self.target_button.draw()
+        self.foil_button.draw()
         win.flip()
 
         #start timer for response
@@ -337,7 +339,7 @@ class Tones_Game:
         if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
 
         #give feedback
-        self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
+        self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
 
         #write data
         for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]]):
