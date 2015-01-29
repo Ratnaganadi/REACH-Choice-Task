@@ -103,8 +103,9 @@ class Math_Game(task_functions):
         aud_set=[self.practice_aud1,None,None]
         stim_set = [13,11,11]
         stim_repeat = stim_set
+        var = 'addition'
 
-        return self.run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat)
+        return self.run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat,var)
         # def run_sub_practice(self,win,text_cue,aud_cue,math_operation,stim_condition,with_practice,option):
         #     # self.repeat_button.draw() # self.continue_button.draw()
         #     if option=='no_repeat_option':
@@ -179,9 +180,9 @@ class Math_Game(task_functions):
 
     def run_game(self, win, grade, operation, thisIncrement):
         "Run one iteration of the game with self.trialList as conditions."
-        return self.run_trial(win, operation, thisIncrement)
+        return self.run_trial(win, thisIncrement, operation)
 
-    def run_trial(self, win, operation, thisIncrement):
+    def run_trial(self, win, thisIncrement, operation):
         "Run one iteration of the game."
         self.trialClock.reset()
         these_conditions = self.trialList[operation]

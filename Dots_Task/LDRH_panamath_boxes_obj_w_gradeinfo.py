@@ -98,8 +98,9 @@ class Dots_Game(task_functions):
         aud_set=[self.practice_aud1,None,None]
         stim_set = [39,30,35]
         stim_repeat = stim_set
+        var = None
 
-        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat)
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, var)
         # def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
         #     # self.repeat_button.draw() # self.continue_button.draw()
         #     if option=='no_repeat_option':
@@ -173,9 +174,10 @@ class Dots_Game(task_functions):
 
     def run_game(self, win, grade, thisIncrement):
         "Run one iteration of the game with self.trialList as conditions."
-        return self.run_trial(win, thisIncrement)
+        var = None
+        return self.run_trial(win, thisIncrement, var)
 
-    def run_trial(self, win, thisIncrement):
+    def run_trial(self, win, thisIncrement, var):
 
         #Start of routine trial
         t=0; self.trialClock.reset()
