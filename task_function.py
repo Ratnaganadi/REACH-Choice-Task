@@ -96,11 +96,14 @@ class task_functions:
                 run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',score,var)
 
         # for inst,aud,stim,score in zip (practice_var[0],practice_var[1],practice_var[2],practice_var[3]):
-        if var=='star_task':
-            run_3_practice(inst_set[0],aud_set[0],stim_set[0],score_cond[0],var)
-            run_3_practice(inst_set[1],aud_set[1],stim_set[1],score_cond[1],var)
-            run_3_practice(inst_set[2],aud_set[2],stim_set[2],score_cond[2],var)
-        else: run_3_practice(inst_set,aud_set,stim_set,score_cond,var)
+        # if var=='star_task':
+        #     run_3_practice(inst_set[0],aud_set[0],stim_set[0],score_cond[0],var)
+        #     run_3_practice(inst_set[1],aud_set[1],stim_set[1],score_cond[1],var)
+        #     run_3_practice(inst_set[2],aud_set[2],stim_set[2],score_cond[2],var)
+        # else: run_3_practice(inst_set,aud_set,stim_set,score_cond,var)
+        
+        for inst,aud,stim,score in zip (inst_set,aud_set,stim_set,score_cond)
+            run_3_practice(inst,aud,stim,var,score_cond)
         go_to_choice=False
         while go_to_choice==False:
             repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt',var,score_cond)
