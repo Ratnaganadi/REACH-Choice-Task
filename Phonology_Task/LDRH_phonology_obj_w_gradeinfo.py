@@ -243,11 +243,17 @@ class Phonology_Game(task_functions):
         t4 = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2
         tf = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2 + self.t_timer_limit
 
-        pos = {'same':'left', 'different':'right'}
-        target_pos = pos[target_content]
-        foil_pos = pos[foil_content]
-        score = None
+        pos = {'same':['left',self.same_button], 'different':['right',self.different_button]}
+        target_pos = pos[target_content][0]
+        foil_pos = pos[foil_content][0]
+        self.target_button = pos[target_content][1]
+        self.foil_button = pos[foil_content][1]
 
+        score = None
+        # #time constrains
+        # self.t_initialspeaker = 1
+        # self.t_stimgap = 1
+        # self.t_timer_limit = 12
         while score==None:
             t = self.trialClock.getTime()
             
@@ -261,8 +267,8 @@ class Phonology_Game(task_functions):
                 stim2.play()
             if t>t4 and t<=tf:
                 self.speaker.draw()
-                self.same_button.draw()
-                self.different_button.draw()
+                self.target_button.draw()
+                self.foil_button.draw()
 
                 start_time = self.trialClock.getTime()
                 timer = 0

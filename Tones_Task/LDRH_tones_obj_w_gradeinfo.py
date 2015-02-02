@@ -209,10 +209,10 @@ class Tones_Game(task_functions):
 
         sounds = [[soundA,raw_soundA],[soundB,raw_soundB]]
         shuffle(sounds)
-        raw_stim1 = str(sounds[0][1])
-        raw_stim2 = str(sounds[1][1])
         stim1 = sounds[0][0]
         stim2 = sounds[1][0]
+        raw_stim1 = str(sounds[0][1])
+        raw_stim2 = str(sounds[1][1])
 
         pos = {'same':['left',self.same_button], 'different':['right',self.different_button]}
         target_pos = pos[target_content][0]
@@ -255,7 +255,7 @@ class Tones_Game(task_functions):
         start_time=self.trialClock.getTime()
         choice_time=0
         thisResp=None
-        score = 0
+        score = None
         self.mouse.getPos() #called to prevent last movement of mouse from triggering click
         while thisResp==None and choice_time<=self.t_timer_limit:
             if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
