@@ -18,7 +18,7 @@ class task_functions:
         def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,score_cond,var):
             # self.repeat_button.draw() # self.continue_button.draw()
             if option=='no_repeat_option':
-                if text_cue!=None and aud_cue!=None:
+                if text_cue!=None:
                     text_cue.draw()
                     if aud_cue: aud_cue.play()
                     win.flip() #display instructions

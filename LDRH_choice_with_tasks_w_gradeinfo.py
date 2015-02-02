@@ -477,11 +477,11 @@ if not just_choice:
         # if all_games[task].run_instructions(win)=='QUIT': pickle_and_quit()
         # instructions_times[task] = trialClock.getTime() - instructions_start
 
-        #run practice for task
-        practice_start = trialClock.getTime()
-        if hasattr(all_games[task], 'run_practice'):
-            if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
-        practice_times[task] = trialClock.getTime() - practice_start
+        # #run practice for task
+        # practice_start = trialClock.getTime()
+        # if hasattr(all_games[task], 'run_practice'):
+        #     if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
+        # practice_times[task] = trialClock.getTime() - practice_start
 
         # #run staircase; math needs special circumstances
         staircasing_start = trialClock.getTime()

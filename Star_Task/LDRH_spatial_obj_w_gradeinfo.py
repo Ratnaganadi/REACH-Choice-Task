@@ -80,21 +80,9 @@ class Star_Game(task_functions):
         for x in [45,135,225,315]: self.degree_possibilities.extend(range(x-(44-self.cardinal_exclusion_range), x+(45-self.cardinal_exclusion_range)))
 
 
-    # def run_instructions(self, win):
-    #     "Display the instructions for the game."
-    #     #display instructions and wait
-    #     self.audio_inst.play()
-    #     while self.instructions._player.time <= int(self.instructions.duration):
-    #         self.instructions.draw()
-    #         win.flip()
-    #     win.flip()
-
-    # def run_instructions_w_demo(self,win):
-
-
     def run_practice(self, win, grade):
         "Run practice"
-        inst_set = [[self.practice_instructions1,None,None],[self.practice_instructions2,None],[self.practice_instructions3,None],[self.practice_instructions4,self.practice_cue2]]
+        inst_set = [[self.practice_instructions1,None,None],[self.practice_instructions2,None],[self.practice_instructions3,None],[self.practice_instructions4,None]]
         aud_set = [[None,None,None],[None,None],[None,None],[None,None]]
         stim_set = [[150,100,115],[250,200],[200,150]]
         var = 'star_task'
@@ -103,104 +91,6 @@ class Star_Game(task_functions):
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
 
-
-        # def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,score,with_practice,option):
-        #     # self.repeat_button.draw() # self.continue_button.draw()
-        #     if option=='no_repeat_option':
-        #         if text_cue!=None:
-        #             text_cue.draw()
-        #             if aud_cue: aud_cue.play()
-        #             win.flip() #display instructions
-
-        #             #wait 1 seconds before checking for touch
-        #             start_time = self.trialClock.getTime()
-        #             while start_time+1 > self.trialClock.getTime():
-        #                 if 'escape' in event.getKeys(): return 'QUIT'
-
-        #             #check for a touch
-        #             cont=False
-        #             self.mouse.getPos()
-        #             while cont==False:
-        #                 if self.click(): 
-        #                     if aud_cue: aud_cue.stop()
-        #                     cont=True
-        #                 if 'escape' in event.getKeys(): 
-        #                     if aud_cue: aud_cue.stop()
-        #                     return 'QUIT'
-        #         else: win.flip()
-
-        #     elif option=='repeat_opt':
-        #         self.repeat_button.draw()
-        #         self.continue_button.draw()
-        #         text_cue.draw()
-        #         if aud_cue:
-        #             aud_cue.play()
-        #         win.flip() #display instructions
-
-        #         #wait 1 seconds before checking for touch
-        #         start_time = self.trialClock.getTime()
-        #         while start_time+1 > self.trialClock.getTime():
-        #             if 'escape' in event.getKeys():
-        #                 if aud_cue:
-        #                     aud_cue.stop()
-        #                 return 'QUIT'
-        #         #check for a touch
-        #         cont=False
-        #         self.mouse.getPos()
-        #         while cont==False:
-        #             if self.click():
-        #                 if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
-        #                     if aud_cue:
-        #                         aud_cue.stop()
-        #                     return 'repeat'
-        #                     break
-        #                 elif self.continue_button.contains(self.mouse):
-        #                     if aud_cue:
-        #                         aud_cue.stop()
-        #                     return 'continue'
-        #                     break
-        #             if 'escape' in event.getKeys():
-        #                 if aud_cue:
-        #                     aud_cue.stop()
-        #                 return 'QUIT'
-
-        #     print 'with_practice', with_practice
-
-        #     if with_practice==True:
-        #         output = self.run_game(win, "", stim_condition) #run first practice trial
-
-        #         print 'run practice'
-        #         while output['Score']!=score:
-        #             self.try_again.draw()
-        #             win.flip()
-        #             #wait a second before accepting touch
-        #             start_time=self.trialClock.getTime()
-        #             while start_time+1>self.trialClock.getTime():
-        #                 if 'escape' in event.getKeys(): return 'QUIT'
-        #             #wait for a touch
-        #             self.mouse.getPos()
-        #             cont=False
-        #             while cont==False:
-        #                 if self.click(): cont=True
-        #                 if 'escape' in event.getKeys(): return 'QUIT'
-        #             output = self.run_game(win, "", stim_condition)
-
-        # def run_3_practice(inst,stimuli,score_conds):
-        #     #draw practice instructions, and do sub practice
-        #     for txt,stim,score in zip(inst,stimuli,score_conds):
-        #         run_sub_practice(self,win,txt,None,stim,score,True,'no_repeat_option')
-
-        # run_3_practice([self.practice_instructions1,None,None],[150,100,115],[1,0,1])
-        # run_3_practice([self.practice_instructions2,None],[250,200],[1,1])
-        # run_3_practice([self.practice_instructions3,None],[200,150],[1,1])
-        # go_to_choice=False
-        # while go_to_choice==False:
-        #     repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,None,False,'repeat_opt')
-        #     if repeat_or_continue=='repeat': run_3_practice([self.practice_instructions4,self.practice_cue2],[200,150],[1,1])
-        #     elif repeat_or_continue=='continue':
-        #         print 'continue2'
-        #         go_to_choice=True
-        #     if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
 
     def run_game(self, win, grade, thisIncrement, var):
         "Run one iteration of the game with self.trialList as conditions."
