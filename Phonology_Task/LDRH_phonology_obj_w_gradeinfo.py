@@ -174,11 +174,11 @@ class Phonology_Game(task_functions):
         output.close()
 
 
-    def run_game(self, win, grade, thisIncrement):
+    def run_game(self, win, grade, thisIncrement, var):
         "Run one iteration of the game with self.trialList as conditions."
-        return self.run_trial(win, thisIncrement)
+        return self.run_trial(win, thisIncrement, var)
 
-    def run_trial(self, win, thisIncrement):
+    def run_trial(self, win, thisIncrement, var):
         "Run one iteration of the game."
         self.trialClock.reset(); t=0
 

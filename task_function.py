@@ -95,7 +95,6 @@ class task_functions:
             for txt,aud,stim,score in zip(inst,audio,stimuli,score_cond):
                 run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',score,var)
 
-        for inst,aud,stim,score in zip (practice_var[0],practice_var[1],practice_var[2],practice_var[3]):
         if var=='star_task':
             run_3_practice(inst_set[0],aud_set[0],stim_set[0],score_cond[0],var)
             run_3_practice(inst_set[1],aud_set[1],stim_set[1],score_cond[1],var)
