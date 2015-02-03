@@ -278,22 +278,12 @@ class Phonology_Game(task_functions):
         self.target_button.draw()
         self.foil_button.draw()
         win.flip()
-        
-        #play second melody
-        stim2.play()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + stim2.getDuration():
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-
-        self.speaker.draw()
-        self.target_button.draw()
-        self.foil_button.draw()
-        win.flip()
 
         #start timer for response
         start_time=self.trialClock.getTime()
         choice_time=0
         thisResp=None
+        thisResp_pos=None
         score = None
         self.mouse.getPos() #called to prevent last movement of mouse from triggering click
         while thisResp==None and choice_time<=self.t_timer_limit:
