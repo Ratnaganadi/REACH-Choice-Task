@@ -228,7 +228,7 @@ class Reading_Game(task_functions):
                 n = question
                 difficulty = self.trialList[n]['Difficulty']
                 grade_now = self.trialList[n]['Grade']
-                print 'Difficulty is:', difficulty, ', Grade:', grade
+                print 'Difficulty is:', difficulty, ', Grade:', grade_now
 
         # c=['look_alike','sound_alike','sound_look_alike','no_sound_look']
 
@@ -265,7 +265,7 @@ class Reading_Game(task_functions):
 
         points = [1,0,0,0]
         shuffle(xpositions)
-        feedback_screen = 
+        feedback_screen = [self.speaker,self.target_button] + foil_button + [self.target] + foil_text
         if grade_now=='letter_sound': object_var = zip(points,['sound_'+target_string.lower()]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
         else: object_var = zip(points,[target_string.lower()]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
         
@@ -278,8 +278,8 @@ class Reading_Game(task_functions):
 
         #play audio + buttons
         touch_prompt = None
-        if prompt_itm=='prompt_ltr'or grade=='letter': touch_prompt='touch_letter'
-        elif prompt_itm=='prompt_sound' or grade=='letter_sound': touch_prompt='touch_sound'
+        if prompt_itm=='prompt_ltr'or grade_now=='letter': touch_prompt='touch_letter'
+        elif prompt_itm=='prompt_sound' or grade_now=='letter_sound': touch_prompt='touch_sound'
         elif prompt_itm=='prompt_word': touch_prompt='touch_word'
         print 'prompt_itm', prompt_itm
         print 'touch_prompt', touch_prompt
@@ -300,7 +300,7 @@ class Reading_Game(task_functions):
         t4 = self.t_initialbuttons + self.t_initialspeaker + t_stim
 
         #the game
-        score=None:
+        score=None
         while score==None and touch_prompt!=None:
             t=self.trialClock.getTime()
 
@@ -341,7 +341,7 @@ class Reading_Game(task_functions):
     
         #write data
         output = {
-            'threshold_var': grade,
+            'threshold_var': grade_now,
             'level': difficulty,
             'score': score,
             'resp_time': choice_time,
@@ -360,9 +360,9 @@ class Reading_Game(task_functions):
         elif foil4_string!='': order = [1,0]
 
         for i in order:
-            output[foil_name[i][0]] = xpositions[foil_name[i][1]
+            output[foil_name[i][0]] = xpositions[foil_name[i][1]]
 
-        elif foil4_string!='': output['foil4_pos'] = xpositions[4]
+        # elif foil4_string!='': output['foil4_pos'] = xpositions[4]
         
         output_header = ['target_pos','foil1_pos','foil2_pos']
         for var,xpos in zip(output_header,xpositions):
@@ -370,7 +370,7 @@ class Reading_Game(task_functions):
             output[var+'_pos'] = pos[xpos]
 
         output = {
-        'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil1':foil1,'Foil2':foil2,'Foil3':foil3,'Foil4':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
+        # 'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil1':foil1,'Foil2':foil2,'Foil3':foil3,'Foil4':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
         
         if (self.iteration[n] == len(self.trialList[n]['Target'])-1): self.iteration[n] = 0
         else: self.iteration[n] += 1
