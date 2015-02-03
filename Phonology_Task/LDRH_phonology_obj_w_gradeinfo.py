@@ -234,14 +234,14 @@ class Phonology_Game(task_functions):
         stim2 = audio_order[1][0]
         raw_stim1 = audio_order[0][2]
         raw_stim2 = audio_order[1][2]
-        t_stim1 = audio_order[0][1]
-        t_stim2 = audio_order[1][1]
+        # t_stim1 = audio_order[0][1]
+        # t_stim2 = audio_order[1][1]
 
-        t1 = self.t_initialspeaker
-        t2 = self.t_initialspeaker + t_stim1
-        t3 = self.t_initialspeaker + t_stim1 + self.t_stimgap
-        t4 = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2
-        tf = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2 + self.t_timer_limit
+        # t1 = self.t_initialspeaker
+        # t2 = self.t_initialspeaker + t_stim1
+        # t3 = self.t_initialspeaker + t_stim1 + self.t_stimgap
+        # t4 = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2
+        # tf = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2 + self.t_timer_limit
 
         pos = {'same':['left',self.same_button], 'different':['right',self.different_button]}
         target_pos = pos[target_content][0]
@@ -249,44 +249,96 @@ class Phonology_Game(task_functions):
         self.target_button = pos[target_content][1]
         self.foil_button = pos[foil_content][1]
 
+        self.speaker.draw()
+        win.flip()
+        core.wait(t_initialspeaker)
+        self.speaker_playing.draw()
+        win.flip()
+        
+        #play first phoneme
+        stim1.play()
+        start_time = self.trialClock.getTime()
+        while self.trialClock.getTime() < start_time + stim1.getDuration():
+            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+
+        #after phoneme is played, wait one second and then play second tone
+        self.speaker.draw()
+        win.flip()
+        core.wait(self.t_stimgap)
+        self.speaker_playing.draw()
+        win.flip()
+
+        #play second phoneme
+        stim2.play()
+        start_time = self.trialClock.getTime()
+        while self.trialClock.getTime() < start_time + stim2.getDuration():
+            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+
+        self.speaker.draw()
+        self.target_button.draw()
+        self.foil_button.draw()
+        win.flip()
+        
+        #play second melody
+        stim2.play()
+        start_time = self.trialClock.getTime()
+        while self.trialClock.getTime() < start_time + stim2.getDuration():
+            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+
+        self.speaker.draw()
+        self.target_button.draw()
+        self.foil_button.draw()
+        win.flip()
+
+        #start timer for response
+        start_time=self.trialClock.getTime()
+        choice_time=0
+        thisResp=None
         score = None
-        # #time constrains
-        # self.t_initialspeaker = 1
-        # self.t_stimgap = 1
-        # self.t_timer_limit = 12
-        while score==None:
-            t = self.trialClock.getTime()
+        self.mouse.getPos() #called to prevent last movement of mouse from triggering click
+        while thisResp==None and choice_time<=self.t_timer_limit:
+            if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+            if event.getKeys(keyList=['escape']): return 'QUIT'
+            choice_time=self.trialClock.getTime()-start_time
+
+        if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
+
+
+        # while score==None:
+        #     t = self.trialClock.getTime()
             
-            if t<=t1:self.speaker.draw(); print 't1'
-            if t>t1 and t<=t2:
-                self.speaker_playing.draw()
-                stim1.play(); print 't2'
-            if t>t2 and t<=t3: self.speaker.draw()
-            if t>t3 and t<=t4:
-                self.speaker_playing.draw()
-                stim2.play()
-            if t>t4 and t<=tf:
-                self.speaker.draw()
-                self.target_button.draw()
-                self.foil_button.draw()
+        #     if t<=t1:self.speaker.draw(); print 't1'
+        #     if t>t1 and t<=t2:
+        #         self.speaker_playing.draw()
+        #         stim1.play(); print 't2'
+        #     if t>t2 and t<=t3: self.speaker.draw()
+        #     if t>t3 and t<=t4:
+        #         self.speaker_playing.draw()
+        #         stim2.play()
+        #     if t>t4 and t<=tf:
+        #         self.speaker.draw()
+        #         self.target_button.draw()
+        #         self.foil_button.draw()
 
-                start_time = self.trialClock.getTime()
-                timer = 0
+        #         start_time = self.trialClock.getTime()
+        #         timer = 0
 
-                click = self.click()
-                thisResp = None
-                self.mouse.getPos()
-                while thisResp==None:
-                    if click and self.target_button.contains(self.mouse):
-                        score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                    elif click and self.foil_button.contains(self.mouse):
-                        score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                    if event.getKeys(keyList=['escape']): return 'QUIT'
-                    choice_time=self.trialClock.getTime()-start_time
-            if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+        #         click = self.click()
+        #         thisResp = None
+        #         self.mouse.getPos()
+        #         while thisResp==None:
+        #             if click and self.target_button.contains(self.mouse):
+        #                 score,thisResp,thisResp_pos = (1,target_content,target_pos)
+        #             elif click and self.foil_button.contains(self.mouse):
+        #                 score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+        #             if event.getKeys(keyList=['escape']): return 'QUIT'
+        #             choice_time=self.trialClock.getTime()-start_time
+        #     if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
-        self.fb.present_fb(win,score,[self.speaker,self.same_button,self.different_button])
+        self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
 
         #write data
         thresh = ['D3_PA-GA_KA-BA','D2_both_BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA_TA-DA_PA-KA_BA-GA_TA-DA','D1_VOT_PA-BA_KA-GA']
