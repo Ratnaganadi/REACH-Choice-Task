@@ -242,9 +242,12 @@ class Reading_Game(task_functions):
         foil4_string = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]]) #n=3 #don't look, don't sound alike
 
         if foil2_string !='':
-            foil_string = [foil1_string,foil2_string]
-            if foil3_string!='': foil_string.extend(foil3_string)
-            else: foil_string.append(foil4_string)
+            # foil_string = [foil1_string,foil2_string]
+            # if foil3_string!='': foil_string.extend(foil3_string)
+            # else: foil_string.append(foil4_string)
+
+            if foil3_string!='': foil_string = [foil1_string,foil2_string,foil3_string]
+            else: foil_string = [foil1_string,foil2_string,foil4_string]
 
             foil_text = [self.foil1,self.foil2,self.foil3]
             foil_button = [self.foil1_4button,self.foil2_4button,self.foil3_4button]
@@ -305,6 +308,7 @@ class Reading_Game(task_functions):
                 for pts,string,text,xpos,button in object_var:
                     button.draw()
                     text.draw()
+                win.flip()
                 if t>t1 and t<=t2: self.speaker.draw()
                 if t>t2 and t<=t3:
                     self.speaker_playing.draw()

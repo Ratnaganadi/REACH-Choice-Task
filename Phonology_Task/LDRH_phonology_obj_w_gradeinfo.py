@@ -92,74 +92,6 @@ class Phonology_Game(task_functions):
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
 
-        # def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option):
-        #     # self.repeat_button.draw() # self.continue_button.draw()
-        #     if option=='no_repeat_option':
-        #         if text_cue!=None and aud_cue!=None:
-        #             text_cue.draw()
-        #             aud_cue.play()
-        #             win.flip() #display instructions
-
-        #             #wait 1 seconds before checking for touch
-        #             start_time = self.trialClock.getTime()
-        #             while start_time+1 > self.trialClock.getTime():
-        #                 if 'escape' in event.getKeys(): return 'QUIT'
-
-        #             #check for a touch
-        #             cont=False
-        #             self.mouse.getPos()
-        #             while cont==False:
-        #                 if self.click(): aud_cue.stop(); cont=True
-        #                 if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-        #         else: win.flip()
-
-        #     elif option=='repeat_opt':
-        #         self.repeat_button.draw()
-        #         self.continue_button.draw()
-        #         text_cue.draw()
-        #         aud_cue.play()
-        #         win.flip() #display instructions
-
-        #         #wait 1 seconds before checking for touch
-        #         start_time = self.trialClock.getTime()
-        #         while start_time+1 > self.trialClock.getTime():
-        #             if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-
-        #         #check for a touch
-        #         cont=False
-        #         self.mouse.getPos()
-        #         while cont==False:
-        #             if self.click():
-        #                 if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
-        #                     aud_cue.stop(); return 'repeat'
-        #                     break
-        #                 elif self.continue_button.contains(self.mouse):
-        #                     aud_cue.stop(); return 'continue'
-        #                     break
-        #             if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-
-        #     print 'with_practice', with_practice
-        #     if with_practice==True: output = self.run_game(win, "", stim_condition); print 'run practice' #run first practice trial
-
-        # def run_3_practice(inst,audio,stimuli):
-        #     #draw practice instructions, and do sub practice
-        #     for txt,aud,stim in zip(inst,audio,stimuli):
-        #         run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option')
-
-        # inst_set=[self.practice_cue1,None,None]
-        # aud_set=[self.practice_aud1,None,None]
-        # stim_set = [4,3,1]
-
-        # run_3_practice(inst_set,aud_set,stim_set)
-        # go_to_choice=False
-        # while go_to_choice==False:
-        #     repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt')
-        #     if repeat_or_continue=='repeat': run_3_practice(inst_set,aud_set,stim_set)
-        #     elif repeat_or_continue=='continue':
-        #         print 'continue2'
-        #         go_to_choice=True
-        #     if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
-
 
     def concat_wavs(self, infiles, outfile):
         data=[]
@@ -234,15 +166,7 @@ class Phonology_Game(task_functions):
         stim2 = audio_order[1][0]
         raw_stim1 = audio_order[0][2]
         raw_stim2 = audio_order[1][2]
-        # t_stim1 = audio_order[0][1]
-        # t_stim2 = audio_order[1][1]
-
-        # t1 = self.t_initialspeaker
-        # t2 = self.t_initialspeaker + t_stim1
-        # t3 = self.t_initialspeaker + t_stim1 + self.t_stimgap
-        # t4 = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2
-        # tf = self.t_initialspeaker + t_stim1 + self.t_stimgap + t_stim2 + self.t_timer_limit
-
+        
         pos = {'same':['left',self.same_button], 'different':['right',self.different_button]}
         target_pos = pos[target_content][0]
         foil_pos = pos[foil_content][0]
@@ -251,7 +175,7 @@ class Phonology_Game(task_functions):
 
         self.speaker.draw()
         win.flip()
-        core.wait(t_initialspeaker)
+        core.wait(self.t_initialspeaker)
         self.speaker_playing.draw()
         win.flip()
         
@@ -294,38 +218,6 @@ class Phonology_Game(task_functions):
             choice_time=self.trialClock.getTime()-start_time
 
         if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
-
-
-        # while score==None:
-        #     t = self.trialClock.getTime()
-            
-        #     if t<=t1:self.speaker.draw(); print 't1'
-        #     if t>t1 and t<=t2:
-        #         self.speaker_playing.draw()
-        #         stim1.play(); print 't2'
-        #     if t>t2 and t<=t3: self.speaker.draw()
-        #     if t>t3 and t<=t4:
-        #         self.speaker_playing.draw()
-        #         stim2.play()
-        #     if t>t4 and t<=tf:
-        #         self.speaker.draw()
-        #         self.target_button.draw()
-        #         self.foil_button.draw()
-
-        #         start_time = self.trialClock.getTime()
-        #         timer = 0
-
-        #         click = self.click()
-        #         thisResp = None
-        #         self.mouse.getPos()
-        #         while thisResp==None:
-        #             if click and self.target_button.contains(self.mouse):
-        #                 score,thisResp,thisResp_pos = (1,target_content,target_pos)
-        #             elif click and self.foil_button.contains(self.mouse):
-        #                 score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-        #             if event.getKeys(keyList=['escape']): return 'QUIT'
-        #             choice_time=self.trialClock.getTime()-start_time
-        #     if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
         #give feedback
         self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
