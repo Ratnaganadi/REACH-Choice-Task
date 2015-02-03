@@ -10,7 +10,7 @@ from datetime import datetime
 from Math_Task import LDRH_math_obj_4_choice_w_gradeinfo as Math_Script
 from Tones_Task import LDRH_tones_obj_w_gradeinfo as Tones_Script
 from Dots_Task import LDRH_panamath_boxes_obj_w_gradeinfo as Dots_Script
-# from Reading_Task import LDRH_reading_obj_4buttons_inst_gradeinfo as Reading_Script
+from Reading_Task import LDRH_reading_obj_4buttons_inst_gradeinfo as Reading_Script
 from Phonology_Task import LDRH_phonology_obj_w_gradeinfo as Phonology_Script
 from Star_Task import LDRH_spatial_obj_w_gradeinfo as Star_Script
 from Feedback import feedback
@@ -36,7 +36,7 @@ task_names=[
     'Phonology',
     'Math',
     'Music',
-    # 'Reading',
+    'Reading',
     'Dots',
 ]
 
@@ -173,7 +173,7 @@ else:
         'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
         'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
         'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
-        # 'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
         'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
         'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1)
     }
@@ -305,7 +305,7 @@ for ring in range(len(colors_for_rings)):
 all_games = {'Math': Math_Script.Math_Game(win, all_conditions['Math']),
     'Music': Tones_Script.Tones_Game(win, all_conditions['Music']),
     'Dots': Dots_Script.Dots_Game(win, all_conditions['Dots']),
-    # 'Reading': Reading_Script.Reading_Game(win, all_conditions['Reading']),
+    'Reading': Reading_Script.Reading_Game(win, all_conditions['Reading']),
     'Phonology': Phonology_Script.Phonology_Game(win, all_conditions['Phonology']),
     'Spatial': Star_Script.Star_Game(win)}
 
@@ -413,7 +413,7 @@ def run_staircase(task, operation=None):
             'Phonology': ['stim1','stim2','resp','target','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist'],
             'Math': ['stim','resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos'],
             'Music': ['stim1','stim2','resp','target','tones_details','tones_contour','tones_notes_different','tones_root'],
-            # 'Reading': ['resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos'],
+            'Reading': ['resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos'],
             'Dots': ['resp','target']
         }
 

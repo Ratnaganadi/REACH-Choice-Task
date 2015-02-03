@@ -366,7 +366,7 @@ class Reading_Game(task_functions):
         
         output_header = ['target_pos','foil1_pos','foil2_pos']
         for var,xpos in zip(output_header,xpositions):
-            output[var] = string
+            # output[var] = string
             output[var+'_pos'] = pos[xpos]
 
         output = {
