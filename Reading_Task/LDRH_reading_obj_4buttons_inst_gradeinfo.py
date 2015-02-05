@@ -170,7 +170,13 @@ class Reading_Game(task_functions):
         foil3_string = str(self.trialList[n]['Foil_sound_look_alike'][self.iteration[n]]) #n=2 #look alike, sound alike
         foil4_string = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]]) #n=3 #don't look, don't sound alike
 
-        if len(foil1_string)+len(foil2_string)+len(foil3_string)+len(foil4_string)==1:
+        total_foil=None
+        for foil in [foil1_string,foil2_string,foil3_string,foil4_string]:
+            if len(foil)>0: len_foil=1
+            else: len_foil=len(foil)
+            total_foil+=len_foil
+
+        if total_foil==1:
             for foiltmp in [foil1_string,foil2_string,foil3_string,foil4_string]:
                 if len(foiltmp)!=0: foil_string = [foiltmp]
             foil_text = [self.foil1]
@@ -179,7 +185,7 @@ class Reading_Game(task_functions):
             pos = two_xpositions
             xpositions = two_xpositions.keys()
 
-        elif len(foil1_string)+len(foil2_string)+len(foil3_string)+len(foil4_string)==3:
+        elif total_foil==3:
             for foiltmp in [foil3_string,foil4_string]:
                 if len(foiltmp)!=0: foil_string = [foil1_string,foil2_string,foiltmp]
             foil_text = [self.foil1,self.foil2,self.foil3]
@@ -245,7 +251,7 @@ class Reading_Game(task_functions):
         self.fixation.draw()
         win.flip()
         core.wait(1)
-        
+
         draw_buttons(object_var,None,'yes-flip',self.t_initialbuttons,None)
         draw_buttons(object_var,self.speaker,'yes-flip',self.t_initialspeaker,None)
         draw_buttons(object_var,self.speaker_playing,'yes-flip',0,[audio_prompt,audio_stim])
