@@ -143,9 +143,6 @@ class Reading_Game(task_functions):
             return [audio,audio_length]
             os.remove(fn)
 
-        # def extra_feedback(target):
-        #     "That's right! You touched the word ... That is correct!"
-        #     "That's incorrect. You are supposed to touch the word ... But you touched the wrong one. Let's try some more."
 
         t = 0; self.trialClock.reset()
         t=self.trialClock.getTime()
