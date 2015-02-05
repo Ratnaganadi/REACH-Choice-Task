@@ -170,7 +170,7 @@ class Reading_Game(task_functions):
         foil3_string = str(self.trialList[n]['Foil_sound_look_alike'][self.iteration[n]]) #n=2 #look alike, sound alike
         foil4_string = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]]) #n=3 #don't look, don't sound alike
 
-        total_foil=None
+        total_foil=0
         for foil in [foil1_string,foil2_string,foil3_string,foil4_string]:
             if len(foil)>0: len_foil=1
             else: len_foil=len(foil)
