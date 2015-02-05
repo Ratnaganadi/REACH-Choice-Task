@@ -111,77 +111,6 @@ class Reading_Game(task_functions):
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
 
 
-        # def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,prompt_itm):
-        #     # self.repeat_button.draw() # self.continue_button.draw()
-        #     if option=='no_repeat_option':
-        #         if text_cue!=None and aud_cue!=None:
-        #             text_cue.draw()
-        #             aud_cue.play()
-        #             win.flip() #display instructions
-
-        #             #wait 1 seconds before checking for touch
-        #             start_time = self.trialClock.getTime()
-        #             while start_time+1 > self.trialClock.getTime():
-        #                 if 'escape' in event.getKeys(): return 'QUIT'
-
-        #             #check for a touch
-        #             cont=False
-        #             self.mouse.getPos()
-        #             while cont==False:
-        #                 if self.click(): aud_cue.stop(); cont=True
-        #                 if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-        #         else: win.flip()
-
-        #     elif option=='repeat_opt':
-        #         self.repeat_button.draw()
-        #         self.continue_button.draw()
-        #         text_cue.draw()
-        #         aud_cue.play()
-        #         win.flip() #display instructions
-
-        #         #wait 1 seconds before checking for touch
-        #         start_time = self.trialClock.getTime()
-        #         while start_time+1 > self.trialClock.getTime():
-        #             if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-
-        #         #check for a touch
-        #         cont=False
-        #         self.mouse.getPos()
-        #         while cont==False:
-        #             if self.click():
-        #                 if self.repeat_button.contains(self.mouse): #self.mouse.mouseMoved()
-        #                     aud_cue.stop(); return 'repeat'
-        #                     break
-        #                 elif self.continue_button.contains(self.mouse):
-        #                     aud_cue.stop(); return 'continue'
-        #                     break
-        #             if 'escape' in event.getKeys(): aud_cue.stop(); return 'QUIT'
-        #     print 'with_practice', with_practice
-
-        #     #run practice trial if with_practice is true
-        #     if with_practice==True: output = self.run_trial(win, stim_condition,prompt_itm,'practice'); print 'run practice'
-
-        # def run_3_practice(inst,audio,stimuli,prompt_item):
-        #     #draw practice instructions, and do sub practice
-        #     for txt,aud,stim,prompt_itm in zip(inst,audio,stimuli,prompt_item):
-        #         run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',prompt_itm)
-
-        # inst_set=[self.practice_cue1,None,None,None,None]
-        # aud_set=[self.practice_aud1,None,None,None,None]
-        # stim_set = [10,9,8,6,5]
-        # prompt_item = ['prompt_ltr','prompt_sound','prompt_word','prompt_other','prompt_other']
-
-        # run_3_practice(inst_set,aud_set,stim_set,prompt_item)
-        # go_to_choice=False
-        # while go_to_choice==False:
-        #     repeat_or_continue = run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt', 'prompt_itm1')
-        #     if repeat_or_continue=='repeat':
-        #         run_3_practice(inst_set,aud_set,stim_set,prompt_item)
-        #     elif repeat_or_continue=='continue':
-        #         print 'continue2'
-        #         go_to_choice=True
-        # if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
-
     def run_game(self, win, grade, thisIncrement, var):
         "Run one iteration of the game without touch"
         return self.run_trial(win, thisIncrement, 'trial_set')
@@ -214,9 +143,9 @@ class Reading_Game(task_functions):
             return [audio,audio_length]
             os.remove(fn)
 
-        def extra_feedback(target):
-            "That's right! You touched the word ... That is correct!"
-            "That's incorrect. You are supposed to touch the word ... But you touched the wrong one. Let's try some more."
+        # def extra_feedback(target):
+        #     "That's right! You touched the word ... That is correct!"
+        #     "That's incorrect. You are supposed to touch the word ... But you touched the wrong one. Let's try some more."
 
         t = 0; self.trialClock.reset()
         t=self.trialClock.getTime()
@@ -241,31 +170,28 @@ class Reading_Game(task_functions):
         foil3_string = str(self.trialList[n]['Foil_sound_look_alike'][self.iteration[n]]) #n=2 #look alike, sound alike
         foil4_string = str(self.trialList[n]['Foil_no_sound_look'][self.iteration[n]]) #n=3 #don't look, don't sound alike
 
-        if foil2_string !='':
-            # foil_string = [foil1_string,foil2_string]
-            # if foil3_string!='': foil_string.extend(foil3_string)
-            # else: foil_string.append(foil4_string)
-
-            if foil3_string!='': foil_string = [foil1_string,foil2_string,foil3_string]
-            else: foil_string = [foil1_string,foil2_string,foil4_string]
-
-            foil_text = [self.foil1,self.foil2,self.foil3]
-            foil_button = [self.foil1_4button,self.foil2_4button,self.foil3_4button]
-            target_button = self.target_4button
-            pos = four_xpositions
-            xpositions = four_xpositions.keys()
-
-        else:
-            foil_string = [foil1_string]
+        if len(foil1_string)+len(foil2_string)+len(foil3_string)+len(foil4_string)==1:
+            for foiltmp in [foil1_string,foil2_string,foil3_string,foil4_string]:
+                if len(foiltmp)!=0: foil_string = [foiltmp]
             foil_text = [self.foil1]
             foil_button = [self.foil_2button]
             target_button = self.target_2button
             pos = two_xpositions
             xpositions = two_xpositions.keys()
 
+        elif len(foil1_string)+len(foil2_string)+len(foil3_string)+len(foil4_string)==3:
+            for foiltmp in [foil3_string,foil4_string]:
+                if len(foiltmp)!=0: foil_string = [foil1_string,foil2_string,foiltmp]
+            foil_text = [self.foil1,self.foil2,self.foil3]
+            foil_button = [self.foil1_4button,self.foil2_4button,self.foil3_4button]
+            target_button = self.target_4button
+            pos = four_xpositions
+            xpositions = four_xpositions.keys()
+
+
         points = [1,0,0,0]
         shuffle(xpositions)
-        feedback_screen = [self.speaker,self.target_button] + foil_button + [self.target] + foil_text
+        feedback_screen = [self.speaker,target_button] + foil_button + [self.target] + foil_text
         if grade_now=='letter_sound': object_var = zip(points,['sound_'+target_string.lower()]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
         else: object_var = zip(points,[target_string.lower()]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
         
@@ -280,7 +206,9 @@ class Reading_Game(task_functions):
         touch_prompt = None
         if prompt_itm=='prompt_ltr'or grade_now=='letter': touch_prompt='touch_letter'
         elif prompt_itm=='prompt_sound' or grade_now=='letter_sound': touch_prompt='touch_sound'
-        elif prompt_itm=='prompt_word': touch_prompt='touch_word'
+        # elif prompt_itm=='prompt_word': touch_prompt='touch_word'
+        else: touch_prompt='touch_word'
+
         print 'prompt_itm', prompt_itm
         print 'touch_prompt', touch_prompt
 
@@ -293,51 +221,126 @@ class Reading_Game(task_functions):
         t_prompt = audio_prompt[1]
         t_stim = audio_stim[1]
 
-        #time constrains
-        t1 = self.t_initialbuttons
-        t2 = self.t_initialbuttons + self.t_initialspeaker
-        t3 = self.t_initialbuttons + self.t_initialspeaker + t_prompt
-        t4 = self.t_initialbuttons + self.t_initialspeaker + t_stim
+        # #time constrains
+        # t1 = self.t_initialbuttons
+        # t2 = self.t_initialbuttons + self.t_initialspeaker
+        # t3 = self.t_initialbuttons + self.t_initialspeaker + t_prompt
+        # t4 = self.t_initialbuttons + self.t_initialspeaker + t_stim
 
-        #the game
-        score=None
-        while score==None and touch_prompt!=None:
-            t=self.trialClock.getTime()
+        def draw_buttons(object_var,top,change,time,audio):
+            for pts,string,text,xpos,button in object_var:
+                button.draw()
+                text.draw()
+            if top!=None: top.draw()
+            if flip=='yes-flip': win.flip()
+            if time>0: core.wait(time)
 
-            if t>=0 and t<=tf:
+            for aud in audio:
+                aud[0].play()
+                start_time = self.trialClock.getTime()
+                while self.trialClock.getTime() < start_time + aud[1]:
+                    if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+
+
+        draw_buttons(object_var,None,'yes-flip',self.t_initialbuttons,None)
+        draw_buttons(object_var,self.speaker,'yes-flip',self.t_initialspeaker,None)
+        draw_buttons(object_var,self.speaker_playing,'yes-flip',0,[audio_prompt,audio_stim])
+        draw_buttons(object_var,self.speaker,'yes-flip',0,[audio_prompt,audio_stim])
+
+        # for pts,string,text,xpos,button in object_var:
+        #     button.draw()
+        #     text.draw()
+        # win.flip()
+        # core.wait(self.t_initialbuttons)
+
+        # for pts,string,text,xpos,button in object_var:
+        #     button.draw()
+        #     text.draw()
+        # self.speaker.draw()
+        # win.flip()
+        # core.wait(self.t_initialspeaker)
+
+        # for pts,string,text,xpos,button in object_var:
+        #     button.draw()
+        #     text.draw()
+        # self.speaker_playing.draw()
+        # win.flip()
+
+        # if touch_prompt!=None:
+        #     prompt.play()
+        #     start_time = self.trialClock.getTime()
+        #     while self.trialClock.getTime() < start_time + t_prompt:
+        #         if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+
+        # stim.play()
+        # start_time = self.trialClock.getTime()
+        #     while self.trialClock.getTime() < start_time + t_stim:
+        #         if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+
+        # for pts,string,text,xpos,button in object_var:
+        #     button.draw()
+        #     text.draw()
+        # self.speaker.draw()
+        # win.flip()
+
+        #start timer for response
+        start_time=self.trialClock.getTime()
+        choice_time=0
+        thisResp=None
+        score = None
+        self.mouse.getPos()
+
+        while thisResp==None and choice_time<=self.t_timer_limit:
+            if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
                 for pts,string,text,xpos,button in object_var:
-                    button.draw()
-                    text.draw()
-                win.flip()
-                if t>t1 and t<=t2: self.speaker.draw()
-                if t>t2 and t<=t3:
-                    self.speaker_playing.draw()
-                    prompt.play()
-                if t>t3 and t<=t4:
-                    self.speaker_playing.draw()
-                    stim.play()
-                if t>t4 and t<=tf:
-                    self.self.speaker.draw()
+                    if button.contains(self.mouse):
+                        score,thisResp,thisResp_pos = (pts,string,pos[xpos])
+                        text.setColor('gold')
+            if event.getKeys(keyList=['escape']): return 'QUIT'
+            choice_time = self.trialClock.getTime()-start_time
+        if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
-                    start_time = self.trialClock.getTime()
-                    timer = 0
 
-                    click = self.click()
-                    thisResp = None
-                    self.mouse.getPos()
-                    while thisResp==None:
-                        for pts,string,text,xpos,button in object_var:
-                            if click and button.contains(self.mouse):
-                                score,thisResp,thisResp_pos = (pts,string,pos[xpos])
-                                text.setColor('gold')
-                        if event.getKeys(keyList=['escape']): return 'QUIT'
-                        choice_time = self.trialClock.getTime()-start_time
-            if t>tf and t<=tf+1: 
-                score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+
+        # #the game
+        # score=None
+        # while score==None and touch_prompt!=None:
+        #     t=self.trialClock.getTime()
+
+        #     if t>=0 and t<=tf:
+        #         for pts,string,text,xpos,button in object_var:
+        #             button.draw()
+        #             text.draw()
+        #         win.flip()
+        #         if t>t1 and t<=t2: self.speaker.draw()
+        #         if t>t2 and t<=t3:
+        #             self.speaker_playing.draw()
+        #             prompt.play()
+        #         if t>t3 and t<=t4:
+        #             self.speaker_playing.draw()
+        #             stim.play()
+        #         if t>t4 and t<=tf:
+        #             self.self.speaker.draw()
+
+        #             start_time = self.trialClock.getTime()
+        #             timer = 0
+
+        #             click = self.click()
+        #             thisResp = None
+        #             self.mouse.getPos()
+        #             while thisResp==None:
+        #                 for pts,string,text,xpos,button in object_var:
+        #                     if click and button.contains(self.mouse):
+        #                         score,thisResp,thisResp_pos = (pts,string,pos[xpos])
+        #                         text.setColor('gold')
+        #                 if event.getKeys(keyList=['escape']): return 'QUIT'
+        #                 choice_time = self.trialClock.getTime()-start_time
+        #     if t>tf and t<=tf+1: 
+        #         score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
                 self.fixation.draw()
         
         #give feedback
-        self.fb.present_fb(win,score, [self.speaker,feedback_screen)#[self.speaker, self.foil_2button, self.foil1, self.target_2button, self.target])
+        self.fb.present_fb(win,score, [self.speaker]+feedback_screen)#[self.speaker, self.foil_2button, self.foil1, self.target_2button, self.target])
     
         #write data
         output = {
@@ -369,7 +372,7 @@ class Reading_Game(task_functions):
             # output[var] = string
             output[var+'_pos'] = pos[xpos]
 
-        output = {
+        # output = {
         # 'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil1':foil1,'Foil2':foil2,'Foil3':foil3,'Foil4':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
         
         if (self.iteration[n] == len(self.trialList[n]['Target'])-1): self.iteration[n] = 0
