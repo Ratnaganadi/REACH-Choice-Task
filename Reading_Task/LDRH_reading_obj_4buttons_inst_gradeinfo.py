@@ -227,11 +227,6 @@ class Reading_Game(task_functions):
         t_prompt = audio_prompt[1]
         t_stim = audio_stim[1]
 
-        # #time constrains
-        # t1 = self.t_initialbuttons
-        # t2 = self.t_initialbuttons + self.t_initialspeaker
-        # t3 = self.t_initialbuttons + self.t_initialspeaker + t_prompt
-        # t4 = self.t_initialbuttons + self.t_initialspeaker + t_stim
 
         def draw_buttons(object_var,top,change,time,audio):
             for pts,string,text,xpos,button in object_var:
@@ -252,10 +247,10 @@ class Reading_Game(task_functions):
         win.flip()
         core.wait(1)
 
-        draw_buttons(object_var,None,'yes-flip',self.t_initialbuttons,None)
-        draw_buttons(object_var,self.speaker,'yes-flip',self.t_initialspeaker,None)
+        draw_buttons(object_var,None,'yes-flip',self.t_initialbuttons,[])
+        draw_buttons(object_var,self.speaker,'yes-flip',self.t_initialspeaker,[])
         draw_buttons(object_var,self.speaker_playing,'yes-flip',0,[audio_prompt,audio_stim])
-        draw_buttons(object_var,self.speaker,'yes-flip',0,[audio_prompt,audio_stim])
+        draw_buttons(object_var,self.speaker,'yes-flip',0,[])
 
         # for pts,string,text,xpos,button in object_var:
         #     button.draw()
