@@ -156,7 +156,6 @@ class Reading_Game(task_functions):
                 grade_now = self.trialList[n]['Grade']
                 print 'Difficulty is:', difficulty, ', Grade:', grade_now
 
-        # c=['look_alike','sound_alike','sound_look_alike','no_sound_look']
 
         #target & foil properties (positions & string)
         four_xpositions = {-360:'left', -120:'mid-left', 120:'mid-right', 360:'right'}
