@@ -242,6 +242,10 @@ class Reading_Game(task_functions):
                     if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
 
+        self.fixation.draw()
+        win.flip()
+        core.wait(1)
+        
         draw_buttons(object_var,None,'yes-flip',self.t_initialbuttons,None)
         draw_buttons(object_var,self.speaker,'yes-flip',self.t_initialspeaker,None)
         draw_buttons(object_var,self.speaker_playing,'yes-flip',0,[audio_prompt,audio_stim])
@@ -337,7 +341,7 @@ class Reading_Game(task_functions):
         #                 choice_time = self.trialClock.getTime()-start_time
         #     if t>tf and t<=tf+1: 
         #         score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
-                self.fixation.draw()
+                # self.fixation.draw()
         
         #give feedback
         self.fb.present_fb(win,score, [self.speaker]+feedback_screen)#[self.speaker, self.foil_2button, self.foil1, self.target_2button, self.target])
