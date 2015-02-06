@@ -194,8 +194,8 @@ class Reading_Game(task_functions):
         points = [1,0,0,0]
         shuffle(xpositions)
         feedback_screen = [self.speaker,target_button] + foil_button + [self.target] + foil_text
-        if grade_now=='letter_sound': object_var = zip(points,['sound_'+target_string.lower()]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
-        else: object_var = zip(points,[target_string.lower()]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
+        if grade_now=='letter_sound': object_var = zip(points,['sound_'+target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
+        else: object_var = zip(points,[target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
         
         #assigning text's string, color and position to target & foil
         for pts,string,text,xpos,button in object_var:
@@ -207,7 +207,7 @@ class Reading_Game(task_functions):
         #play audio + buttons
         touch_prompt = None
         if prompt_itm=='prompt_ltr'or grade_now=='letter': touch_prompt='touch_letter'
-        elif prompt_itm=='prompt_sound' or grade_now=='letter_sound': touch_prompt='touch_sound'
+        elif prompt_itm=='prompt_sound' or grade_now=='lettersound': touch_prompt='touch_sound'
         # elif prompt_itm=='prompt_word': touch_prompt='touch_word'
         else: touch_prompt='touch_word'
 
