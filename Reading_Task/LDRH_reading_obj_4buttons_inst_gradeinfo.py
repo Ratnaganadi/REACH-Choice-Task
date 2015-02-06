@@ -194,8 +194,9 @@ class Reading_Game(task_functions):
         points = [1,0,0,0]
         shuffle(xpositions)
         feedback_screen = [self.speaker,target_button] + foil_button + [self.target] + foil_text
-        if grade_now=='letter_sound': object_var = zip(points,['sound_'+target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
-        else: object_var = zip(points,[target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
+        # if grade_now=='lettersound': object_var = zip(points,['target_string']+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
+        # else: object_var = zip(points,[target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
+        object_var = zip(points,[target_string]+foil_string,[self.target]+foil_text,xpositions,[target_button]+foil_button)
         
         #assigning text's string, color and position to target & foil
         for pts,string,text,xpos,button in object_var:
@@ -216,7 +217,8 @@ class Reading_Game(task_functions):
 
         #get audio & audio_length
         audio_prompt = get_audio(touch_prompt)
-        audio_stim = get_audio(target_string.lower())
+        if grade_now=='lettersound': audio_stim = get_audio('sound_'+target_string.lower())
+        else: audio_stim = get_audio(target_string.lower())
         
         prompt = audio_prompt[0]
         stim = audio_stim[0]
@@ -253,6 +255,7 @@ class Reading_Game(task_functions):
         start_time=self.trialClock.getTime()
         choice_time=0
         thisResp=None
+        thisResp_pos=None
         score = None
         self.mouse.getPos()
 
@@ -262,6 +265,8 @@ class Reading_Game(task_functions):
                     if button.contains(self.mouse):
                         score,thisResp,thisResp_pos = (pts,string,pos[xpos])
                         text.setColor('gold')
+                if self.speaker.contains(self.mouse):
+                    draw_buttons(object_var,self.speaker_playing,'yes-flip',0,[audio_stim])
             if event.getKeys(keyList=['escape']): return 'QUIT'
             choice_time = self.trialClock.getTime()-start_time
         if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
