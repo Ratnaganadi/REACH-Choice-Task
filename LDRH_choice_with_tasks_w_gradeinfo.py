@@ -177,16 +177,7 @@ else:
         'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
         'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1)
     }
-    # all_sheets = {
-    #     'Main': dict(sheet = wb.add_sheet('Main'), headers=['trial_number', 'task', 'level', 'score','type','choice_icon_pos', 'task_version'] + choice_headers, row=1),
-    #     'Math': dict(sheet = wb.add_sheet('Math'), headers = ['trial_number', 'Operation', 'level','Stimulus','Target','Foil1','Foil2','Foil3','score','Resp Time', 'task_version'], row=1),
-    #     'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['trial_number', 'level','Correct','Incorrect','Ratio','score','Resp Time', 'task_version'], row=1),
-    #     'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['trial_number', 'level','Grade','Target','Foil1','Foil2','Foil3','Foil4','Response','score','Resp Time', 'task_version'], row=1),
-    #     'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['trial_number', 'level','Stim1','Stim2','Response','Correct Response','score','Resp Time','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance','Number of Phonemes','Phoneme Difference', 'task_version'], row=1),
-    #     'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['level', 'score', 'First_Click_Time', 'Second_Click_Time', 'Resp Time', 'Star_Pos', 'Resp_Pos', 'Resp_Distance', 'task_version'], row=1),
-    #     'Music': dict(sheet = wb.add_sheet('Music'), headers = ['trial_number', 'level', 'soundA','soundB','Details','Contour','Notes Different','Root','Response','Correct Response','score','Resp Time', 'task_version'], row=1),
-    #     'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total', 'task_version'],row=1)}
-
+    
     #initialize headers for each sheet
     for key in all_sheets.keys():
         for col, header in enumerate(all_sheets[key]['headers']): all_sheets[key]['sheet'].write(0,col,header)
@@ -472,16 +463,16 @@ if not just_choice:
         while trialClock.getTime()<start_time+3:
             if event.getKeys(keyList=['q', 'escape']): pickle_and_quit()
 
-        # #run instructions for task
-        # instructions_start = trialClock.getTime()
-        # if all_games[task].run_instructions(win)=='QUIT': pickle_and_quit()
-        # instructions_times[task] = trialClock.getTime() - instructions_start
+        #run instructions for task
+        instructions_start = trialClock.getTime()
+        if all_games[task].run_instructions(win)=='QUIT': pickle_and_quit()
+        instructions_times[task] = trialClock.getTime() - instructions_start
 
-        # #run practice for task
-        # practice_start = trialClock.getTime()
-        # if hasattr(all_games[task], 'run_practice'):
-        #     if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
-        # practice_times[task] = trialClock.getTime() - practice_start
+        #run practice for task
+        practice_start = trialClock.getTime()
+        if hasattr(all_games[task], 'run_practice'):
+            if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
+        practice_times[task] = trialClock.getTime() - practice_start
 
         # #run staircase; math needs special circumstances
         staircasing_start = trialClock.getTime()

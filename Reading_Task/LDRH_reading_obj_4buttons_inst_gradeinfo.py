@@ -80,6 +80,7 @@ class Reading_Game(task_functions):
         #time constrains
         self.t_initialbuttons = 1
         self.t_initialspeaker = 1.5
+        self.t_timer_limit = 12
 
         #start feedback
         self.fb=feedback.fb(win)
@@ -229,13 +230,15 @@ class Reading_Game(task_functions):
                 text.draw()
             if top!=None: top.draw()
             if flip=='yes-flip': win.flip()
-            if time>0: core.wait(time)
+            # if time>0: core.wait(time)
+            core.wait(time)
+            if event.getKeys(keyList=['escape']): return 'QUIT'
 
             for aud in audio:
                 aud[0].play()
                 start_time = self.trialClock.getTime()
                 while self.trialClock.getTime() < start_time + aud[1]:
-                    if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+                    if event.getKeys(keyList=['escape']): return 'QUIT'
 
         self.fixation.draw()
         win.flip()
@@ -276,7 +279,7 @@ class Reading_Game(task_functions):
             'resp': choice_time,
             'resp_pos': thisResp_pos,
             'target': target_string,
-            'target_pos':xpositions[0]
+            'target_pos':xpositions[0],
             'foil1': foil1_string,
             'foil2': foil2_string,
             'foil3': foil3_string,
@@ -292,20 +295,20 @@ class Reading_Game(task_functions):
             elif foiltmp=='': output[name] = ''
 
 
-        foil_name = [['foil3_pos',3],['foil4_pos',4]]
+        # foil_name = [['foil3_pos',3],['foil4_pos',4]]
 
-        if foil3_string!='': order = [0,1]
-        elif foil4_string!='': order = [1,0]
+        # if foil3_string!='': order = [0,1]
+        # elif foil4_string!='': order = [1,0]
 
-        for i in order:
-            output[foil_name[i][0]] = xpositions[foil_name[i][1]]
+        # for i in order:
+        #     output[foil_name[i][0]] = xpositions[foil_name[i][1]]
 
-        # elif foil4_string!='': output['foil4_pos'] = xpositions[4]
+        # # elif foil4_string!='': output['foil4_pos'] = xpositions[4]
         
-        output_header = ['target_pos','foil1_pos','foil2_pos']
-        for var,xpos in zip(output_header,xpositions):
-            # output[var] = string
-            output[var+'_pos'] = pos[xpos]
+        # output_header = ['target_pos','foil1_pos','foil2_pos']
+        # for var,xpos in zip(output_header,xpositions):
+        #     # output[var] = string
+        #     output[var+'_pos'] = pos[xpos]
 
         # output = {
         # 'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil1':foil1,'Foil2':foil2,'Foil3':foil3,'Foil4':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
