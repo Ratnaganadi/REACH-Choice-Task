@@ -294,25 +294,6 @@ class Reading_Game(task_functions):
                 if total_foil==3: i+=1
             elif foiltmp=='': output[name] = ''
 
-
-        # foil_name = [['foil3_pos',3],['foil4_pos',4]]
-
-        # if foil3_string!='': order = [0,1]
-        # elif foil4_string!='': order = [1,0]
-
-        # for i in order:
-        #     output[foil_name[i][0]] = xpositions[foil_name[i][1]]
-
-        # # elif foil4_string!='': output['foil4_pos'] = xpositions[4]
-        
-        # output_header = ['target_pos','foil1_pos','foil2_pos']
-        # for var,xpos in zip(output_header,xpositions):
-        #     # output[var] = string
-        #     output[var+'_pos'] = pos[xpos]
-
-        # output = {
-        # 'Difficulty':difficulty,'Grade':grade,'Target':target,'Foil1':foil1,'Foil2':foil2,'Foil3':foil3,'Foil4':foil4,'Response':thisResp,'Score':score,'Resp Time':choice_time}
-        
         if (self.iteration[n] == len(self.trialList[n]['Target'])-1): self.iteration[n] = 0
         else: self.iteration[n] += 1
         print 'iteration:', self.iteration[n]
