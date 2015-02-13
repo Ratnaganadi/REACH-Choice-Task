@@ -128,7 +128,8 @@ class Math_Game(task_functions):
         target_string = str(these_conditions[index]['Correct'][this_iteration[index]])
         foil1_string = str(these_conditions[index]['Foil1'][this_iteration[index]])
         
-        if these_conditions[index]['Foil2'] and these_conditions[index]['Foil3']:
+        if these_conditions[index]['Foil2'] and these_conditions[index]['Foil3']: 
+            total_foil=3
             foil2_string = str(these_conditions[index]['Foil2'][this_iteration[index]])
             foil3_string = str(these_conditions[index]['Foil3'][this_iteration[index]])
             foil_string = [foil1_string,foil2_string,foil3_string]
@@ -137,15 +138,17 @@ class Math_Game(task_functions):
             target_button = self.target_4button
             pos = four_xpositions
             xpositions = four_xpositions.keys()
-        else:
-            foil2_string = ''
-            foil3_string = ''
+        else: 
+            total_foil=1
+            foil2_string=''
+            foil3_string=''
             foil_string = [foil1_string]
             foil_text = [self.foil1]
             foil_button = [self.foil_2button]
             target_button = self.target_2button
             pos = two_xpositions
             xpositions = two_xpositions.keys()
+            
 
         points = [1,0,0,0]
         shuffle(xpositions)
@@ -210,17 +213,22 @@ class Math_Game(task_functions):
             'resp': thisResp,
             'resp_pos': thisResp_pos,
             'target': target_string,
-            'target_pos': xpositions[0],
+            'target_pos': pos[xpositions[0]],
             'foil1': foil1_string,
-            'foil1_pos': xpositions[1],
             'foil2': foil2_string,
             'foil3': foil3_string
         }
-
         
-        if foil2_string=='' and foil3_string=='': xpositions.extend(['',''])
-        output['foil2_pos'] = xpositions[2]
-        output['foil3_pos'] = xpositions[3]
+        i=1
+        for name,foiltmp in zip(['foil1_pos','foil2_pos','foil3_pos'],[foil1_string,foil2_string,foil3_string]):
+            if foiltmp!='':
+                output[name] = pos[xpositions[i]]
+                if total_foil==3: i+=1
+            elif foiltmp=='': output[name] = ''
+            
+        # if foil2_string=='' and foil3_string=='': xpositions.extend(['',''])
+        # output['foil2_pos'] = pos[xpositions[2]]
+        # output['foil3_pos'] = pos[xpositions[3]]
 
 
         #update iteration of current difficulty

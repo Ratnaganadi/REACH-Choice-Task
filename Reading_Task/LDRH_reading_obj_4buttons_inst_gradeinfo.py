@@ -284,7 +284,7 @@ class Reading_Game(task_functions):
             'resp': choice_time,
             'resp_pos': thisResp_pos,
             'target': target_string,
-            'target_pos':xpositions[0],
+            'target_pos':pos[xpositions[0]],
             'foil1': foil1_string,
             'foil2': foil2_string,
             'foil3': foil3_string,
@@ -294,8 +294,7 @@ class Reading_Game(task_functions):
         i=1
         for name,foiltmp in zip(['foil1_pos','foil2_pos','foil3_pos','foil4_pos'],[foil1_string,foil2_string,foil3_string,foil4_string]):
             if foiltmp!='':
-                output[name] = xpositions[i]
-                # if total_foil==1: output[name] = xpositions[i]
+                output[name] = pos[xpositions[i]]
                 if total_foil==3: i+=1
             elif foiltmp=='': output[name] = ''
 

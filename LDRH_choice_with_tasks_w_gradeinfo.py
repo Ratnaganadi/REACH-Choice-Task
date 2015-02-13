@@ -168,13 +168,13 @@ else:
     choice_headers = [("choice_task_{choice}".format(choice=i+1), "choice_points_{choice}".format(choice=i+1), "choice_pos_{choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
 
     all_sheets = {
-        'Main': dict(sheet = wb.add_sheet('Main'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'], row=1),
-        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
-        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
-        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
-        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
-        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
-        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
+        'Main': dict(sheet = wb.add_sheet('Main'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'], row=1),
+        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
+        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
+        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
+        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
+        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
         'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1)
     }
     
@@ -385,17 +385,17 @@ def run_staircase(task, operation=None):
         #write output for main sheet
         "!!!!!!!!!!! LOOK AT IT AGAIN !!!!!!!!!!!!"
         main_output = {
-        'subject_ID': subject_ID,
-        'task': task,
-        'type': 'threshold',
-        'trial_number': trial_number,
-        'threshold_var': output['threshold_var'],
-        'level': output['level'],
-        'score': output['score'],
-        'resp_time': output['resp_time'],
-        'resp_pos': output['resp_pos'],
-        'target_pos': output['target_pos'],
-        'task_version': VERSION
+            'subject_ID': subject_ID,
+            'trial_number': trial_number,
+            'task': task,
+            'type': 'threshold',
+            'threshold_var': output['threshold_var'],
+            'level': output['level'],
+            'score': output['score'],
+            'resp_time': output['resp_time'],
+            'resp_pos': output['resp_pos'],
+            'target_pos': output['target_pos'],
+            'task_version': VERSION
         }
 
         main_hdr = ['spatial_click1','spatial_click2','stim1','stim2','resp','target','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos']
@@ -746,22 +746,59 @@ while True:
         score = output.get('score', 0) if output else 0
         thesePoints += score*(this_task["points"])*point_intervals
 
-        #first write trial number to output
-        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'], 0, trial_number)
+        #first write trial number to output, then write the output variables
+        header_for_all = [subject_ID,this_task["name"],'choice',trial_number]
+        for col,header in enumerate(header_for_all):
+            all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col,header)
+        # all_sheets[[this_task["name"]]['sheet'].write(all_sheets[[this_task["name"]]['row'], 0, trial_number)
 
-        #next write the output variables
-        for col,header in enumerate(all_sheets[this_task["name"]]['headers'][1:-1]):
-            all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+1,output[header])
+        for col,header in enumerate(all_sheets[this_task["name"]]['headers'][4:]):
+            if header=="task_version":
+                all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+4, VERSION)
+            else:
+                all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+4, output[header])
 
-        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],len(all_sheets[this_task["name"]]['headers'])-1,VERSION)
+        # #next write the output variables
+        # for col,header in enumerate(all_sheets[this_task["name"]]['headers'][1:-1]):
+        #     all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+1,output[header])
+
+        # all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],len(all_sheets[this_task["name"]]['headers'])-1,VERSION)
 
         #increment row for output records
         all_sheets[this_task["name"]]['row'] += 1
 
         #write output for main sheet
-        main_output = {'trial_number':trial_number,'task': this_task["name"],'level': output['level'],'score':output['score'],'type':'choice','choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
+        main_output = {
+            'subject_ID': subject_ID,
+            'trial_number': trial_number,
+            'task': this_task["name"],
+            'type':'choice',
+            'threshold_var': output['threshold_var'],
+            'level': output['level'],
+            'score': output['score'],
+            'resp_time': output['resp_time'],
+            'resp_pos': output['resp_pos'],
+            'target_pos': output['target_pos'],
+            'task_version': VERSION,
+            'choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
         choice_output = {("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
+        
+        main_hdr = ['spatial_click1','spatial_click2','stim1','stim2','resp','target','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos']
+        header = {
+            'Spatial': ['spatial_click1','spatial_click2','resp_target_dist'],
+            'Phonology': ['stim1','stim2','resp','target','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist'],
+            'Math': ['stim','resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos'],
+            'Music': ['stim1','stim2','resp','target','tones_details','tones_contour','tones_notes_different','tones_root'],
+            'Reading': ['resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos'],
+            'Dots': ['resp','target']
+        }
+
+        for hdr in main_hdr:
+            if hdr in header[this_task["name"]]: main_output[hdr] = output[hdr]
+            else: main_output[hdr]=''
+
         main_output.update(choice_output)
+
         for col,header in enumerate(all_sheets['Main']['headers']):
             if header=="task_version":
                 all_sheets['Main']['sheet'].write(trial_number, col, VERSION)
@@ -813,3 +850,9 @@ start_time = trialClock.getTime()
 applause.fadeOut(5000)
 
 save_and_quit(complete=True)
+
+
+
+
+## QUESTIONNAIRE SECTION ###
+
