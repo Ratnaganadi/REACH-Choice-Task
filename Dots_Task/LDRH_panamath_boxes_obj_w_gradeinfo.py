@@ -135,70 +135,73 @@ class Dots_Game(task_functions):
             box.setPos([xpos[pos],0])
             box.color = "white"
 
-        t1 = self.t_fixcross
-        t2 = self.t_fixcross + self.t_fixline
-        tf = self.t_fixcross + self.t_fixline + self.timer_limit
-        score = None
-        while t<=t2:
-            t = self.trialClock.getTime()
-            if t<=t1: self.fix_point.draw()
-            if t>t1 and t<=t2:
-                self.target_box.draw()
-                self.foil_box.draw()
-            theseKeys = event.getKeys()
-            if len(theseKeys)>0:
-                if theseKeys[-1] in ['q','escape']: return 'QUIT'
+        #display fixation with repeat, pause & continue button
+        task_status = self.fixation_function()
+        if task_status=='repeat_task':
+            print task_status
+            return task_status
+
+        elif task_status=='continue_task':
+            print task_status
+            t1 =  self.t_fixline
+            tf =  self.t_fixline + self.timer_limit
+            score = None
+
+            self.target_box.draw()
+            self.foil_box.draw()
             win.flip()
+            core.wait(t1)
 
-        start_time = self.trialClock.getTime()
-        timer = 0
-        thisResp = None
-        self.mouse.getPos()
+            start_time = self.trialClock.getTime()
+            timer = 0
+            thisResp = None
+            thisResp_pos = None
+            self.mouse.getPos()
 
-        while score==None:
-            t = self.trialClock.getTime()
-            if t>t2 and t<=tf:
-                self.target_box.draw()
-                self.foil_box.draw()
-                self.target.draw()
-                self.foil.draw()
-                win.flip()
+            while score==None:
+                t = self.trialClock.getTime()
+                if t>t1 and t<=tf:
+                    self.target_box.draw()
+                    self.foil_box.draw()
+                    self.target.draw()
+                    self.foil.draw()
+                    win.flip()
 
-                while thisResp==None:
-                    if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
-                        if self.target_box.contains(self.mouse): 
-                            score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                            self.target_box.color = "gold"
-                        elif self.foil_box.contains(self.mouse): 
-                            score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                            self.foil_box.color = "gold"
-                    if event.getKeys(keyList=['escape']): return 'QUIT'
-                    choice_time = self.trialClock.getTime()-start_time
+                    while thisResp==None and choice_time<=self.timer_limit:
+                        if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
+                            if self.target_box.contains(self.mouse): 
+                                score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                                self.target_box.color = "gold"
+                            elif self.foil_box.contains(self.mouse): 
+                                score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                                self.foil_box.color = "gold"
+                        if event.getKeys(keyList=['escape']): return 'QUIT'
+                        choice_time = self.trialClock.getTime()-start_time
 
-                
-            if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+                    
+                if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
-        #give feedback
-        self.fb.present_fb(win,score,[self.target_box,self.foil_box,self.fix_point,self.target,self.foil])
+            #give feedback
+            self.fb.present_fb(win,score,[self.target_box,self.foil_box,self.fix_point,self.target,self.foil])
 
-        #write data
-        output = {
-            'threshold_var': self.trialList[index]['Ratio'][self.iteration[index]],
-            'level': difficulty,
-            'score': score,
-            'resp_time': choice_time,
-            'resp': thisResp,
-            'resp_pos': thisResp_pos,
-            'target': target_content,
-            'target_pos': target_pos,
-            }
-        
-        #update iteration of current difficulty
-        if self.iteration[index] == len(self.trialList[index]['Incorrect'])-1: self.iteration[index] = 0
-        else: self.iteration[index] += 1
+            #write data
+            output = {
+                'threshold_var': self.trialList[index]['Ratio'][self.iteration[index]],
+                'level': difficulty,
+                'score': score,
+                'resp_time': choice_time,
+                'resp': thisResp,
+                'resp_pos': thisResp_pos,
+                'target': target_content,
+                'target_pos': target_pos,
+                }
+            
+            #update iteration of current difficulty
+            if self.iteration[index] == len(self.trialList[index]['Incorrect'])-1: self.iteration[index] = 0
+            else: self.iteration[index] += 1
 
-        print output
-        return output
+            print output
+            return output
 
     def end_game(self,n_level,filename):
         #completed (level_now) repeats of 'n_level'
@@ -211,53 +214,3 @@ class Dots_Game(task_functions):
         n_level.saveAsExcel(filename+'.xlsx', sheetName='n_level',
             stimOut=params,
             dataOut=['n','all_mean','all_std', 'all_raw'])
-
-    #method to get clicks
-    def click(self):
-        if touchscreen and self.mouse.mouseMoved(): return True
-        elif not touchscreen and self.mouse.getPressed()==[1,0,0]: return True
-        else: return False
-
-
-if __name__=='__main__':
-    sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-    from Feedback import feedback
-
-    #store info about the experiment session
-    expName='LDRH Task'; expInfo={'participant':''}
-    dlg=gui.DlgFromDict(dictionary=expInfo,title=expName)
-    if dlg.OK==False: core.quit() #user pressed cancel
-    expInfo['date']=data.getDateStr(); expInfo['expName']=expName
-    fileName = expInfo['participant'] + expInfo['date']
-    #dataFile = open('LDRH spatial data/' + fileName+'.txt', 'w')
-    #dataFile.write('Level>Answer\n')
-
-    win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix') #Window
-
-    #create the staircase handler
-    staircase = data.StairHandler(startVal = 90, stepType = 'lin', stepSizes=[8,4,2,1], #reduce step size every two reversals
-        minVal=0, maxVal=118, nUp=1, nDown=3,  #will home in on the 80% threshold
-        nTrials = 8)
-
-    #create data structure
-    wb = xlwt.Workbook()
-    sheet = wb.add_sheet('Dots')
-
-    #initialize game
-    game = Dots_Game(win)
-
-    #start feedback
-    fb=feedback.fb(win)
-
-    #step through staircase to find threshold
-    for thisIncrement in staircase:
-        print 'thisIncrement:', thisIncrement
-        output = game.run_game(win, thisIncrement)
-        staircase.addData(output['Score'])
-    #record the resulting threshold level of the training
-    thresh = staircase._nextIntensity
-
-    #run one iteration of game at threshold:
-    game.run_game(win, thresh)
-
-    wb.save('Test Data/dots_test_data.xls')

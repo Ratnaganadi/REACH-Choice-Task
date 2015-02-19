@@ -59,7 +59,7 @@ class Tones_Game(task_functions):
         #time constrains
         self.t_initialspeaker = 1
         self.t_stimgap = 1
-        self.t_timer_limit = 12
+        self.timer_limit = 12
         
         #start feedback
         self.fb=feedback.fb(win)
@@ -255,9 +255,10 @@ class Tones_Game(task_functions):
         start_time=self.trialClock.getTime()
         choice_time=0
         thisResp=None
+        thisResp_pos=None
         score = None
         self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-        while thisResp==None and choice_time<=self.t_timer_limit:
+        while thisResp==None and choice_time<=self.timer_limit:
             if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
                 if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
                 elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)

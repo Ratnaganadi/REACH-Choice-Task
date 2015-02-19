@@ -55,7 +55,7 @@ class Phonology_Game(task_functions):
         #time constrains
         self.t_initialspeaker = 1
         self.t_stimgap = 1
-        self.t_timer_limit = 12
+        self.timer_limit = 12
 
         #start feedback
         self.fb=feedback.fb(win)
@@ -173,80 +173,92 @@ class Phonology_Game(task_functions):
         self.target_button = pos[target_content][1]
         self.foil_button = pos[foil_content][1]
 
-        self.speaker.draw()
-        win.flip()
-        core.wait(self.t_initialspeaker)
-        self.speaker_playing.draw()
-        win.flip()
-        
-        #play first phoneme
-        stim1.play()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + stim1.getDuration():
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
-        #after phoneme is played, wait one second and then play second tone
-        self.speaker.draw()
-        win.flip()
-        core.wait(self.t_stimgap)
-        self.speaker_playing.draw()
-        win.flip()
+        #display fixation with repeat, pause & continue button
+        task_status = self.fixation_function()
+        if task_status=='repeat_task': 
+            print task_status
+            return task_status
 
-        #play second phoneme
-        stim2.play()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + stim2.getDuration():
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+        elif task_status=='continue_task':
+            print task_status
 
-        self.speaker.draw()
-        self.target_button.draw()
-        self.foil_button.draw()
-        win.flip()
+            #draw initial speaker before phoneme plays
+            self.speaker.draw()
+            win.flip()
+            core.wait(self.t_initialspeaker)
+            self.speaker_playing.draw()
+            win.flip()
+            
+            #play first phoneme
+            stim1.play()
+            start_time = self.trialClock.getTime()
+            while self.trialClock.getTime() < start_time + stim1.getDuration():
+                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
-        #start timer for response
-        start_time=self.trialClock.getTime()
-        choice_time=0
-        thisResp=None
-        thisResp_pos=None
-        score = None
-        self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-        while thisResp==None and choice_time<=self.t_timer_limit:
-            if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
-                if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-            if event.getKeys(keyList=['escape']): return 'QUIT'
-            choice_time=self.trialClock.getTime()-start_time
+            #after phoneme is played, wait one second and then play second tone
+            self.speaker.draw()
+            win.flip()
+            core.wait(self.t_stimgap)
+            self.speaker_playing.draw()
+            win.flip()
 
-        if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
+            #play second phoneme
+            stim2.play()
+            start_time = self.trialClock.getTime()
+            while self.trialClock.getTime() < start_time + stim2.getDuration():
+                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
-        #give feedback
-        self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
+            self.speaker.draw()
+            self.target_button.draw()
+            self.foil_button.draw()
+            win.flip()
 
-        #write data
-        thresh = ['D3_PA-GA_KA-BA','D2_both_BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA_TA-DA_PA-KA_BA-GA_TA-DA','D1_VOT_PA-BA_KA-GA']
-        threshold_var = thresh[difficulty-1]
+            #start timer for response
+            start_time=self.trialClock.getTime()
+            choice_time=0
+            thisResp=None
+            thisResp_pos=None
+            score = None
+            self.mouse.getPos() #called to prevent last movement of mouse from triggering click
+            while thisResp==None and choice_time<=self.timer_limit:
+                if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                    if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                    elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                if event.getKeys(keyList=['escape']): return 'QUIT'
+                choice_time=self.trialClock.getTime()-start_time
 
-        output = {
-            'threshold_var': threshold_var,
-            'level': difficulty,
-            'score': score,
-            'resp_time': choice_time,
-            'stim1': raw_stim1,
-            'stim2': raw_stim2,
-            'resp': thisResp,
-            'resp_pos': thisResp_pos,
-            'target': target_content,
-            'target_pos': target_pos,
-        }
-        
-        output_header = ['phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist']
-        stim_header = ['Phoneme Difference','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance']
-        for out_col,stim_col in zip(output_header,stim_header):
-            output.update({out_col:self.trialList[index][stim_col][self.iteration[index]]})
-        
-        #update iteration of current difficulty
-        if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
-            self.iteration[index] = 0
-        else:
-            self.iteration[index] += 1
-        return output
+            if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
+
+            #give feedback
+            self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
+
+            #write data
+            thresh = ['D3_PA-GA_KA-BA','D2_both_BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA_TA-DA_PA-KA_BA-GA_TA-DA','D1_VOT_PA-BA_KA-GA']
+            threshold_var = thresh[difficulty-1]
+
+            output = {
+                'threshold_var': threshold_var,
+                'level': difficulty,
+                'score': score,
+                'resp_time': choice_time,
+                'stim1': raw_stim1,
+                'stim2': raw_stim2,
+                'resp': thisResp,
+                'resp_pos': thisResp_pos,
+                'target': target_content,
+                'target_pos': target_pos,
+            }
+            
+            output_header = ['phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist']
+            stim_header = ['Phoneme Difference','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance']
+            for out_col,stim_col in zip(output_header,stim_header):
+                output.update({out_col:self.trialList[index][stim_col][self.iteration[index]]})
+            
+            #update iteration of current difficulty
+            if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
+                self.iteration[index] = 0
+            else:
+                self.iteration[index] += 1
+            return output
+            
