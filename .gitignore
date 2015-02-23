@@ -11,3 +11,4 @@ data_camp/
 *.sh
 *.gif
 taskversion.py
+LDRH_choice_with_tasks_w_gradeinfo.py
