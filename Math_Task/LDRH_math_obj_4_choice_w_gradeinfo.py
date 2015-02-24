@@ -52,7 +52,7 @@ class Math_Game(task_functions):
         #create stimuli
         self.text_stimulus = visual.TextStim(win, pos=[0,200],height=80, text='Stimulus.')
         self.dot_stimulus = visual.ImageStim(win,image=None,pos=[0,180],size=[260,260])
-        # self.fixation = visual.ImageStim(win, color='black', image=None, mask='circle',size=5)
+        self.fixation = visual.ImageStim(win, color='black', image=None, mask='circle',size=5)
         
         #for texts
         self.target = visual.TextStim(win, pos=[0,0],height=70, text='Target.')
@@ -72,7 +72,7 @@ class Math_Game(task_functions):
         self.mouse.getPos()
 
         #time constrains
-        self.timer_limit = 12
+        self.t_timer_limit = 12
 
         #start feedback
         self.fb=feedback.fb(win)
@@ -128,8 +128,7 @@ class Math_Game(task_functions):
         target_string = str(these_conditions[index]['Correct'][this_iteration[index]])
         foil1_string = str(these_conditions[index]['Foil1'][this_iteration[index]])
         
-        if these_conditions[index]['Foil2'] and these_conditions[index]['Foil3']: 
-            total_foil=3
+        if these_conditions[index]['Foil2'] and these_conditions[index]['Foil3']:
             foil2_string = str(these_conditions[index]['Foil2'][this_iteration[index]])
             foil3_string = str(these_conditions[index]['Foil3'][this_iteration[index]])
             foil_string = [foil1_string,foil2_string,foil3_string]
@@ -138,17 +137,15 @@ class Math_Game(task_functions):
             target_button = self.target_4button
             pos = four_xpositions
             xpositions = four_xpositions.keys()
-        else: 
-            total_foil=1
-            foil2_string=''
-            foil3_string=''
+        else:
+            foil2_string = ''
+            foil3_string = ''
             foil_string = [foil1_string]
             foil_text = [self.foil1]
             foil_button = [self.foil_2button]
             target_button = self.target_2button
             pos = two_xpositions
             xpositions = two_xpositions.keys()
-            
 
         points = [1,0,0,0]
         shuffle(xpositions)
@@ -172,74 +169,65 @@ class Math_Game(task_functions):
             self.text_stimulus.setText(stim_string)#[self.iteration[index]]))
             self.stimulus=self.text_stimulus
 
-        #display fixation with repeat, pause & continue button
-        task_status = self.fixation_function()
-        if task_status=='repeat_task': 
-            print task_status
-            return task_status
+        tf = self.t_timer_limit
+        score=None
+        start_time = self.trialClock.getTime()
+        timer = 0
+        thisResp = None
+        self.mouse.getPos()
 
-        elif task_status=='continue_task':
-            print task_status
+        t = self.trialClock.getTime()
+        while score==None:
+            if t<=tf:
+                self.stimulus.draw()
+                self.fixation.draw()
 
-            tf = self.t_timer_limit
-            score=None
-            start_time = self.trialClock.getTime()
-            timer = 0
-            thisResp = None
-            thisResp_pos = None
-            self.mouse.getPos()
+                for text,button in zip([self.target]+foil_text,[target_button]+foil_button):
+                    button.draw()
+                    text.draw()
+                win.flip()
 
-            while score==None:
-                t = self.trialClock.getTime()
-                if t<=tf:
-                    self.stimulus.draw()
-                    # self.fixation.draw()
+                while thisResp==None:
+                    if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                        for pts,string,text,xpos,button in object_var:
+                            if button.contains(self.mouse):
+                                score,thisResp,thisResp_pos = (pts,string,pos[xpos])
+                                text.setColor('gold')
+                    if event.getKeys(keyList=['escape']): return 'QUIT'
+                    choice_time = self.trialClock.getTime()-start_time
+            if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
-                    for text,button in zip([self.target]+foil_text,[target_button]+foil_button):
-                        button.draw()
-                        text.draw()
-                    win.flip()
+        #give feedback
+        self.fb.present_fb(win,score,[self.stimulus,target_button,self.target]+foil_button+foil_text)
 
-                    while thisResp==None and choice_time<=self.t_timer_limit:
-                        if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
-                            for pts,string,text,xpos,button in object_var:
-                                if button.contains(self.mouse):
-                                    score,thisResp,thisResp_pos = (pts,string,pos[xpos])
-                                    text.setColor('gold')
-                        if event.getKeys(keyList=['escape']): return 'QUIT'
-                        choice_time = self.trialClock.getTime()-start_time
-                if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+        #write data
+        output = {
+            'threshold_var': operation,
+            'level': difficulty,
+            'score': score,
+            'resp_time': choice_time,
+            'stim': stim_string,
+            'resp': thisResp,
+            'resp_pos': thisResp_pos,
+            'target': target_string,
+            'target_pos': xpositions[0],
+            'foil1': foil1_string,
+            'foil1_pos': xpositions[1],
+            'foil2': foil2_string,
+            'foil3': foil3_string
+        }
 
-            #give feedback
-            self.fb.present_fb(win,score,[self.stimulus,target_button,self.target]+foil_button+foil_text)
+        
+        if foil2_string=='' and foil3_string=='': xpositions.extend(['',''])
+        output['foil2_pos'] = xpositions[2]
+        output['foil3_pos'] = xpositions[3]
 
-            #write data
-            output = {
-                'threshold_var': operation,
-                'level': difficulty,
-                'score': score,
-                'resp_time': choice_time,
-                'stim': stim_string,
-                'resp': thisResp,
-                'resp_pos': thisResp_pos,
-                'target': target_string,
-                'target_pos': pos[xpositions[0]],
-                'foil1': foil1_string,
-                'foil2': foil2_string,
-                'foil3': foil3_string
-            }
-            
-            i=1
-            for name,foiltmp in zip(['foil1_pos','foil2_pos','foil3_pos'],[foil1_string,foil2_string,foil3_string]):
-                if foiltmp!='':
-                    output[name] = pos[xpositions[i]]
-                    if total_foil==3: i+=1
-                elif foiltmp=='': output[name] = ''
-                
-            if this_iteration[index] == len(these_conditions[index]['Correct'])-1: this_iteration[index] = 0
-            else: this_iteration[index] += 1
 
-            return output
+        #update iteration of current difficulty
+        if this_iteration[index] == len(these_conditions[index]['Correct'])-1: this_iteration[index] = 0
+        else: this_iteration[index] += 1
+
+        return output
 
     def end_game(self):
         "save files and exit game"
@@ -255,3 +243,33 @@ class Math_Game(task_functions):
         return 'reversals:', staircase.reversalIntensities, 'mean of final 6 reversals = %.3f' %(numpy.average(staircase.reversalIntensities[-6:]))
 
         #core.quit()
+
+    #method to get clicks
+    def click(self):
+        if touchscreen and self.mouse.mouseMoved(): return True
+        elif not touchscreen and self.mouse.getPressed()==[1,0,0]: return True
+        else: return False
+
+
+if __name__=='__main__':
+    sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
+    from Feedback import feedback
+
+    win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix') #Window
+
+    conditions = data.importConditions('generated_math_2and4_option_stims_no_zero.xlsx')
+    staircase = data.StairHandler(startVal = 20, stepType = 'lin', stepSizes=[3,3,2,2,1,1], #reduce step size every two reversals
+        minVal=0, maxVal=len(conditions)-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+        nTrials = 10)
+
+    #initialize game
+    game = Math_Game(win, conditions)
+
+    #start feedback
+    fb=feedback.fb(win)
+
+    #step through staircase to find threshold
+    for this_increment in staircase:
+        output = game.run_game(win, this_increment)
+        staircase.addData(output['Score'])
+    #record the resulting threshold level of the training

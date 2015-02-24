@@ -168,13 +168,13 @@ else:
     choice_headers = [("choice_task_{choice}".format(choice=i+1), "choice_points_{choice}".format(choice=i+1), "choice_pos_{choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
 
     all_sheets = {
-        'Main': dict(sheet = wb.add_sheet('Main'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'], row=1),
-        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
-        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
-        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
-        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
-        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
-        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
+        'Main': dict(sheet = wb.add_sheet('Main'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'], row=1),
+        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
+        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
+        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
+        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
+        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
         'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1)
     }
     
@@ -367,8 +367,6 @@ def run_staircase(task, operation=None):
         if operation: output = all_games[task].run_game(win, grade, thisIncrement, operation)
         else: output = all_games[task].run_game(win, grade, thisIncrement, "")
         if output=='QUIT': pickle_and_quit()
-        elif output=='repeat_task': 
-            return 'repeat_task'
 
         #first write trial number to output, then write the output variables
         header_for_all = [subject_ID,task,'threshold',trial_number]
@@ -387,17 +385,17 @@ def run_staircase(task, operation=None):
         #write output for main sheet
         "!!!!!!!!!!! LOOK AT IT AGAIN !!!!!!!!!!!!"
         main_output = {
-            'subject_ID': subject_ID,
-            'trial_number': trial_number,
-            'task': task,
-            'type': 'threshold',
-            'threshold_var': output['threshold_var'],
-            'level': output['level'],
-            'score': output['score'],
-            'resp_time': output['resp_time'],
-            'resp_pos': output['resp_pos'],
-            'target_pos': output['target_pos'],
-            'task_version': VERSION
+        'subject_ID': subject_ID,
+        'task': task,
+        'type': 'threshold',
+        'trial_number': trial_number,
+        'threshold_var': output['threshold_var'],
+        'level': output['level'],
+        'score': output['score'],
+        'resp_time': output['resp_time'],
+        'resp_pos': output['resp_pos'],
+        'target_pos': output['target_pos'],
+        'task_version': VERSION
         }
 
         main_hdr = ['spatial_click1','spatial_click2','stim1','stim2','resp','target','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos']
@@ -446,113 +444,6 @@ def run_staircase(task, operation=None):
 
     return output
 
-def running_task(task):
-    #run staircase; math needs special circumstances
-    staircasing_start = trialClock.getTime()
-    if task=='Math':
-        if 'Math' not in all_thresholds.keys():
-            all_thresholds['Math']={}
-        streaks = {'addition': {}, 'subtraction': {}, 'multiplication': {}, 'division': {}}
-        add_count_for_mult = 0
-        active_operations = ['addition']
-
-        while active_operations:
-            for operation in math_operations:
-                if operation in active_operations:
-                    #one trial of staircase is run here
-                    output = run_staircase(task, operation=operation)
-                    if output=='repeat_task': 
-                        return 'repeat_task'
-                        break
-
-                    for new_operation, reqs in math_benchmarks.items():
-                        if operation in reqs.keys() and output['score'] and (len(all_conditions[task][operation]) - output['thisIncrement']) >= reqs[operation]['thresh']: reqs[operation]['count']+=1
-                    for new_operation, reqs in math_benchmarks.items():
-                        if False not in [benchmark['count'] >=3 for req_operation, benchmark in reqs.items()]:
-                            active_operations.append(new_operation)
-                            math_benchmarks.pop(new_operation)
-                            print '{} is now active'.format(new_operation)
-                    #separate logic for OR case with multiplication
-                    if operation=='addition' and output['score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6:
-                        add_count_for_mult+=1
-
-                    if 'multiplication' not in active_operations and 'multiplication' in math_benchmarks.keys() and add_count_for_mult >= 3:
-                        active_operations.append('multiplication')
-                        math_benchmarks.pop('multiplication')
-                        print '{} is now active'.format(new_operation)
-
-                    #handle StopIterations
-                    if output['score']=='StopIteration':
-                        if sum(streaks.get(operation, {}).get(output['thisIncrement'], []))/float(len(streaks.get(operation, {}).get(output['thisIncrement'], []))) >= 0.8:
-                            all_thresholds[task][operation] = output['thisIncrement']
-                        else:
-                            all_thresholds[task][operation] = min(output['thisIncrement'] + 1, len(all_conditions[task][operation])-1)
-                        #record threshold and remove operation
-                        active_operations.remove(operation)
-                        continue
-
-                    #keep track of streaks
-                    streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["score"]]
-
-                    #handle streak breaking
-                    if (len(streaks[operation][output['thisIncrement']]) > 9) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) >= 0.8):
-                        all_thresholds[task][operation] = output['thisIncrement']
-                        active_operations.remove(operation)
-                    #remove operation from being active, don't record a threshold
-                    if output['thisIncrement']==len(all_conditions[task][operation])-1:
-                        if (len(streaks[operation][output['thisIncrement']]) > 3) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) <= 0.5):
-                            active_operations.remove(operation)
-
-            #add new operation if applicable
-            for new_operation, reqs in math_benchmarks.items():
-                if new_operation in all_thresholds[task].keys(): continue
-
-                if False not in [req_operation in all_thresholds[task].keys() and (len(all_conditions[task][req_operation]) - all_thresholds[task][req_operation]) >= benchmark for req_operation, benchmark in reqs.items()]:
-                    active_operations.append(new_operation)
-                    print 'added', new_operation
-
-    else:
-        streaks = {}
-        while True:
-            #one trial of staircase is run here
-            output = run_staircase(task)
-            'add code here!!!! for repeating everything if #repeat_task# is returned during fixation'
-            if output=='repeat_task': 
-                return 'repeat_task'
-                break
-
-            #handle StopIterations
-            if output['score']=='StopIteration':
-                #record threshold and remove operation
-                if sum(streaks.get(output['thisIncrement'], []))/float(len(streaks.get(output['thisIncrement'], []))) >= 0.8:
-                    all_thresholds[task] = output['thisIncrement']
-                else:
-                    all_thresholds[task] = min(output['thisIncrement'] + 1, low_thresh[task])
-                break
-
-            #keep track of streaks
-            streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []) + [output["score"]]
-
-            print 'pos_streak:', streaks[output['thisIncrement']]
-            #handle streak breaking
-            if len(streaks[output['thisIncrement']]) > 9:
-                if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) >= 0.8:
-                    all_thresholds[task] = output['thisIncrement']
-                    break
-                if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) <= 0.5:
-                    break
-    staircasing_times[task] = trialClock.getTime() - staircasing_start
-    total_times[task] = instructions_times[task]+practice_times[task]+staircasing_times[task]
-    save()
-
-    #record task times
-    all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, task)
-    all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],1, instructions_times[task])
-    all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],2, practice_times[task])
-    all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],3, staircasing_times[task])
-    all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, total_times[task])
-    all_sheets['Task_Times']['row']+=1
-    # return (instructions_times[task], practice_times[task], staircasing_times[task], total_times[task])
 
 #STAIRCASING SECTION
 
@@ -583,22 +474,109 @@ if not just_choice:
             if all_games[task].run_practice(win, grade)=='QUIT': pickle_and_quit()
         practice_times[task] = trialClock.getTime() - practice_start
 
-        #Run task and repeat if needed
-        while running_task(task)=='repeat_task':
-            True
+        # #run staircase; math needs special circumstances
+        staircasing_start = trialClock.getTime()
+        if task=='Math':
+            if 'Math' not in all_thresholds.keys():
+                all_thresholds['Math']={}
+            streaks = {'addition': {}, 'subtraction': {}, 'multiplication': {}, 'division': {}}
+            add_count_for_mult = 0
+            active_operations = ['addition']
 
-    # print 'instruction times', instructions_times
-    # print 'practice_times', practice_times
-    # print 'staircasing times', staircasing_times
-    # print 'total times', total_times
+            while active_operations:
+                for operation in math_operations:
+                    if operation in active_operations:
+                        #one trial of staircase is run here
+                        output = run_staircase(task, operation=operation)
+
+                        for new_operation, reqs in math_benchmarks.items():
+                            if operation in reqs.keys() and output['score'] and (len(all_conditions[task][operation]) - output['thisIncrement']) >= reqs[operation]['thresh']: reqs[operation]['count']+=1
+                        for new_operation, reqs in math_benchmarks.items():
+                            if False not in [benchmark['count'] >=3 for req_operation, benchmark in reqs.items()]:
+                                active_operations.append(new_operation)
+                                math_benchmarks.pop(new_operation)
+                                print '{} is now active'.format(new_operation)
+                        #separate logic for OR case with multiplication
+                        if operation=='addition' and output['score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6:
+                            add_count_for_mult+=1
+
+                        if 'multiplication' not in active_operations and 'multiplication' in math_benchmarks.keys() and add_count_for_mult >= 3:
+                            active_operations.append('multiplication')
+                            math_benchmarks.pop('multiplication')
+                            print '{} is now active'.format(new_operation)
+
+                        #handle StopIterations
+                        if output['score']=='StopIteration':
+                            if sum(streaks.get(operation, {}).get(output['thisIncrement'], []))/float(len(streaks.get(operation, {}).get(output['thisIncrement'], []))) >= 0.8:
+                                all_thresholds[task][operation] = output['thisIncrement']
+                            else:
+                                all_thresholds[task][operation] = min(output['thisIncrement'] + 1, len(all_conditions[task][operation])-1)
+                            #record threshold and remove operation
+                            active_operations.remove(operation)
+                            continue
+
+                        #keep track of streaks
+                        streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["score"]]
+
+                        #handle streak breaking
+                        if (len(streaks[operation][output['thisIncrement']]) > 9) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) >= 0.8):
+                            all_thresholds[task][operation] = output['thisIncrement']
+                            active_operations.remove(operation)
+                        #remove operation from being active, don't record a threshold
+                        if output['thisIncrement']==len(all_conditions[task][operation])-1:
+                            if (len(streaks[operation][output['thisIncrement']]) > 3) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) <= 0.5):
+                                active_operations.remove(operation)
+
+                #add new operation if applicable
+                for new_operation, reqs in math_benchmarks.items():
+                    if new_operation in all_thresholds[task].keys(): continue
+
+                    if False not in [req_operation in all_thresholds[task].keys() and (len(all_conditions[task][req_operation]) - all_thresholds[task][req_operation]) >= benchmark for req_operation, benchmark in reqs.items()]:
+                        active_operations.append(new_operation)
+                        print 'added', new_operation
+
+        else:
+            streaks = {}
+            while True:
+                #one trial of staircase is run here
+                output = run_staircase(task)
+
+                #handle StopIterations
+                if output['score']=='StopIteration':
+                    #record threshold and remove operation
+                    if sum(streaks.get(output['thisIncrement'], []))/float(len(streaks.get(output['thisIncrement'], []))) >= 0.8:
+                        all_thresholds[task] = output['thisIncrement']
+                    else:
+                        all_thresholds[task] = min(output['thisIncrement'] + 1, low_thresh[task])
+                    break
+
+                #keep track of streaks
+                streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []) + [output["score"]]
+
+                print 'pos_streak:', streaks[output['thisIncrement']]
+                #handle streak breaking
+                if len(streaks[output['thisIncrement']]) > 9:
+                    if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) >= 0.8:
+                        all_thresholds[task] = output['thisIncrement']
+                        break
+                    if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) <= 0.5:
+                        break
+        staircasing_times[task] = trialClock.getTime() - staircasing_start
+        total_times[task] = instructions_times[task]+practice_times[task]+staircasing_times[task]
+        save()
+
+    print 'instruction times', instructions_times
+    print 'practice_times', practice_times
+    print 'staircasing times', staircasing_times
+    print 'total times', total_times
     #record task times
-    # for task in task_names:
-    #     all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, task)
-    #     all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],1, instructions_times[task])
-    #     all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],2, practice_times[task])
-    #     all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],3, staircasing_times[task])
-    #     all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, total_times[task])
-    #     all_sheets['Task_Times']['row']+=1
+    for task in task_names:
+        all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, task)
+        all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],1, instructions_times[task])
+        all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],2, practice_times[task])
+        all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],3, staircasing_times[task])
+        all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, total_times[task])
+        all_sheets['Task_Times']['row']+=1
 
 
 #CHOICE SECTION
@@ -768,59 +746,22 @@ while True:
         score = output.get('score', 0) if output else 0
         thesePoints += score*(this_task["points"])*point_intervals
 
-        #first write trial number to output, then write the output variables
-        header_for_all = [subject_ID,this_task["name"],'choice',trial_number]
-        for col,header in enumerate(header_for_all):
-            all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col,header)
-        # all_sheets[[this_task["name"]]['sheet'].write(all_sheets[[this_task["name"]]['row'], 0, trial_number)
+        #first write trial number to output
+        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'], 0, trial_number)
 
-        for col,header in enumerate(all_sheets[this_task["name"]]['headers'][4:]):
-            if header=="task_version":
-                all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+4, VERSION)
-            else:
-                all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+4, output[header])
+        #next write the output variables
+        for col,header in enumerate(all_sheets[this_task["name"]]['headers'][1:-1]):
+            all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+1,output[header])
 
-        # #next write the output variables
-        # for col,header in enumerate(all_sheets[this_task["name"]]['headers'][1:-1]):
-        #     all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+1,output[header])
-
-        # all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],len(all_sheets[this_task["name"]]['headers'])-1,VERSION)
+        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],len(all_sheets[this_task["name"]]['headers'])-1,VERSION)
 
         #increment row for output records
         all_sheets[this_task["name"]]['row'] += 1
 
         #write output for main sheet
-        main_output = {
-            'subject_ID': subject_ID,
-            'trial_number': trial_number,
-            'task': this_task["name"],
-            'type':'choice',
-            'threshold_var': output['threshold_var'],
-            'level': output['level'],
-            'score': output['score'],
-            'resp_time': output['resp_time'],
-            'resp_pos': output['resp_pos'],
-            'target_pos': output['target_pos'],
-            'task_version': VERSION,
-            'choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
+        main_output = {'trial_number':trial_number,'task': this_task["name"],'level': output['level'],'score':output['score'],'type':'choice','choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
         choice_output = {("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
-        
-        main_hdr = ['spatial_click1','spatial_click2','stim1','stim2','resp','target','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos']
-        header = {
-            'Spatial': ['spatial_click1','spatial_click2','resp_target_dist'],
-            'Phonology': ['stim1','stim2','resp','target','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist'],
-            'Math': ['stim','resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos'],
-            'Music': ['stim1','stim2','resp','target','tones_details','tones_contour','tones_notes_different','tones_root'],
-            'Reading': ['resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos'],
-            'Dots': ['resp','target']
-        }
-
-        for hdr in main_hdr:
-            if hdr in header[this_task["name"]]: main_output[hdr] = output[hdr]
-            else: main_output[hdr]=''
-
         main_output.update(choice_output)
-
         for col,header in enumerate(all_sheets['Main']['headers']):
             if header=="task_version":
                 all_sheets['Main']['sheet'].write(trial_number, col, VERSION)
@@ -872,9 +813,3 @@ start_time = trialClock.getTime()
 applause.fadeOut(5000)
 
 save_and_quit(complete=True)
-
-
-
-
-## QUESTIONNAIRE SECTION ###
-

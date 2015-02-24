@@ -59,7 +59,7 @@ class Tones_Game(task_functions):
         #time constrains
         self.t_initialspeaker = 1
         self.t_stimgap = 1
-        self.timer_limit = 12
+        self.t_timer_limit = 12
         
         #start feedback
         self.fb=feedback.fb(win)
@@ -220,96 +220,88 @@ class Tones_Game(task_functions):
         self.target_button = pos[target_content][1]
         self.foil_button = pos[foil_content][1]
         
-        task_status = self.fixation_function()
-        if task_status=='repeat_task': 
-            print task_status
-            return task_status
+        #draw speaker
+        self.speaker.draw()
+        win.flip()
+        core.wait(self.t_initialspeaker)    
+        self.speaker_playing.draw()
+        win.flip()
 
-        elif task_status=='continue_task':
-            print task_status
-            #draw speaker
-            self.speaker.draw()
-            win.flip()
-            core.wait(self.t_initialspeaker)    
-            self.speaker_playing.draw()
-            win.flip()
+        #draw first melody
+        stim1.play()
+        start_time = self.trialClock.getTime()
+        while self.trialClock.getTime() < start_time + stim1.getDuration():
+            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
-            #draw first melody
-            stim1.play()
-            start_time = self.trialClock.getTime()
-            while self.trialClock.getTime() < start_time + stim1.getDuration():
-                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+        #after tone is played, wait one second and then play second tone
+        self.speaker.draw()
+        win.flip()
+        core.wait(self.t_initialspeaker)
+        self.speaker_playing.draw()
+        win.flip()
 
-            #after tone is played, wait one second and then play second tone
-            self.speaker.draw()
-            win.flip()
-            core.wait(self.t_initialspeaker)
-            self.speaker_playing.draw()
-            win.flip()
+        #play second melody
+        stim2.play()
+        start_time = self.trialClock.getTime()
+        while self.trialClock.getTime() < start_time + stim2.getDuration():
+            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
-            #play second melody
-            stim2.play()
-            start_time = self.trialClock.getTime()
-            while self.trialClock.getTime() < start_time + stim2.getDuration():
-                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
+        self.speaker.draw()
+        self.target_button.draw()
+        self.foil_button.draw()
+        win.flip()
 
-            self.speaker.draw()
-            self.target_button.draw()
-            self.foil_button.draw()
-            win.flip()
+        #start timer for response
+        start_time=self.trialClock.getTime()
+        choice_time=0
+        thisResp=None
+        score = None
+        self.mouse.getPos() #called to prevent last movement of mouse from triggering click
+        while thisResp==None and choice_time<=self.t_timer_limit:
+            if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+            if event.getKeys(keyList=['escape']): return 'QUIT'
+            choice_time=self.trialClock.getTime()-start_time
 
-            #start timer for response
-            start_time=self.trialClock.getTime()
-            choice_time=0
-            thisResp=None
-            thisResp_pos=None
-            score = None
-            self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-            while thisResp==None and choice_time<=self.timer_limit:
-                if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
-                    if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                    elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                if event.getKeys(keyList=['escape']): return 'QUIT'
-                choice_time=self.trialClock.getTime()-start_time
+        if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
 
-            if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
+        #give feedback
+        self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
 
-            #give feedback
-            self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
+        #write data
+        for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]]):
+            if difficulty>=lvl[0] and difficulty<=lvl[1]: threshold_var = thresh
+        
+        output = {
+            'threshold_var': threshold_var,
+            'level': difficulty,
+            'score': score,
+            'resp_time': choice_time,
+            'stim1': str(raw_stim1),
+            'stim2': str(raw_stim2),
+            'resp': thisResp,
+            'resp_pos': thisResp_pos,
+            'target': target_content,
+            'target_pos': target_pos,
+            'tones_details': trialList[index]['Details'][self.iteration[index]],
+            'tones_contour': trialList[index]['Contour'][self.iteration[index]],
+            'tones_notes_different': trialList[index]['Notes_Different'][self.iteration[index]],
+            'tones_root': str(tones_root)
+        }
 
-            #write data
-            for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]]):
-                if difficulty>=lvl[0] and difficulty<=lvl[1]: threshold_var = thresh
-            
-            output = {
-                'threshold_var': threshold_var,
-                'level': difficulty,
-                'score': score,
-                'resp_time': choice_time,
-                'stim1': str(raw_stim1),
-                'stim2': str(raw_stim2),
-                'resp': thisResp,
-                'resp_pos': thisResp_pos,
-                'target': target_content,
-                'target_pos': target_pos,
-                'tones_details': trialList[index]['Details'][self.iteration[index]],
-                'tones_contour': trialList[index]['Contour'][self.iteration[index]],
-                'tones_notes_different': trialList[index]['Notes_Different'][self.iteration[index]],
-                'tones_root': str(tones_root)
-            }
+        output_header = ['tones_details','tones_contour','tones_notes_different']
+        stim_header = ['Details','Contour','Notes_Different']
+        for out_col,stim_col in zip(output_header,stim_header):
+            output.update({out_col:trialList[index][stim_col][self.iteration[index]]})
 
-            output_header = ['tones_details','tones_contour','tones_notes_different']
-            stim_header = ['Details','Contour','Notes_Different']
-            for out_col,stim_col in zip(output_header,stim_header):
-                output.update({out_col:trialList[index][stim_col][self.iteration[index]]})
+        #update iteration of current difficulty
+        if self.iteration[index] == len(trialList[index]['soundA'])-1:
+            self.iteration[index] = 0
+        else:
+            self.iteration[index] += 1
 
-            #update iteration of current difficulty
-            if self.iteration[index] == len(trialList[index]['soundA'])-1:
-                self.iteration[index] = 0
-            else:
-                self.iteration[index] += 1
-
-            return output
+        return output
 
     #method to get clicks
     def click(self):

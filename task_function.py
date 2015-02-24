@@ -2,6 +2,7 @@ from psychopy import visual, core, data, event, logging, gui, sound
 import os
 
 class task_functions:
+<<<<<<< HEAD
     def __init__(self, win):
         self.trialClock=core.Clock()
         image_path = 'Images/Tasks/'
@@ -12,6 +13,9 @@ class task_functions:
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
 
+=======
+    
+>>>>>>> origin/master
     def run_instructions(self, win):
         "Display the instructions for the game."
         #display instructions and wait
@@ -121,6 +125,7 @@ class task_functions:
                 go_to_choice=True
             if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
 
+<<<<<<< HEAD
     def fixation_function(self,win):
         'Fixation cross with pause, play, repeat the whole thing'
         self.trialClock.reset(); t=0
@@ -150,4 +155,6 @@ class task_functions:
         if thisResp!=None: return thisResp
 
 
+=======
+>>>>>>> origin/master
     
