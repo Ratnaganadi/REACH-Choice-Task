@@ -3,11 +3,12 @@ import os
 
 class task_functions:
     def __init__(self, win):
+        self.trialClock=core.Clock()
         image_path = 'Images/Tasks/'
-        self.fix_point=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[280, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.pause_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.fixation=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
+        self.pause=visual.ImageStim(win=win, name='continue', image= image_path + 'pause.png', units=u'pix', pos=[280, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.repeat=visual.ImageStim(win=win, name='repeat', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.cont=visual.ImageStim(win=win, name='continue', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
 
@@ -120,7 +121,7 @@ class task_functions:
                 go_to_choice=True
             if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
 
-    def fixation_function():
+    def fixation_function(self,win):
         'Fixation cross with pause, play, repeat the whole thing'
         self.trialClock.reset(); t=0
 
