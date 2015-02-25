@@ -28,31 +28,29 @@ class Reading_Game():
         aud_inst_path = 'Audio/Instructions/'
         self.readingstim_path = 'Audio/Stimuli/Reading/'
 
-        #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+150], height=28, text='In this game you will words on the left and the right side of the screen, then you will hear a spoken word. Touch the word you hear.')
-        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, text="Touch anywhere on the screen when you are ready to start.")
+        # #create practice instructions
+        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
+        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
+        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.reading_inst1 = sound.Sound(aud_inst_path + 'reading_inst1.wav')
-        self.reading_inst2 = sound.Sound(aud_inst_path + 'reading_inst2.wav')
-        self.reading_inst3 = sound.Sound(aud_inst_path + 'reading_inst3.wav')
+        # #initializing audio files for practice and instructions
+        # self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        # self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        # self.reading_inst1 = sound.Sound(aud_inst_path + 'reading_inst1.wav')
+        # self.reading_inst2 = sound.Sound(aud_inst_path + 'reading_inst2.wav')
+        # self.reading_inst3 = sound.Sound(aud_inst_path + 'reading_inst3.wav')
         self.general_inst_last = sound.Sound(aud_inst_path + 'general_inst_last.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'reading_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(aud_inst_path + 'reading_instructions.wav')
+        # self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'reading_instructions.mp4', size = [1500,850], flipHoriz = True)
+        # self.audio_inst = sound.Sound(aud_inst_path + 'reading_instructions.wav')
 
         #foil & target button, speaker stimuli
         self.fixation = visual.TextStim(win, pos=[0,0],height=45, text='', color='white')
         #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #for texts
         self.target = visual.TextStim(win, pos=[0,0],height=45, text='target.')
@@ -98,20 +96,20 @@ class Reading_Game():
         for question in range(len(self.trialList)):
             self.iteration[question] = 0
 
-    def run_instructions(self, win):
-        self.tf.run_instruction_functions(win)
+    def run_instructions(self, win, task):
+        self.tf.run_instruction_functions(win,task)
 
-    def run_practice(self, win, grade):
+    def run_practice(self, win, task, grade):
         "Run practice"
-
-        inst_set=[self.practice_cue1,None,None,None,None]
-        aud_set=[self.practice_aud1,None,None,None,None]
+        
+        # inst_set=[self.practice_cue1,None,None,None,None]
+        # aud_set=[self.practice_aud1,None,None,None,None]
         stim_set = [10,9,8,6,5]
         stim_repeat = stim_set
         score_cond = [None,None,None]
         var = ['prompt_ltr','prompt_sound','prompt_word','prompt_other','prompt_other']
 
-        return self.tf.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
+        return self.tf.run_practice_functions(win, grade, stim_set, stim_repeat, score_cond, var, task)
 
 
     def run_game(self, win, grade, thisIncrement, var):

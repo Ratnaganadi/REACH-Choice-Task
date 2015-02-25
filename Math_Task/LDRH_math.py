@@ -27,26 +27,26 @@ class Math_Game():
 
         self.math_dotstims_path = 'Images/Stimuli/Math_dotstims/'
 
-        #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        # #create practice instructions
+        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
+        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
+        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.math_inst1 = sound.Sound(aud_inst_path + 'math_inst1.wav')
-        self.math_inst2 = sound.Sound(aud_inst_path + 'math_inst2.wav')
-        self.math_inst3 = sound.Sound(aud_inst_path + 'math_inst3.wav')
+        # #initializing audio files for practice and instructions
+        # self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        # self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        # self.math_inst1 = sound.Sound(aud_inst_path + 'math_inst1.wav')
+        # self.math_inst2 = sound.Sound(aud_inst_path + 'math_inst2.wav')
+        # self.math_inst3 = sound.Sound(aud_inst_path + 'math_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'math_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(aud_inst_path + 'math_instructions.wav')
+        # self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'math_instructions.mp4', size = [1500,850], flipHoriz = True)
+        # self.audio_inst = sound.Sound(aud_inst_path + 'math_instructions.wav')
 
-        #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # #repeat and continue button
+        # self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #create stimuli
         self.text_stimulus = visual.TextStim(win, pos=[0,200],height=80, text='Stimulus.')
@@ -87,20 +87,20 @@ class Math_Game():
             for question in range(len(self.trialList[operation])):
                 self.iteration[operation][question] = 0
 
-    def run_instructions(self, win):
-        self.tf.run_instruction_functions(win)
+    def run_instructions(self, win, task):
+        self.tf.run_instruction_functions(win,task)
 
-    def run_practice(self, win, grade):
+    def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None]
-        aud_set=[self.practice_aud1,None,None]
+        # inst_set=[self.practice_cue1,None,None]
+        # aud_set=[self.practice_aud1,None,None]
         stim_set = [13,11,11]
         stim_repeat = stim_set
         var = 'addition'
         score_cond = [None,None,None]
         
-        return self.tf.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
+        return self.tf.run_practice_functions(win, grade, stim_set, stim_repeat, score_cond, var, task)
 
     def run_game(self, win, grade, thisIncrement, operation):
         "Run one iteration of the game with self.trialList as conditions."

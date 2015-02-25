@@ -22,28 +22,28 @@ class Star_Game():
         self.aud_practice_path = 'Audio/Practice/'
         self.aud_inst_path = 'Audio/Instructions/'
 
-        #create practice instructions
-        self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
-        self.practice_instructions2 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 2: administrator walks through trials with child')
-        self.practice_instructions3 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 3: child completes trials on his/her own')
-        self.practice_instructions4 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's do some more practice")
-        self.try_again = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's try that again.")
+        # #create practice instructions
+        # self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
+        # self.practice_instructions2 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 2: administrator walks through trials with child')
+        # self.practice_instructions3 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 3: child completes trials on his/her own')
+        # self.practice_instructions4 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's do some more practice")
+        # self.try_again = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's try that again.")
 
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
+        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
+        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(self.aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(self.aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(self.aud_practice_path + 'practice_cue3.wav')
-        self.star_inst1 = sound.Sound(self.aud_inst_path + 'star_inst1.wav')
-        self.star_inst2 = sound.Sound(self.aud_inst_path + 'star_inst2.wav')
-        self.star_inst3 = sound.Sound(self.aud_inst_path + 'star_inst3.wav')
+        # #initializing audio files for practice and instructions
+        # self.practice_aud1 = sound.Sound(self.aud_practice_path + 'practice_cue1.wav')
+        # self.practice_aud2 = sound.Sound(self.aud_practice_path + 'practice_cue2.wav')
+        # self.practice_aud3 = sound.Sound(self.aud_practice_path + 'practice_cue3.wav')
+        # self.star_inst1 = sound.Sound(self.aud_inst_path + 'star_inst1.wav')
+        # self.star_inst2 = sound.Sound(self.aud_inst_path + 'star_inst2.wav')
+        # self.star_inst3 = sound.Sound(self.aud_inst_path + 'star_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + 'stars_video_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(self.aud_inst_path + 'stars_instructions.wav')
+        # self.instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + 'stars_video_instructions.mp4', size = [1500,850], flipHoriz = True)
+        # self.audio_inst = sound.Sound(self.aud_inst_path + 'stars_instructions.wav')
 
         #time constrains
         self.t_blank = 2
@@ -51,9 +51,9 @@ class Star_Game():
         self.t_mask = 1
         self.timer_limit = 12
 
-        #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= self.image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= self.image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # #repeat and continue button
+        # self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= self.image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # self.continue_button=visual.ImageStim(win=win, name='continue_button', image= self.image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #trial variables
         self.t_twinkle = 3#when the star will twinkle
@@ -80,19 +80,20 @@ class Star_Game():
         self.degree_possibilities = []
         for x in [45,135,225,315]: self.degree_possibilities.extend(range(x-(44-self.cardinal_exclusion_range), x+(45-self.cardinal_exclusion_range)))
 
-    def run_instructions(self, win):
-        self.tf.run_instruction_functions(win)
+    def run_instructions(self, win, task):
+        self.tf.run_instruction_functions(win,task)
 
-    def run_practice(self, win, grade):
+    def run_practice(self, win, task, grade):
         "Run practice"
-        inst_set = [[self.practice_instructions1,None,None],[self.practice_instructions2,None],[self.practice_instructions3,None],[self.practice_instructions4,None]]
-        aud_set = [[None,None,None],[None,None],[None,None],[None,None]]
+        
+        # inst_set = [[self.practice_instructions1,None,None],[self.practice_instructions2,None],[self.practice_instructions3,None],[self.practice_instructions4,None]]
+        # aud_set = [[None,None,None],[None,None],[None,None],[None,None]]
         stim_set = [[150,100,115],[250,200],[200,150]]
         var = 'star_task'
         score_cond = [[1,0,1],[1,1],[1,1],[1,1]]
         stim_repeat = [200,150]
         
-        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
+        return self.tf.run_practice_functions(win, grade, stim_set, stim_repeat, score_cond, var, task)
 
 
     def run_game(self, win, grade, thisIncrement, var):

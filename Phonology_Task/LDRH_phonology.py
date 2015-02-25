@@ -22,29 +22,29 @@ class Phonology_Game():
         aud_inst_path = 'Audio/Instructions/'
         self.phonologystim_dir = 'Audio/Stimuli/Phonology/'
 
-        #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        # #create practice instructions
+        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
+        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
+        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        self.phonology_inst1 = sound.Sound(aud_inst_path + 'phonology_inst1.wav')
-        self.phonology_inst2 = sound.Sound(aud_inst_path + 'phonology_inst2.wav')
-        self.phonology_inst3 = sound.Sound(aud_inst_path + 'phonology_inst3.wav')
-        self.phonology_inst4 = sound.Sound(aud_inst_path + 'phonology_inst4.wav')
+        # #initializing audio files for practice and instructions
+        # self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        # self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        # self.phonology_inst1 = sound.Sound(aud_inst_path + 'phonology_inst1.wav')
+        # self.phonology_inst2 = sound.Sound(aud_inst_path + 'phonology_inst2.wav')
+        # self.phonology_inst3 = sound.Sound(aud_inst_path + 'phonology_inst3.wav')
+        # self.phonology_inst4 = sound.Sound(aud_inst_path + 'phonology_inst4.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'phon_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(aud_inst_path + 'phon_instructions.wav')
+        # self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'phon_instructions.mp4', size = [1500,850], flipHoriz = True)
+        # self.audio_inst = sound.Sound(aud_inst_path + 'phon_instructions.wav')
 
         #create stimuli, repeat and continue button
         self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
         self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=image_path +'/speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
         self.same_button = visual.ImageStim(win, image=image_path + '/happy_button.png', pos=[-260, -200])
         self.different_button = visual.ImageStim(win, image=image_path + '/sad_button.png', pos=[260, -200])
         self.mouse=event.Mouse(win=win)
@@ -79,20 +79,20 @@ class Phonology_Game():
         elif not touchscreen and self.mouse.getPressed()==[1,0,0]: return True
         else: return False
 
-    def run_instructions(self, win):
-        self.tf.run_instruction_functions(win)
+    def run_instructions(self, win, task):
+        self.tf.run_instruction_functions(win,task)
 
-    def run_practice(self, win, grade):
+    def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None]
-        aud_set=[self.practice_aud1,None,None]
+        # inst_set=[self.practice_cue1,None,None]
+        # aud_set=[self.practice_aud1,None,None]
         stim_set = [4,3,1]
         stim_repeat = stim_set
         var = ''
         score_cond = [None,None,None]
         
-        return self.tf.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
+        return self.tf.run_practice_functions(win, grade, stim_set, stim_repeat, score_cond, var, task)
 
 
     def concat_wavs(self, infiles, outfile):

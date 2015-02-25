@@ -5,13 +5,12 @@ from math import floor, log
 from random import randint, choice, shuffle
 from numpy import linspace,sin,pi,int16
 from scipy.io.wavfile import write
-from task_function import task_functions
-if __name__ != '__main__': from Feedback import feedback
+from game_functions import task_function, feedback
 
 #touchscreen or not
 touchscreen = True
 
-class Tones_Game(task_functions):
+class Tones_Game():
 
     def __init__(self, win, conditions):
         "Initialize the stimuli and import conditions"
@@ -26,26 +25,26 @@ class Tones_Game(task_functions):
         self.temp_dir = tempfile.gettempdir()
         self.stim_dir = 'Audio/Stimuli/Tones'
 
-        #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        # #create practice instructions
+        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
+        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
+        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        # #initializing audio files for practice and instructions
+        # self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        # self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
         # self.tones_inst1 = sound.Sound(aud_inst_path + 'tones_inst1.wav')
         # self.tones_inst2 = sound.Sound(aud_inst_path + 'tones_inst2.wav')
         # self.tones_inst3 = sound.Sound(aud_inst_path + 'tones_inst3.wav')
 
         #instructions
-        self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'music_instructions.mp4', size = [1500,850], flipHoriz = True)
-        self.audio_inst = sound.Sound(aud_inst_path + 'music_instructions.wav')
+        # self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'music_instructions.mp4', size = [1500,850], flipHoriz = True)
+        # self.audio_inst = sound.Sound(aud_inst_path + 'music_instructions.wav')
 
-        #repeat and continue button
-        self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.continue_button=visual.ImageStim(win=win, name='continue_button', image=image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # #repeat and continue button
+        # self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        # self.continue_button=visual.ImageStim(win=win, name='continue_button', image=image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #create stimuli
         self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path + 'speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
@@ -63,6 +62,7 @@ class Tones_Game(task_functions):
         
         #start feedback
         self.fb=feedback.fb(win)
+        self.tf=task_function.task_functions(win)
 
         #create tone dictionary and set values for notes
         self.tone_key = {'1':'C','2':'C#','3':'D','4':'D#','5':'E','6':'F','7':'F#','8':'G','9':'G#','10':'A','11':'A#','12':'B'}
@@ -84,18 +84,21 @@ class Tones_Game(task_functions):
         #list to keep track of history of answers
         self.answer_history = []
 
+    def run_instructions(self, win, task):
+        self.tf.run_instruction_functions(win,task)
 
-    def run_practice(self, win, grade):
+    def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None]
-        aud_set=[self.practice_aud1,None,None]
+        # inst_set=[self.practice_cue1,None,None]
+        # aud_set=[self.practice_aud1,None,None]
         stim_set = [12,15,9] #[2,1,0]
         stim_repeat = [13,16,10] #[5,4,3]
         var = ''
         score_cond = [None,None,None]
         
-        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var)
+        return self.tf.run_practice_functions(win, grade, stim_set, stim_repeat, score_cond, var, task)
+
 
     def concat_wavs(self, infiles, outfile):
         data=[]
@@ -115,8 +118,7 @@ class Tones_Game(task_functions):
 
     def run_trial(self, win, thisIncrement, trialList, var):
         "Run one iteration of the game."
-        self.trialClock.reset()
-        t=0
+        
         #set the index to the current difficulty level for indexing into the conditions file
         difficulty=None
         for question in range(len(trialList)):
@@ -220,135 +222,97 @@ class Tones_Game(task_functions):
         self.target_button = pos[target_content][1]
         self.foil_button = pos[foil_content][1]
         
-        #draw speaker
-        self.speaker.draw()
-        win.flip()
-        core.wait(self.t_initialspeaker)    
-        self.speaker_playing.draw()
-        win.flip()
-
-        #draw first melody
-        stim1.play()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + stim1.getDuration():
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-
-        #after tone is played, wait one second and then play second tone
-        self.speaker.draw()
-        win.flip()
-        core.wait(self.t_initialspeaker)
-        self.speaker_playing.draw()
-        win.flip()
-
-        #play second melody
-        stim2.play()
-        start_time = self.trialClock.getTime()
-        while self.trialClock.getTime() < start_time + stim2.getDuration():
-            if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-
-        self.speaker.draw()
-        self.target_button.draw()
-        self.foil_button.draw()
-        win.flip()
-
-        #start timer for response
-        start_time=self.trialClock.getTime()
-        choice_time=0
-        thisResp=None
-        score = None
-        self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-        while thisResp==None and choice_time<=self.t_timer_limit:
-            if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
-                if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-            if event.getKeys(keyList=['escape']): return 'QUIT'
-            choice_time=self.trialClock.getTime()-start_time
-
-        if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
-
-        #give feedback
-        self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
-
-        #write data
-        for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]]):
-            if difficulty>=lvl[0] and difficulty<=lvl[1]: threshold_var = thresh
+        #display fixation with repeat, pause & continue button
+        task_status = self.fixation_function()
+        print '*********task_status',task_status
         
-        output = {
-            'threshold_var': threshold_var,
-            'level': difficulty,
-            'score': score,
-            'resp_time': choice_time,
-            'stim1': str(raw_stim1),
-            'stim2': str(raw_stim2),
-            'resp': thisResp,
-            'resp_pos': thisResp_pos,
-            'target': target_content,
-            'target_pos': target_pos,
-            'tones_details': trialList[index]['Details'][self.iteration[index]],
-            'tones_contour': trialList[index]['Contour'][self.iteration[index]],
-            'tones_notes_different': trialList[index]['Notes_Different'][self.iteration[index]],
-            'tones_root': str(tones_root)
-        }
+        if task_status=='repeat_task':
+            return task_status
 
-        output_header = ['tones_details','tones_contour','tones_notes_different']
-        stim_header = ['Details','Contour','Notes_Different']
-        for out_col,stim_col in zip(output_header,stim_header):
-            output.update({out_col:trialList[index][stim_col][self.iteration[index]]})
+        elif task_status=='continue_task':
+            t=0; self.trialClock.reset()
 
-        #update iteration of current difficulty
-        if self.iteration[index] == len(trialList[index]['soundA'])-1:
-            self.iteration[index] = 0
-        else:
-            self.iteration[index] += 1
+            #draw speaker
+            self.speaker.draw()
+            win.flip()
+            core.wait(self.t_initialspeaker)    
+            self.speaker_playing.draw()
+            win.flip()
 
-        return output
+            #draw first melody
+            stim1.play()
+            start_time = self.trialClock.getTime()
+            while self.trialClock.getTime() < start_time + stim1.getDuration():
+                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
-    #method to get clicks
-    def click(self):
-        if touchscreen and self.mouse.mouseMoved(): return True
-        elif not touchscreen and self.mouse.getPressed()==[1,0,0]: return True
-        else: return False
+            #after tone is played, wait one second and then play second tone
+            self.speaker.draw()
+            win.flip()
+            core.wait(self.t_initialspeaker)
+            self.speaker_playing.draw()
+            win.flip()
 
+            #play second melody
+            stim2.play()
+            start_time = self.trialClock.getTime()
+            while self.trialClock.getTime() < start_time + stim2.getDuration():
+                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
 
-if __name__=='__main__':
-    sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-    from Feedback import feedback
+            self.speaker.draw()
+            self.target_button.draw()
+            self.foil_button.draw()
+            win.flip()
 
-    #store info about the experiment session
-    expName='LDRH Task'; expInfo={'participant':''}
-    dlg=gui.DlgFromDict(dictionary=expInfo,title=expName)
-    if dlg.OK==False: core.quit() #user pressed cancel
-    expInfo['date']=data.getDateStr(); expInfo['expName']=expName
-    fileName = expInfo['participant'] + expInfo['date']
-    #dataFile = open('LDRH spatial data/' + fileName+'.txt', 'w')
-    #dataFile.write('Level>Answer\n')
+            #start timer for response
+            start_time=self.trialClock.getTime()
+            choice_time=0
+            thisResp=None
+            score = None
+            self.mouse.getPos() #called to prevent last movement of mouse from triggering click
+            while thisResp==None and choice_time<=self.t_timer_limit:
+                if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                    if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                    elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                if event.getKeys(keyList=['escape']): return 'QUIT'
+                choice_time=self.trialClock.getTime()-start_time
 
-    win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=True) #Window
+            if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
 
-    #create the staircase handler
-    staircase = data.StairHandler(startVal = 10, stepType = 'lin', stepSizes=[2,2,1,1], #reduce step size every two reversals
-        minVal=1, maxVal=9, nUp=1, nDown=3,  #will home in on the 80% threshold
-        nTrials = 8)
+            #give feedback
+            self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
 
-    #create data structure
-    wb = xlwt.Workbook()
-    sheet = wb.add_sheet('Tones')
+            #write data
+            for thresh,lvl in zip(['2tones','3tones','5tones'],[[1,2],[3,6],[7,17]]):
+                if difficulty>=lvl[0] and difficulty<=lvl[1]: threshold_var = thresh
+            
+            output = {
+                'threshold_var': threshold_var,
+                'level': difficulty,
+                'score': score,
+                'resp_time': choice_time,
+                'stim1': str(raw_stim1),
+                'stim2': str(raw_stim2),
+                'resp': thisResp,
+                'resp_pos': thisResp_pos,
+                'target': target_content,
+                'target_pos': target_pos,
+                'tones_details': trialList[index]['Details'][self.iteration[index]],
+                'tones_contour': trialList[index]['Contour'][self.iteration[index]],
+                'tones_notes_different': trialList[index]['Notes_Different'][self.iteration[index]],
+                'tones_root': str(tones_root)
+            }
 
-    #initialize game
-#    game = Tones_Game(win)
+            output_header = ['tones_details','tones_contour','tones_notes_different']
+            stim_header = ['Details','Contour','Notes_Different']
+            for out_col,stim_col in zip(output_header,stim_header):
+                output.update({out_col:trialList[index][stim_col][self.iteration[index]]})
 
-    #start feedback
-    fb=feedback.fb(win)
+            #update iteration of current difficulty
+            if self.iteration[index] == len(trialList[index]['soundA'])-1:
+                self.iteration[index] = 0
+            else:
+                self.iteration[index] += 1
 
-    #instructions
-    game.run_instructions(win)
+            return output
 
-    #step through staircase to find threshold
-    for thisIncrement in staircase:
-        output = game.run_game(win, "", thisIncrement)
-        staircase.addData(output['Score'])
-    #record the resulting threshold level of the training
-    thresh = staircase._nextIntensity
-
-    #run one iteration of game at threshold:
-    game.run_game(win, "", thresh)
+    
