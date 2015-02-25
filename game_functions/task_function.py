@@ -157,7 +157,3 @@ class task_functions:
 
         if thisResp!=None: return thisResp
 
-
-=======
->>>>>>> origin/master
-    
