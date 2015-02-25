@@ -5,12 +5,12 @@ import numpy as np
 from numpy.random import random, randint, normal, shuffle
 from numpy import sin, cos, tan, log, log10, pi, average, sqrt, std, deg2rad, rad2deg, linspace, asarray
 import time, os, sys, math, random#, xlwt
-from task_function import task_functions
-if __name__ != '__main__': from Feedback import feedback
+from game_functions import task_function, feedback
+# if __name__ != '__main__': from Feedback import feedback
 
 touchscreen = True
 
-class Star_Game(task_functions):
+class Star_Game():
 
     def __init__(self, win):
         self.fn = os.path.dirname(__file__)
@@ -71,6 +71,7 @@ class Star_Game(task_functions):
 
         #start feedback
         self.fb=feedback.fb(win)
+        self.tf=task_function.task_functions(win)
 
         # number of degrees to exclude for star placement-- degrees given will be excluded on each side of the cardinal directions
         self.cardinal_exclusion_range = 7
@@ -79,6 +80,8 @@ class Star_Game(task_functions):
         self.degree_possibilities = []
         for x in [45,135,225,315]: self.degree_possibilities.extend(range(x-(44-self.cardinal_exclusion_range), x+(45-self.cardinal_exclusion_range)))
 
+    def run_instructions(self, win):
+        self.tf.run_instruction_functions(win)
 
     def run_practice(self, win, grade):
         "Run practice"
@@ -99,9 +102,6 @@ class Star_Game(task_functions):
     def run_trial(self, win, thisIncrement, var):
         sz= thisIncrement
         theseKeys = ""
-
-        t=0; self.trialClock.reset()
-        frameN=-1
 
         r = 250
         degree = choice(self.degree_possibilities)
@@ -129,117 +129,79 @@ class Star_Game(task_functions):
         self.drag.setImage(self.image_path + '/star2.png')
 
         #time constrains
-        t1 = self.t_blank
-        t2 = self.t_blank + self.t_twinkle
-        t3 = self.t_blank + self.t_twinkle + self.t_mask
-        tf = self.t_blank + self.t_twinkle + self.t_mask + self.timer_limit
-        
-        # present twinkling star and then put up mask
-        while t<=t3:
-            t=self.trialClock.getTime()
-            if t<=t1: self.blank.draw()
-            if t>t1 and t<=t2:
-                self.bintang.draw()
-                self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
-                self.twinkle.draw()
-            if t>t2 and t<=t3: self.mask.draw()
-            theseKeys = event.getKeys()
-            if len(theseKeys)>0:
-                if theseKeys[-1] in ['q','escape']: return 'QUIT'
-            win.flip()
+        t1 =  self.t_twinkle
+        t2 =  self.t_twinkle + self.t_mask
+        tf =  self.t_twinkle + self.t_mask + self.timer_limit
 
-        #allow participant to move star and make response, then check if correct
-        self.mouse.getPos()
-        start_time = self.trialClock.getTime()
-        while score==None:
-            if t>t3 and t<=tf:
+        #display fixation with repeat, pause & continue button
+        task_status = self.tf.fixation_function(win)
+        print '*********task_status',task_status
+        
+        if task_status=='repeat_task': 
+            return task_status
+
+        elif task_status=='continue_task':
+            t=0; self.trialClock.reset()
+            
+            # present twinkling star and then put up mask
+            while t<=t2:
                 t=self.trialClock.getTime()
-                self.drag.draw()
-                if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
-                    if self.drag.contains(self.mouse.getPos()):
-                        status='STARTED'
-                        first_click_time = t - start_time
-                        self.drag.setImage(self.image_path + '/star_selected.png')
-                if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
-                    second_click_time = t - start_time
-                    self.drag.setImage(self.image_path + '/star2.png')
-                    self.drag.setPos(self.mouse.getPos())
-                    x_resp = self.drag.pos[0]
-                    y_resp = self.drag.pos[1]
-                    distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
-                    score = int(distance<=sz)
-                if event.getKeys(keyList=['q', 'escape']):
-                    return 'QUIT'
+                if t<=t1:
+                    self.bintang.draw()
+                    self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
+                    self.twinkle.draw()
+                if t>t1 and t<=t2: self.mask.draw()
+                theseKeys = event.getKeys()
+                if len(theseKeys)>0:
+                    if theseKeys[-1] in ['q','escape']: return 'QUIT'
                 win.flip()
-                self.circledrag.setPos(self.drag.pos)
-                self.circletwinkle.setPos(self.twinkle2.pos)
-            if t>tf:
-                # score=0
-                if not first_click_time: first_click_time=np.nan
-                score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan,np.nan)
 
-        #give feedback
-        self.fb.present_fb(win,score,[self.twinkle2,self.circletwinkle,self.drag,self.circledrag])
+            #allow participant to move star and make response, then check if correct
+            self.mouse.getPos()
+            start_time = self.trialClock.getTime()
+            while score==None:
+                if t>t2 and t<=tf:
+                    t=self.trialClock.getTime()
+                    self.drag.draw()
+                    if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
+                        if self.drag.contains(self.mouse.getPos()):
+                            status='STARTED'
+                            first_click_time = t - start_time
+                            self.drag.setImage(self.image_path + '/star_selected.png')
+                    if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
+                        second_click_time = t - start_time
+                        self.drag.setImage(self.image_path + '/star2.png')
+                        self.drag.setPos(self.mouse.getPos())
+                        x_resp = self.drag.pos[0]
+                        y_resp = self.drag.pos[1]
+                        distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
+                        score = int(distance<=sz)
+                    if event.getKeys(keyList=['q', 'escape']):
+                        return 'QUIT'
+                    win.flip()
+                    self.circledrag.setPos(self.drag.pos)
+                    self.circletwinkle.setPos(self.twinkle2.pos)
+                if t>tf:
+                    # score=0
+                    if not first_click_time: first_click_time=np.nan
+                    score, x_resp,y_resp,distance,second_click_time = (0,np.nan,np.nan,np.nan,np.nan)
 
-        #write data #headers are ['Trial Number', 'Difficulty','Score','Resp Time','Adaptive']
+            #give feedback
+            self.fb.present_fb(win,score,[self.twinkle2,self.circletwinkle,self.drag,self.circledrag])
 
-        output = {
-            'threshold_var': float(sz),
-            'level': None,
-            'score': int(score),
-            'resp_time': float(second_click_time-first_click_time),
-            'spatial_click1': float(first_click_time),
-            'spatial_click2': float(second_click_time),
-            'resp_pos': "(%f, %f)"%(x_resp, y_resp),
-            'target_pos': "(%f, %f)"%(x,y),
-            'resp_target_dist': float(distance),
-        }
-        
-        print output
-        return output
+            #write data #headers are ['Trial Number', 'Difficulty','Score','Resp Time','Adaptive']
 
-
-    #method to get clicks
-    def click(self):
-        if touchscreen and self.mouse.mouseMoved(): return True
-        elif not touchscreen and self.mouse.getPressed()==[1,0,0]: return True
-        else: return False
-
-if __name__=='__main__':
-    sys.path.append(os.path.abspath(os.path.join(os.getcwd(),os.pardir)))
-    from Feedback import feedback
-
-    #store info about the experiment session
-    expName='REaCh Star Task'; expInfo={'participant':''}
-    dlg=gui.DlgFromDict(dictionary=expInfo,title=expName)
-    if dlg.OK==False: core.quit() #user pressed cancel
-    expInfo['date']=data.getDateStr(); expInfo['expName']=expName
-    fileName = expInfo['participant'] + expInfo['date']
-    #dataFile = open('LDRH spatial data/' + fileName+'.txt', 'w')
-    #dataFile.write('Level>Answer\n')
-
-    win = visual.Window(size=(1500, 850), allowGUI=False
-    , monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=False) #Window
-#
-#    #create the staircase handler
-    staircase = data.StairHandler(startVal = 130,
-          stepType = 'db', stepSizes=[10,5,2,1],#[8,4,4,2,2,1,1], #reduce step size every two reversals
-          minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
-          nTrials = 10)
-
-    #initialize game
-    game = Star_Game(win)
-
-    #start feedback
-    fb=feedback.fb(win)
-
-    #step through staircase to find threshold
-    for thisIncrement in staircase:
-        output = game.run_game(win, "", thisIncrement)
-
-        staircase.addData(output['Score'])
-    #record the resulting threshold level of the training
-    thresh = staircase._nextIntensity
-
-    #run one iteration of game at threshold:
-    game.run_game(win, "", thresh)
+            output = {
+                'threshold_var': float(sz),
+                'level': None,
+                'score': int(score),
+                'resp_time': float(second_click_time-first_click_time),
+                'spatial_click1': float(first_click_time),
+                'spatial_click2': float(second_click_time),
+                'resp_pos': "(%f, %f)"%(x_resp, y_resp),
+                'target_pos': "(%f, %f)"%(x,y),
+                'resp_target_dist': float(distance),
+            }
+            
+            print output
+            return output

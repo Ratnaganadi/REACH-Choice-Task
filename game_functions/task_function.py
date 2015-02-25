@@ -2,7 +2,6 @@ from psychopy import visual, core, data, event, logging, gui, sound
 import os
 
 class task_functions:
-<<<<<<< HEAD
     def __init__(self, win):
         self.trialClock=core.Clock()
         image_path = 'Images/Tasks/'
@@ -13,10 +12,7 @@ class task_functions:
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
 
-=======
-    
->>>>>>> origin/master
-    def run_instructions(self, win):
+    def run_instruction_functions(self, win):
         "Display the instructions for the game."
         #display instructions and wait
         self.audio_inst.play()
@@ -125,15 +121,14 @@ class task_functions:
                 go_to_choice=True
             if 'escape' in event.getKeys(): go_to_choice=True; return 'QUIT'
 
-<<<<<<< HEAD
     def fixation_function(self,win):
         'Fixation cross with pause, play, repeat the whole thing'
         self.trialClock.reset(); t=0
 
-        self.fix_point.draw()
-        self.repeat_button.draw()
-        self.continue_button.draw()
-        self.pause_button.draw()
+        self.fixation.draw()
+        self.repeat.draw()
+        self.cont.draw()
+        self.pause.draw()
         win.flip()
         # core.wait(1.5)
 
@@ -145,12 +140,20 @@ class task_functions:
 
         while (thisResp==None and choice_time<=1.5) or pause==True:
             if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
-                if self.repeat_button.contains(self.mouse): thisResp='repeat_task'; pause=False
-                elif self.continue_button.contains(self.mouse): thisResp='continue_task'; pause=False
-                elif self.pause_button.contains(self.mouse): thisResp=None; pause=True
+                if self.repeat.contains(self.mouse): 
+                    thisResp='repeat_task'
+                    pause=False
+                elif self.cont.contains(self.mouse): 
+                    thisResp='continue_task'
+                    pause=False
+                elif self.pause.contains(self.mouse): 
+                    thisResp=None
+                    pause=True
             if event.getKeys(keyList=['escape']): return 'QUIT'
             choice_time=self.trialClock.getTime()-start_time
-        if t>1.5: thisResp='continue_task'
+
+
+        if self.trialClock.getTime()-start_time>1.5: thisResp='continue_task'
 
         if thisResp!=None: return thisResp
 

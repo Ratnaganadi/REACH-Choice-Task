@@ -7,29 +7,21 @@ class fb:
         "Initialize the stimuli and iteration numbers, and import conditions"
         #get dir for importing conditions
         self.fn = os.path.dirname(__file__)
+        #file paths
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/General/'
+
         self.trialClock=core.Clock()
         
         #initialize check and x
-        self.green_check=visual.ImageStim(win=win, name='green_check', units=u'pix',
-            image=self.fn + '/green_check2.png', mask=None,
-            ori=0, pos=[0,0], size=[128, 128],
-            color=[1,1,1], colorSpace=u'rgb', opacity=1,
-            texRes=128, interpolate=True, depth=-4.0)
-        self.red_x=visual.ImageStim(win=win, name='red_x', units=u'pix',
-            image=self.fn + '/red_x.png', mask=None,
-            ori=0, pos=[0, 0], size=[128, 128],
-            color=[1,1,1], colorSpace=u'rgb', opacity=1,
-            texRes=128, interpolate=True, depth=-4.0)
+        self.green_check=visual.ImageStim(win=win, name='green_check', units=u'pix', image=image_path + '/green_check2.png', mask=None, ori=0, pos=[0,0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1, texRes=128, interpolate=True, depth=-4.0)
+        self.red_x=visual.ImageStim(win=win, name='red_x', units=u'pix', image=image_path + '/red_x.png', mask=None, ori=0, pos=[0, 0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1, texRes=128, interpolate=True, depth=-4.0)
         
-        #self.ding=sound.Sound(value=self.fn + '/game_ding.wav')
-        self.ding=sound.Sound(value = self.fn + '/Ping.wav')
+        self.ding=sound.Sound(value = audio_path + '/Ping.wav')
         self.ding.setVolume(0.15)
-        
-        #self.honk=sound.Sound(value=self.fn + '/honk.wav')
-        #self.honk.setVolume(0.3)
-        self.honk=sound.Sound(value=self.fn+'/Basso.wav')
+        self.honk=sound.Sound(value=audio_path+'/Basso.wav')
         self.honk.setVolume(0.15)
-        #self.honk=sound.Sound(value=self.fn+'/boing.wav')
+
         
     def present_fb(self, win, score, objects):
         """Display the feeback for the game. Requires the window, the score, 

@@ -7,13 +7,13 @@ from xlutils.copy import copy as xlcopy
 import cPickle as pickle
 from random import shuffle, choice
 from datetime import datetime
-from Math_Task import LDRH_math_obj_4_choice_w_gradeinfo as Math_Script
-from Tones_Task import LDRH_tones_obj_w_gradeinfo as Tones_Script
-from Dots_Task import LDRH_panamath_boxes_obj_w_gradeinfo as Dots_Script
-from Reading_Task import LDRH_reading_obj_4buttons_inst_gradeinfo as Reading_Script
-from Phonology_Task import LDRH_phonology_obj_w_gradeinfo as Phonology_Script
-from Star_Task import LDRH_spatial_obj_w_gradeinfo as Star_Script
-from Feedback import feedback
+from Math_Task import LDRH_math as Math_Script
+from Tones_Task import LDRH_tones as Tones_Script
+from Dots_Task import LDRH_dots as Dots_Script
+from Reading_Task import LDRH_reading as Reading_Script
+from Phonology_Task import LDRH_phonology as Phonology_Script
+from Star_Task import LDRH_stars as Star_Script
+from game_functions import task_function, feedback
 
 try:
     import taskversion
