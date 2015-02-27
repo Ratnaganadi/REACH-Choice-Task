@@ -3,6 +3,8 @@ from psychopy import core, visual, gui, data, misc, event, sound
 import time, numpy, os, sys
 from random import shuffle
 from game_functions import task_function, feedback
+# from game_functions import task_function, practice, feedback
+from practice import practice_functions
 
 #touchscreen? if False, uses conventional mouse
 touchscreen = True
@@ -12,7 +14,7 @@ white_rectangle = False
 #dark button instead of light blue button
 dark_button = False
 
-class Math_Game():
+class Math_Game(practice_functions):
 
     def __init__(self, win, conditions):
         "Initialize the stimuli and iteration numbers, and import conditions"
@@ -27,26 +29,19 @@ class Math_Game():
 
         self.math_dotstims_path = 'Images/Stimuli/Math_dotstims/'
 
-        # #create practice instructions
-        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
+        #create practice instructions
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
         # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        # #initializing audio files for practice and instructions
-        # self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        #initializing audio files for practice and instructions
+        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
         # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        # self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        # self.math_inst1 = sound.Sound(aud_inst_path + 'math_inst1.wav')
-        # self.math_inst2 = sound.Sound(aud_inst_path + 'math_inst2.wav')
-        # self.math_inst3 = sound.Sound(aud_inst_path + 'math_inst3.wav')
+        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
 
-        #instructions
-        # self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'math_instructions.mp4', size = [1500,850], flipHoriz = True)
-        # self.audio_inst = sound.Sound(aud_inst_path + 'math_instructions.wav')
-
-        # #repeat and continue button
-        # self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        # self.continue_button=visual.ImageStim(win=win, name='continue_button', image= image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        #repeat and continue button
+        self.repeat=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'black_button.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.cont=visual.ImageStim(win=win, name='continue_button', image= image_path + 'black_button.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #create stimuli
         self.text_stimulus = visual.TextStim(win, pos=[0,200],height=80, text='Stimulus.')
@@ -71,7 +66,7 @@ class Math_Game():
         self.mouse.getPos()
 
         #time constrains
-        self.t_timer_limit = 12
+        self.timer_limit = 12
 
         #start feedback
         self.fb=feedback.fb(win)
@@ -87,20 +82,20 @@ class Math_Game():
             for question in range(len(self.trialList[operation])):
                 self.iteration[operation][question] = 0
 
-    def run_instructions(self, win, task):
-        self.tf.run_instruction_functions(win,task)
+    # def run_instructions(self, win, task):
+    #     self.tf.run_instruction_functions(win,task)
 
     def run_practice(self, win, task, grade):
         "Run practice"
 
-        # inst_set=[self.practice_cue1,None,None]
-        # aud_set=[self.practice_aud1,None,None]
+        inst_set=[self.practice_cue1,None,None]
+        aud_set=[self.practice_aud1,None,None]
         stim_set = [13,11,11]
         stim_repeat = stim_set
         var = 'addition'
         score_cond = [None,None,None]
         
-        return self.tf.run_practice_functions(win, grade, stim_set, stim_repeat, score_cond, var, task)
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 
     def run_game(self, win, grade, thisIncrement, operation):
         "Run one iteration of the game with self.trialList as conditions."
@@ -183,17 +178,16 @@ class Math_Game():
         elif task_status=='continue_task':
             t=0; self.trialClock.reset()
 
-            tf = self.t_timer_limit
             score=None
             start_time = self.trialClock.getTime()
-            timer = 0
+            choice_time=0
             thisResp = None
             thisResp_pos = None
             self.mouse.getPos()
 
             while score==None:
                 t = self.trialClock.getTime()
-                if t<=tf:
+                if t<=self.timer_limit:
                     self.stimulus.draw()
                     # self.fixation.draw()
 
@@ -202,7 +196,7 @@ class Math_Game():
                         text.draw()
                     win.flip()
 
-                    while thisResp==None and choice_time<=self.t_timer_limit:
+                    while thisResp==None and choice_time<=self.timer_limit:
                         if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
                             for pts,string,text,xpos,button in object_var:
                                 if button.contains(self.mouse):
@@ -210,7 +204,7 @@ class Math_Game():
                                     text.setColor('gold')
                         if event.getKeys(keyList=['escape']): return 'QUIT'
                         choice_time = self.trialClock.getTime()-start_time
-                if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+                if t>self.timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
             #give feedback
             self.fb.present_fb(win,score,[self.stimulus,target_button,self.target]+foil_button+foil_text)

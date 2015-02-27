@@ -6,11 +6,13 @@ from random import randint, choice, shuffle
 from numpy import linspace,sin,pi,int16
 from scipy.io.wavfile import write
 from game_functions import task_function, feedback
+# from game_functions import task_function, practice, feedback
+from practice import practice_functions
 
 #touchscreen or not
 touchscreen = True
 
-class Tones_Game():
+class Tones_Game(practice_functions):
 
     def __init__(self, win, conditions):
         "Initialize the stimuli and import conditions"
@@ -25,26 +27,19 @@ class Tones_Game():
         self.temp_dir = tempfile.gettempdir()
         self.stim_dir = 'Audio/Stimuli/Tones'
 
-        # #create practice instructions
-        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        #create practice instructions
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
+        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        # #initializing audio files for practice and instructions
-        # self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
-        # self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        # self.tones_inst1 = sound.Sound(aud_inst_path + 'tones_inst1.wav')
-        # self.tones_inst2 = sound.Sound(aud_inst_path + 'tones_inst2.wav')
-        # self.tones_inst3 = sound.Sound(aud_inst_path + 'tones_inst3.wav')
-
-        #instructions
-        # self.instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'music_instructions.mp4', size = [1500,850], flipHoriz = True)
-        # self.audio_inst = sound.Sound(aud_inst_path + 'music_instructions.wav')
-
-        # #repeat and continue button
-        # self.repeat_button=visual.ImageStim(win=win, name='repeat_button', image=image_path + 'repeat.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        # self.continue_button=visual.ImageStim(win=win, name='continue_button', image=image_path + 'continue.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        #initializing audio files for practice and instructions
+        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        
+        #repeat and continue button
+        self.repeat=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'black_button.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        self.cont=visual.ImageStim(win=win, name='continue_button', image= image_path + 'black_button.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
 
         #create stimuli
         self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path + 'speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
@@ -58,7 +53,7 @@ class Tones_Game():
         #time constrains
         self.t_initialspeaker = 1
         self.t_stimgap = 1
-        self.t_timer_limit = 12
+        self.timer_limit = 12
         
         #start feedback
         self.fb=feedback.fb(win)
@@ -84,20 +79,20 @@ class Tones_Game():
         #list to keep track of history of answers
         self.answer_history = []
 
-    def run_instructions(self, win, task):
-        self.tf.run_instruction_functions(win,task)
+    # def run_instructions(self, win, task):
+    #     self.tf.run_instruction_functions(win,task)
 
     def run_practice(self, win, task, grade):
         "Run practice"
 
-        # inst_set=[self.practice_cue1,None,None]
-        # aud_set=[self.practice_aud1,None,None]
+        inst_set=[self.practice_cue1,None,None]
+        aud_set=[self.practice_aud1,None,None]
         stim_set = [12,15,9] #[2,1,0]
         stim_repeat = [13,16,10] #[5,4,3]
         var = ''
         score_cond = [None,None,None]
         
-        return self.tf.run_practice_functions(win, grade, stim_set, stim_repeat, score_cond, var, task)
+        return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 
 
     def concat_wavs(self, infiles, outfile):
@@ -223,7 +218,7 @@ class Tones_Game():
         self.foil_button = pos[foil_content][1]
         
         #display fixation with repeat, pause & continue button
-        task_status = self.fixation_function()
+        task_status = self.tf.fixation_function(win)
         print '*********task_status',task_status
         
         if task_status=='repeat_task':
@@ -269,14 +264,14 @@ class Tones_Game():
             thisResp=None
             score = None
             self.mouse.getPos() #called to prevent last movement of mouse from triggering click
-            while thisResp==None and choice_time<=self.t_timer_limit:
+            while thisResp==None and choice_time<=self.timer_limit:
                 if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
                     if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
                     elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
                 if event.getKeys(keyList=['escape']): return 'QUIT'
                 choice_time=self.trialClock.getTime()-start_time
 
-            if t>self.t_timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
+            if t>self.timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
 
             #give feedback
             self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
