@@ -369,7 +369,7 @@ def run_staircase(task, operation=None):
         if output=='QUIT': pickle_and_quit()
 
         #first write trial number to output, then write the output variables
-        header_for_all = [subject_ID,task,'threshold',trial_number]
+        header_for_all = [subject_ID,trial_number,task,'threshold']
         for col,header in enumerate(header_for_all):
             all_sheets[task]['sheet'].write(all_sheets[task]['row'],col,header)
         # all_sheets[task]['sheet'].write(all_sheets[task]['row'], 0, trial_number)
