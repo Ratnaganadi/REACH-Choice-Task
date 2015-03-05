@@ -1,17 +1,11 @@
 import os
 import glob
 import pprint as pp
-
-# current_dir = os.path.dirname(os.path.realpath('__file__'))
-# homepath=str(current_dir)
+from dir_function import get_homepath
 
 
-current_dir = os.path.dirname(os.path.realpath('__file__'))
-print 'current_dir',current_dir
-dirname=list(current_dir.split('/'))
-length = len(current_dir)-len(dirname[len(dirname)-1])
-homepath = current_dir[:length]
-print 'homepath',homepath
+dir_hierarchy = 1
+homepath = get_homepath(dir_hierarchy,go_home=False)
 
 def delete_files(file_path,condition):
     os.chdir(file_path)
