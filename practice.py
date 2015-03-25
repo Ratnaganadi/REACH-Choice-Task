@@ -36,10 +36,10 @@ class practice_functions:
                 while cont==False:
                     if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]): 
                         if aud_cue: aud_cue.stop()
-                        if option=='repeat_option':
+                        if option and option=='repeat_option':
                             if self.repeat.contains(self.mouse): return 'repeat'
                             elif self.cont.contains(self.mouse): return 'continue'
-                        else: cont==True
+                        # else: cont==True
                         cont=True
                     if 'escape' in event.getKeys(): 
                         if aud_cue: aud_cue.stop()
@@ -58,17 +58,27 @@ class practice_functions:
             #run practice iterations
             for inst, audio, stimuli, cond in zip(inst_set,aud_set,score_cond):
                 for txt,aud,stim,score in zip(inst,audio,stimuli,cond):
-                    run_sub_practice(self,win,txt,aud,stim,True,'no_repeat_option',score,var)=='QUIT': return 'QUIT'
-            return run_sub_practice(self,win,self.practice_cue3,self.practice_aud3,None,False,'repeat_opt',None,var)
+                    if run_sub_practice(self,win,txt,aud,stim,with_practice=True,'no_repeat_option',score,var)=='QUIT': return 'QUIT'
+            # return run_sub_practice(self,win,
+                # self.practice_cue3,
+            # self.practice_aud3,
+            # stim = None,
+            # with_practice = False,
+            # 'repeat_opt',
+            # score = None,
+            # var)
 
         if task!='spatial':
             isntructions=[inst_set]
             audio=[aud_set]
             score_conditions=[score_cond]
+        elif task=='spatial'
         
         go_to_choice = False
         while not go_to_choice:
-            repeat_check = run_3_practice(instructions,audio,score_conditions,var)
+            repeat_check = run_3_practice(instructions,
+                # audio,
+            # score_conditions,var)
             if repeat_check=='repeat':
                 if task=='spatial':
                     instructions = [inst_set[3]]

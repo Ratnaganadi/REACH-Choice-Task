@@ -88,12 +88,13 @@ class Math_Game(practice_functions):
     def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None]
-        aud_set=[self.practice_aud1,None,None]
-        stim_set = [13,11,11]
+        inst_set=[self.practice_cue1,None,None,self.practice_cue3]
+        aud_set=[self.practice_aud1,None,None,self.practice_aud3]
+        repeat_opt = [None,None,None,'repeat_option']
+        stim_set = [13,11,11,None]
         stim_repeat = stim_set
         var = 'addition'
-        score_cond = [None,None,None]
+        score_cond = [None,None,None,None]
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 
