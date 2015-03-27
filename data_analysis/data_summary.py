@@ -1,5 +1,9 @@
 import pandas
 import glob
+from dir_function import get_homepath
+
+dir_hierarchy = 1
+homepath = get_homepath(dir_hierarchy,go_home='')
 path = "data/complete_data/"
 
 main_data = []
@@ -349,5 +353,5 @@ column_headers = [
     "dots_final_level_choice",
 ]
 
-
+os.chdir('data_analysis')
 main_data.to_excel("REACH_summary.xls", sheet_name="REACH_SUMMARY", columns=column_headers, index=False)
