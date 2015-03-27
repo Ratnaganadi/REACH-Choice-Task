@@ -15,14 +15,15 @@ touchscreen = True
 class Star_Game(practice_functions):
 
     def __init__(self, win):
-        self.fn = os.path.dirname(__file__)
-        self.trialClock=core.Clock()
 
-        #file paths
+        #file paths for importing conditions, images and audio
+        self.fn = os.path.dirname(__file__)
         self.image_path = 'Images/Tasks/'
         self.audio_path = 'Audio/General/'
         self.aud_practice_path = 'Audio/Practice/'
         self.aud_inst_path = 'Audio/Instructions/'
+
+        self.trialClock=core.Clock()
 
         #create practice instructions
         self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
@@ -30,15 +31,10 @@ class Star_Game(practice_functions):
         self.practice_instructions3 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 3: child completes trials on his/her own')
         self.practice_instructions4 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's do some more practice")
         self.try_again = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's try that again.")
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        # self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
-        # self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-
-        # #initializing audio files for practice and instructions
-        # self.practice_aud1 = sound.Sound(self.aud_practice_path + 'practice_cue1.wav')
-        # self.practice_aud2 = sound.Sound(self.aud_practice_path + 'practice_cue2.wav')
-        # self.practice_aud3 = sound.Sound(self.aud_practice_path + 'practice_cue3.wav')
+        #initializing audio files for practice and instructions
+        self.practice_aud3 = sound.Sound(self.aud_practice_path + 'practice_cue3.wav')
         
         #time constrains
         self.t_blank = 2
@@ -88,7 +84,6 @@ class Star_Game(practice_functions):
         aud_set = [[None,None,None],[None,None],[None,None,self.practice_aud3]]#,[None,None,self.practice_aud3]]]
         stim_set = [[150,100,115],[250,200],[200,150,None]]
         var = 'star_task'
-        score_cond = [[1,0,1],[1,1],[1,1,None]]#,[1,1]]
         stim_repeat = [200,150,None]
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)

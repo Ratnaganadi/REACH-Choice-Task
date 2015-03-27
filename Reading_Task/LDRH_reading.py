@@ -14,32 +14,27 @@ touchscreen = True
 class Reading_Game(practice_functions):
 
     def __init__(self, win, conditions):
+        
+        #file paths for importing conditions, images and audio
         self.fn = os.path.dirname(__file__)
-
-        #get tempfile
+        image_path = 'Images/Tasks/'
+        audio_path = 'Audio/General/'
+        aud_practice_path = 'Audio/Practice/'
+        aud_inst_path = 'Audio/Instructions/'
+        self.readingstim_path = 'Audio/Stimuli/Reading/'
         self.temp_dir = tempfile.gettempdir()
 
         #create window and stimuli
         self.globalClock = core.Clock()#to keep track of time
         self.trialClock = core.Clock()#to keep track of time
 
-        #file paths
-        image_path = 'Images/Tasks/'
-        audio_path = 'Audio/General/'
-        aud_practice_path = 'Audio/Practice/'
-        aud_inst_path = 'Audio/Instructions/'
-        self.readingstim_path = 'Audio/Stimuli/Reading/'
-
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
         #initializing audio files for practice and instructions
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-        # self.general_inst_last = sound.Sound(aud_inst_path + 'general_inst_last.wav')
 
         #foil & target button, speaker stimuli
         self.fixation = visual.TextStim(win, pos=[0,0],height=45, text='', color='white')
@@ -91,15 +86,12 @@ class Reading_Game(practice_functions):
         for question in range(len(self.trialList)):
             self.iteration[question] = 0
 
-    # def run_instructions(self, win, task):
-    #     self.tf.run_instruction_functions(win,task)
 
     def run_practice(self, win, task, grade):
         "Run practice"
 
         inst_set=[self.practice_cue1,None,None,None,None,self.practice_cue3]
         aud_set=[self.practice_aud1,None,None,None,None,self.practice_aud3]
-        # repeat_opt = [None,None,None,None,None,'repeat_option']
         stim_set = [10,9,8,6,5,None]
         stim_repeat = stim_set
         score_cond = [None,None,None,None,None,None]

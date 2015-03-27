@@ -17,26 +17,21 @@ dark_button = False
 class Math_Game(practice_functions):
 
     def __init__(self, win, conditions):
-        "Initialize the stimuli and iteration numbers, and import conditions"
-        #get dir for importing conditions, images and audio
-        self.dir = os.path.dirname(__file__)
 
-        #file paths
+        #file paths for importing conditions, images and audio
+        self.dir = os.path.dirname(__file__)
         image_path = 'Images/Tasks/'
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
-
         self.math_dotstims_path = 'Images/Stimuli/Math_dotstims/'
 
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
         #initializing audio files for practice and instructions
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
 
         #repeat and continue button
@@ -82,15 +77,12 @@ class Math_Game(practice_functions):
             for question in range(len(self.trialList[operation])):
                 self.iteration[operation][question] = 0
 
-    # def run_instructions(self, win, task):
-    #     self.tf.run_instruction_functions(win,task)
 
     def run_practice(self, win, task, grade):
         "Run practice"
 
         inst_set=[self.practice_cue1,None,None,self.practice_cue3]
         aud_set=[self.practice_aud1,None,None,self.practice_aud3]
-        # repeat_opt = [None,None,None,'repeat_option']
         stim_set = [13,11,11,None]
         stim_repeat = stim_set
         var = 'addition'

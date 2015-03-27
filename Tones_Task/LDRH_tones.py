@@ -15,10 +15,9 @@ touchscreen = True
 class Tones_Game(practice_functions):
 
     def __init__(self, win, conditions):
-        "Initialize the stimuli and import conditions"
-        #get dir for importing resources
+
+        #file paths for importing conditions, images and audio
         self.fn = os.path.dirname(__file__)
-        #file paths
         image_path = 'Images/Tasks/'
         audio_path = 'Audio/General/'
         aud_practice_path = 'Audio/Practice/'
@@ -29,12 +28,12 @@ class Tones_Game(practice_functions):
 
         #create practice instructions
         self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
+        # self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text='Touch anywhere to do some more practice.')
         self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
         #initializing audio files for practice and instructions
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
+        # self.practice_aud2 = sound.Sound(aud_practice_path + 'practice_cue2.wav')
         self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
         
         #repeat and continue button
@@ -68,9 +67,6 @@ class Tones_Game(practice_functions):
         #set conditions for trial
         self.trialList=conditions
 
-        #set conditions for practice
-        self.practiceList = data.importConditions(join(self.fn, 'practice.xlsx'))
-
         #create a dictionary to keep track of how many times you've displayed each difficulty level
         self.iteration = {}
         for question in range(len(self.trialList)):
@@ -79,15 +75,12 @@ class Tones_Game(practice_functions):
         #list to keep track of history of answers
         self.answer_history = []
 
-    # def run_instructions(self, win, task):
-    #     self.tf.run_instruction_functions(win,task)
 
     def run_practice(self, win, task, grade):
         "Run practice"
 
         inst_set=[self.practice_cue1,None,None,self.practice_cue3]
         aud_set=[self.practice_aud1,None,None,self.practice_aud3]
-        # repeat_opt = [None,None,None,'repeat_option']
         stim_set = [12,15,9,None] #[2,1,0]
         stim_repeat = [13,16,10,None] #[5,4,3]
         var = ''

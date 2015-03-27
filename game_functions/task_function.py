@@ -15,21 +15,6 @@ class task_functions:
         self.mouse.getPos()
 
 
-    # def run_instruction_functions(self, win, task):
-    #     "Display the instructions for the game."
-
-    #     instructions = visual.MovieStim(win=win,filename = self.aud_inst_path + task + '_instructions.mp4', size = [1500,850], flipHoriz = True)
-    #     audio_inst = sound.Sound(self.aud_inst_path + task + '_instructions.wav')
-    #     #display instructions and wait
-
-    #     audio_inst.play()
-    #     if event.getKeys(keyList=['escape']): return 'QUIT'
-    #     while instructions._player.time <= int(instructions.duration):
-    #         instructions.draw()
-    #         win.flip()
-    #     win.flip()
-
-
     def fixation_function(self,win):
         'Fixation cross with pause, play, repeat the whole thing'
         self.trialClock.reset(); t=0
