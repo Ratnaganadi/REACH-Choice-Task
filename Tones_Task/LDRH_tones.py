@@ -85,12 +85,13 @@ class Tones_Game(practice_functions):
     def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None]
-        aud_set=[self.practice_aud1,None,None]
-        stim_set = [12,15,9] #[2,1,0]
-        stim_repeat = [13,16,10] #[5,4,3]
+        inst_set=[self.practice_cue1,None,None,self.practice_cue3]
+        aud_set=[self.practice_aud1,None,None,self.practice_aud3]
+        # repeat_opt = [None,None,None,'repeat_option']
+        stim_set = [12,15,9,None] #[2,1,0]
+        stim_repeat = [13,16,10,None] #[5,4,3]
         var = ''
-        score_cond = [None,None,None]
+        score_cond = [None,None,None,None]
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 

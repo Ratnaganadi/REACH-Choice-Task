@@ -1,0 +1,14 @@
+Variable,Explanation
+total_acc_choice,The total accuracy during choice for all tasks
+(task)_trials_threshold,The total trials during threshold for the task
+(task)_final_level_choice,The difficulty level of the final choice trial for the task
+total_trials_choice,The total trials during choice for all tasks
+total_trials_threshold,The total trials during threshold for all tasks
+subject_id,Subject ID
+total_acc_threshold,The accuracy during threshold for all tasks
+(task)_trials_choice,The total trials during choice for the task
+(task)_acc_threshold,The accuracy during threshold for the task
+(task)_acc_choice,The total accuracy during choice for the task
+(task)_final_level_threshold,The subject's threshold level for the task
+(task)_chosen_trials_choice,The total number chosen during choice for the task
+(task)_chosen_frequency,"Number of times chosen for a task, over total number of choice opportunities for the task"

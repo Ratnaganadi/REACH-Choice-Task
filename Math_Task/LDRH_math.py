@@ -90,7 +90,7 @@ class Math_Game(practice_functions):
 
         inst_set=[self.practice_cue1,None,None,self.practice_cue3]
         aud_set=[self.practice_aud1,None,None,self.practice_aud3]
-        repeat_opt = [None,None,None,'repeat_option']
+        # repeat_opt = [None,None,None,'repeat_option']
         stim_set = [13,11,11,None]
         stim_repeat = stim_set
         var = 'addition'

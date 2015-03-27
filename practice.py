@@ -20,7 +20,7 @@ class practice_functions:
 
     def run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task):
         "Run practice"
-
+                            # (self,win,txt,aud,stim,with_practice,opt,score,var)
         def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,score_cond,var):
             if text_cue:
                 if option=='repeat_option':
@@ -54,11 +54,14 @@ class practice_functions:
                     return 'QUIT'
                 print 'run practice' #run one practice trial
 
-        def run_3_practice(inst_set,aud_set,score_cond,var):
+        def run_3_practice(inst_set,aud_set,stim_set,score_cond,var):
             #run practice iterations
-            for inst, audio, stimuli, cond in zip(inst_set,aud_set,score_cond):
-                for txt,aud,stim,score in zip(inst,audio,stimuli,cond):
-                    if run_sub_practice(self,win,txt,aud,stim,with_practice=True,'no_repeat_option',score,var)=='QUIT': return 'QUIT'
+            for inst, audio, stims, cond in zip(inst_set,aud_set,stim_set,score_cond):
+                option = [None]*(len(score_cond)-1) + ['repeat_option']
+                for txt,aud,stim,score,opt in zip(inst,audio,stims,cond,option):
+                    with_practice = True
+                    if option=='repeat_option': with_practice = False
+                    if run_sub_practice(self,win,txt,aud,stim,with_practice,opt,score,var)=='QUIT': return 'QUIT'
             # return run_sub_practice(self,win,
                 # self.practice_cue3,
             # self.practice_aud3,
@@ -69,21 +72,18 @@ class practice_functions:
             # var)
 
         if task!='spatial':
-            isntructions=[inst_set]
-            audio=[aud_set]
-            score_conditions=[score_cond]
-        elif task=='spatial'
+            isntructions,audio,stimuli,score_conditions = [inst_set],[aud_set],[stim_set],[score_cond]
+        elif task=='spatial':
+            isntructions,audio,stimuli,score_conditions = inst_set,aud_set,stim_set,score_cond
         
         go_to_choice = False
         while not go_to_choice:
-            repeat_check = run_3_practice(instructions,
+            repeat_check = run_3_practice(instructions,audio,stimuli,score_conditions,var)
                 # audio,
             # score_conditions,var)
             if repeat_check=='repeat':
                 if task=='spatial':
-                    instructions = [inst_set[3]]
-                    audio = [aud_set[3]]
-                    score_conditions = [score_cond[3]]
+                    isntructions,audio,stimuli,score_conditions = [inst_set[3]],[aud_set[2]],[stim_set[2]],[score_cond[2]]
                 print 'repeating practice...'
             elif repeat_check=='continue':
                 print 'continue from practice to task...'

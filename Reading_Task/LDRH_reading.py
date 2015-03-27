@@ -99,7 +99,7 @@ class Reading_Game(practice_functions):
 
         inst_set=[self.practice_cue1,None,None,None,None,self.practice_cue3]
         aud_set=[self.practice_aud1,None,None,None,None,self.practice_aud3]
-        repeat_opt = [None,None,None,None,None,'repeat_option']
+        # repeat_opt = [None,None,None,None,None,'repeat_option']
         stim_set = [10,9,8,6,5,None]
         stim_repeat = stim_set
         score_cond = [None,None,None,None,None,None]
