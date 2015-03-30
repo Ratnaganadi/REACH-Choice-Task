@@ -15,16 +15,17 @@ class practice_functions:
         if event.getKeys(keyList=['escape']): return 'QUIT'
         
         while instructions._player.time <= int(instructions.duration):
-            key = evet.getKeys()
+            key = event.getKeys()
             instructions.draw()
             win.flip()
-            if key and key==['escape']: return 'QUIT'
+#            if key: print key
+            if key and 'escape' in key: return 'QUIT'; break
         win.flip()
 
     def run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task):
         "Run practice"
         def run_sub_practice(self,win,text_cue,aud_cue,stim_condition,with_practice,option,score_cond,var):
-            key = evet.getKeys()
+            key = event.getKeys()
             if text_cue:
                 if option=='repeat_option':
                     self.repeat.draw()
@@ -38,12 +39,17 @@ class practice_functions:
                 cont=False
                 self.mouse.getPos()
                 while cont==False:
-                    if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]): 
-                        if aud_cue: aud_cue.stop()
-                        if option and option=='repeat_option':
-                            if self.repeat.contains(self.mouse): return 'repeat'
-                            elif self.cont.contains(self.mouse): return 'continue'
-                        cont=True
+                    if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):           
+                        if option=='repeat_option':
+                            if self.repeat.contains(self.mouse): 
+                                if aud_cue: aud_cue.stop()
+                                return 'repeat'
+                            elif self.cont.contains(self.mouse): 
+                                if aud_cue: aud_cue.stop()
+                                return 'continue'
+                        elif option!='repeat_option': 
+                            if aud_cue: aud_cue.stop()
+                            cont=True
                     if key and key==['escape']:
                         if aud_cue: aud_cue.stop()
                         return 'QUIT'
@@ -64,7 +70,7 @@ class practice_functions:
                     with_practice = True
                     if option=='repeat_option': with_practice = False
                     test = run_sub_practice(self,win,txt,aud,stim,with_practice,opt,score,var)
-                    it test: return test
+                    if test: return test
 
         if task!='spatial':
             instructions,audio,stimuli,score_conditions = [inst_set],[aud_set],[stim_set],[score_cond]

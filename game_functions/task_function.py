@@ -47,9 +47,9 @@ class task_functions:
             if event.getKeys(keyList=['escape']): return 'QUIT'
             choice_time=self.trialClock.getTime()-start_time
 
-        print 'pause',pause
-        print 'thisResp', thisResp
-        print 'choice_time',choice_time
+#        print 'pause',pause
+#        print 'thisResp', thisResp
+#        print 'choice_time',choice_time
 
         if self.trialClock.getTime()-start_time>1.5:
             if thisResp!='repeat_task': thisResp='continue_task'
