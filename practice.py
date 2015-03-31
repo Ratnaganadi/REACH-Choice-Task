@@ -7,19 +7,23 @@ class practice_functions:
         "Display the instructions for the game."
         aud_inst_path = 'Audio/Instructions/'
         
-        instructions = visual.MovieStim(win=win,filename = aud_inst_path + task + '_instructions.mp4', size = [1100, 700], flipHoriz = False) #[1500,850]
+        if task=='choice': sz = [1500,850]
+        else: sz = [1250,700]
+        instructions = visual.MovieStim(win=win,filename = aud_inst_path + task + '_instructions.mp4', size = sz, flipHoriz = False) #[1500,850]
         audio_inst = sound.Sound(aud_inst_path + task + '_instructions.wav')
-
+        
         #display instructions and wait
         audio_inst.play()
-        if event.getKeys(keyList=['escape']): return 'QUIT'
         
         while instructions._player.time <= int(instructions.duration):
             key = event.getKeys()
             instructions.draw()
             win.flip()
-#            if key: print key
-            if key and 'escape' in key: return 'QUIT'; break
+            if key and key==['escape']: 
+                if audio_inst: audio_inst.stop()
+                print 'QUITing {} instructions...'.format(task)
+                return 'QUIT'
+                break
         win.flip()
 
     def run_practice_functions(self, win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task):
@@ -31,10 +35,10 @@ class practice_functions:
                     self.repeat.draw()
                     self.cont.draw()
                 text_cue.draw()
+                if key and key==['escape']: return 'QUIT'
                 if aud_cue: aud_cue.play()
                 win.flip() #display instructions
-                if key and key==['escape']: return 'QUIT'
-
+                
                 #check for a touch
                 cont=False
                 self.mouse.getPos()

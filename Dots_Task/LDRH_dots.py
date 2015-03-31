@@ -125,10 +125,10 @@ class Dots_Game(practice_functions):
         task_status = self.tf.fixation_function(win)
         print '*********task_status',task_status
         
-        if task_status=='repeat_task':
+        if task_status in ['QUIT','repeat_task']:
             return task_status
 
-        elif task_status=='continue_task':
+        if task_status=='continue_task':
             t=0; self.trialClock.reset()
 
             t1 =  self.t_fixline

@@ -168,13 +168,13 @@ else:
     choice_headers = [("choice_task_{choice}".format(choice=i+1), "choice_points_{choice}".format(choice=i+1), "choice_pos_{choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
 
     all_sheets = {
-        'Main': dict(sheet = wb.add_sheet('Main'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'] + choice_headers, row=1),
-        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
-        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
-        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
-        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
-        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
-        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','task','type','trial_number','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
+        'Main': dict(sheet = wb.add_sheet('Main'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','stim1','stim2','resp','resp_pos','target','target_pos','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos','task_version'] + choice_headers, row=1),
+        'Spatial': dict(sheet = wb.add_sheet('Spatial'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','spatial_click1','spatial_click2','resp_pos','target_pos','resp_target_dist','task_version'], row=1),
+        'Phonology': dict(sheet = wb.add_sheet('Phonology'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','task_version'], row=1),
+        'Math': dict(sheet = wb.add_sheet('Math'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','task_version'], row=1),
+        'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
+        'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
+        'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
         'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1)
     }
     
@@ -248,8 +248,6 @@ aud_inst_path = 'Audio/Instructions/'
 retry_instructions = visual.TextStim(win=win, text='Touch anywhere to try again.', height=28)
 #choice_instructions = visual.TextStim(win=win, height=28, wrapWidth=800, text=
 #    "Now we are going to play all of the games together. In this next part you can choose which game you want to play by touching one of the game buttons on the screen. Each time you play, you will earn points that will fill up the colored bar at the top of the screen. Each game button will have colored rings. The more rings there are, the more points you'll earn for playing that game. For example, a game button with four rings will give you a lot of points. But another game that has less rings or no rings will give you less points. You can still play the game button that has no rings. You will win when the colored bar on top is fully colored! \n\n\n\n\nTouch anywhere on the screen to play.")
-instructions = visual.MovieStim(win=win,filename = aud_inst_path + 'choice_instructions.mp4', size = [1500,850], flipHoriz = True)
-audio_inst = sound.Sound(aud_inst_path + 'choice_instructions.wav')
 math_icon = visual.ImageStim(win=win, image = image_choice_path + 'math.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
 dots_icon = visual.ImageStim(win=win, image = image_choice_path + 'panamath.png', units = 'pix', ori = 0, pos = [0,0], size = [120, 120], opacity = 1, mask =None, interpolate = True)
 reading_icon = visual.ImageStim(win=win, image = image_choice_path + 'reading.png', units = 'pix', ori = 0, pos = [0,0], size = [126, 120], opacity = 1, mask =None, interpolate = True)
@@ -622,16 +620,9 @@ def draw_main_screen(tasks):
             all_rings[task["name"]][ring].draw()
 
 #present instructions for choice task
-choice_start = trialClock.getTime()
-mouse.getPos()
-audio_inst.play()
-while instructions._player.time <= int(instructions.duration):
-    instructions.draw()
-    win.flip()
-win.flip()
+import practice
+if practice.practice_functions().run_instructions(win,'choice')=='QUIT': pickle_and_quit()
 
-#choice_instructions.draw()
-#win.flip()
 while True:
     if click(): break
     if event.getKeys(['escape','q']): pickle_and_quit()
@@ -712,14 +703,15 @@ while True:
         if event.getKeys(['escape','q']):
             pickle_and_quit()
 
-    print 'task chosen:', this_task["name"]
+    task_chosen = this_task['name']
+    print 'task chosen:', task_chosen
 
     #show selection screen and wait 0.5 seconds
     #draw_main_screen(tasks)
-    all_icons[this_task["name"]].draw()
+    all_icons[task_chosen].draw()
     progress_frame.draw()
     progress_fill.draw()
-    selection_circle.setPos(all_icons[this_task["name"]].pos)
+    selection_circle.setPos(all_icons[task_chosen].pos)
     selection_circle.draw()
     win.flip()
     start_time = trialClock.getTime()
@@ -727,41 +719,79 @@ while True:
         if event.getKeys(['escape','q']): pickle_and_quit()
         if trialClock.getTime() - start_time > 0.5: break
 
-    if this_task["name"]!='Math':
-        all_thresholds[this_task["name"]] = all_thresholds[this_task["name"]] if this_task["name"] in all_thresholds else low_thresh[this_task["name"]]
+    if task_chosen!='Math':
+        all_thresholds[task_chosen] = all_thresholds[task_chosen] if task_chosen in all_thresholds else low_thresh[task_chosen]
     else:
-        low_thresh_operations.update(all_thresholds[this_task["name"]])
-        all_thresholds[this_task["name"]] = low_thresh_operations
+        low_thresh_operations.update(all_thresholds[task_chosen])
+        all_thresholds[task_chosen] = low_thresh_operations
 
     #run game until get a correct answer
     score = None
     while score!=1:
-        if this_task["name"]=='Math':
+        if task_chosen=='Math':
             print all_thresholds['Math'].keys()
             operation = choice(all_thresholds['Math'].keys())
-            output = all_games[this_task["name"]].run_game(win, grade, all_thresholds[this_task["name"]][operation], operation)
+            output = all_games[task_chosen].run_game(win, grade, all_thresholds[task_chosen][operation], operation)
         else:
-            output = all_games[this_task["name"]].run_game(win, grade, all_thresholds[this_task["name"]], "") #None, all_sheets[this_task["name"]]['sheet'])
+            output = all_games[task_chosen].run_game(win, grade, all_thresholds[task_chosen], "") #None, all_sheets[task_chosen]['sheet'])
 
         score = output.get('score', 0) if output else 0
         thesePoints += score*(this_task["points"])*point_intervals
 
-        #first write trial number to output
-        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'], 0, trial_number)
+        #first write trial number to output, then write the output variables
+        header_for_all = [subject_ID,trial_number,task_chosen,'choice']
+        for col,header in enumerate(header_for_all):
+            all_sheets[task_chosen]['sheet'].write(all_sheets[task_chosen]['row'],col,header)
+
+        # #first write trial number to output
+        # all_sheets[task_chosen]['sheet'].write(all_sheets[task_chosen]['row'], 0, trial_number)
 
         #next write the output variables
-        for col,header in enumerate(all_sheets[this_task["name"]]['headers'][1:-1]):
-            all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],col+1,output[header])
+        for col,header in enumerate(all_sheets[task_chosen]['headers'][4:]):
+            if header=="task_version":
+                all_sheets[task_chosen]['sheet'].write(all_sheets[task_chosen]['row'],col+4, VERSION)
+            else:
+                all_sheets[task_chosen]['sheet'].write(all_sheets[task_chosen]['row'],col+4, output[header])
 
-        all_sheets[this_task["name"]]['sheet'].write(all_sheets[this_task["name"]]['row'],len(all_sheets[this_task["name"]]['headers'])-1,VERSION)
 
         #increment row for output records
-        all_sheets[this_task["name"]]['row'] += 1
+        all_sheets[task_chosen]['row'] += 1
 
         #write output for main sheet
-        main_output = {'trial_number':trial_number,'task': this_task["name"],'level': output['level'],'score':output['score'],'type':'choice','choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[this_task["name"]].pos[0] and tup[1][1]==all_icons[this_task["name"]].pos[1]][0]}
-        choice_output = {("Task Choice {choice}".format(choice=i+1), "Task Points {choice}".format(choice=i+1), "Task Position {choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
+        main_output = {
+            'subject_ID': subject_ID,
+            'task': task_chosen,
+            'type': 'choice',
+            'trial_number': trial_number,
+            'threshold_var': output['threshold_var'],
+            'level': output['level'],
+            'score': output['score'],
+            'resp_time': output['resp_time'],
+            'resp_pos': output['resp_pos'],
+            'target_pos': output['target_pos'],
+            'task_version': VERSION,
+            'choice_icon_pos':[tup[0] for tup in xy if tup[1][0]==all_icons[task_chosen].pos[0] and tup[1][1]==all_icons[task_chosen].pos[1]][0]}
+        
+        main_hdr = ['spatial_click1','spatial_click2','stim1','stim2','resp','target','resp_target_dist','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist','tones_details','tones_contour','tones_notes_different','tones_root','choice_icon_pos']
+        header = {
+            'Spatial': ['spatial_click1','spatial_click2','resp_target_dist'],
+            'Phonology': ['stim1','stim2','resp','target','phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist'],
+            'Math': ['stim','resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos'],
+            'Music': ['stim1','stim2','resp','target','tones_details','tones_contour','tones_notes_different','tones_root'],
+            'Reading': ['resp','target','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos'],
+            'Dots': ['resp','target']
+        }
+
+        for hdr in main_hdr:
+            if hdr in header[task_chosen]: main_output[hdr] = output[hdr]
+            else: main_output[hdr]=''
+
+        choice_output = {("choice_task_{choice}".format(choice=i+1), "choice_points_{choice}".format(choice=i+1), "choice_pos_{choice}".format(choice=i+1))[j%3]: tasks[i][("name", "points")[j%3]] if j%3!=2 else xy[i][0] for j,i in enumerate(sorted(range(0, number_of_choices)*3))}
+        # choice_headers = [("choice_task_{choice}".format(choice=i+1), "choice_points_{choice}".format(choice=i+1), "choice_pos_{choice}".format(choice=i+1))[j%3] for j,i in enumerate(sorted(range(0, number_of_choices)*3))]
+    
         main_output.update(choice_output)
+
+
         for col,header in enumerate(all_sheets['Main']['headers']):
             if header=="task_version":
                 all_sheets['Main']['sheet'].write(trial_number, col, VERSION)
@@ -773,10 +803,10 @@ while True:
 
         #display retry screen if incorrect trial
         if score==0:
-            if this_task["name"]=='Spatial':
+            if task_chosen=='Spatial':
                 track_spatial_errors.append(score)
                 if len(track_spatial_errors)>=2:
-                    all_thresholds[this_task["name"]] = all_thresholds[this_task["name"]]*1.2
+                    all_thresholds[task_chosen] = all_thresholds[task_chosen]*1.2
                     track_spatial_errors = []
             mouse.getPos()
             retry_instructions.draw()
