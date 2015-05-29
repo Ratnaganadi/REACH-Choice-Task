@@ -517,12 +517,13 @@ if not just_choice:
                         streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["score"]]
 
                         #handle streak breaking
-                        if (len(streaks[operation][output['thisIncrement']]) > 9) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) >= 0.8):
+                        current_streak = sum([item_correct or 0 for item_correct in streaks[operation][output['thisIncrement']]])/float(len(streaks[operation][output['thisIncrement']]))
+                        if (len(streaks[operation][output['thisIncrement']]) > 9) and (current_streak >= 0.8):
                             all_thresholds[task][operation] = output['thisIncrement']
                             active_operations.remove(operation)
                         #remove operation from being active, don't record a threshold
                         if output['thisIncrement']==len(all_conditions[task][operation])-1:
-                            if (len(streaks[operation][output['thisIncrement']]) > 3) and (sum(streaks[operation][output['thisIncrement']])/float(len(streaks[operation][output['thisIncrement']])) <= 0.5):
+                            if (len(streaks[operation][output['thisIncrement']]) > 3) and (current_streak <= 0.5):
                                 active_operations.remove(operation)
 
                 #add new operation if applicable
@@ -553,11 +554,12 @@ if not just_choice:
 
                 print 'pos_streak:', streaks[output['thisIncrement']]
                 #handle streak breaking
+                current_streak = sum([item_correct or 0 for item_correct in streaks[output['thisIncrement']]])/float(len(streaks[output['thisIncrement']]))
                 if len(streaks[output['thisIncrement']]) > 9:
-                    if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) >= 0.8:
+                    if current_streak >= 0.8:
                         all_thresholds[task] = output['thisIncrement']
                         break
-                    if sum(streaks[output['thisIncrement']])/float(len(streaks[output['thisIncrement']])) <= 0.5:
+                    if current_streak <= 0.5:
                         break
         staircasing_times[task] = trialClock.getTime() - staircasing_start
         total_times[task] = instructions_times[task]+practice_times[task]+staircasing_times[task]
