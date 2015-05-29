@@ -826,9 +826,9 @@ while True:
     save()
 
 #record choice time
-all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, 'Choice Section')
-all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, trialClock.getTime()-choice_start)
-print 'choice time:', trialClock.getTime()-choice_start
+# all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, 'Choice Section')
+# all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, trialClock.getTime()-choice_start)
+# print 'choice time:', trialClock.getTime()-choice_start
 save(complete=True)
 
 #fireworks yay!!
