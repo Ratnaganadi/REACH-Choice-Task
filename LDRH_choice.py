@@ -312,9 +312,9 @@ elif not touchscreen:
         else: return False
 
 def save(complete=False):
-    wb.save('data/'+ '%s_%s' %(ppt, expInfo['date']+'.xls'))
+    wb.save(str('data/'+ '%s_%s' %(ppt, expInfo['date']+'.xls')))
     if complete:
-        wb.save('data/complete_data/'+ '%s_%s' %(ppt, expInfo['date']+'.xls'))
+        wb.save(str('data/complete_data/'+ '%s_%s' %(ppt, expInfo['date']+'.xls')))
 
 #save data to xls then quit
 def save_and_quit(complete=False):
