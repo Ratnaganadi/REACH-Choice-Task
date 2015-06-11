@@ -12,6 +12,12 @@ def delete_files(file_path,condition):
     current_files = glob.glob('*.xls')
     print 'processing {}...'.format(file_path)
     if condition:
+        #remove every data without subjectID
+        inputfile = glob.glob('*.xls') + glob.glob('')
+        for f in inputfile:
+            if f.split('_')[0]=='': 
+                print 'removing files with no subjectID', f
+                os.remove(f)
         for cond in condition:
             inputfile = glob.glob(cond)
             if inputfile:

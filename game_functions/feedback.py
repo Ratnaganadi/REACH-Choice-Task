@@ -11,12 +11,14 @@ class fb:
         image_path = 'Images/Tasks/'
         audio_path = 'Audio/General/'
 
+        #initialize clock time
         self.trialClock=core.Clock()
         
-        #initialize check and x
+        #initialize check and x images
         self.green_check=visual.ImageStim(win=win, name='green_check', units=u'pix', image=image_path + '/green_check2.png', mask=None, ori=0, pos=[0,0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1, texRes=128, interpolate=True, depth=-4.0)
         self.red_x=visual.ImageStim(win=win, name='red_x', units=u'pix', image=image_path + '/red_x.png', mask=None, ori=0, pos=[0, 0], size=[128, 128], color=[1,1,1], colorSpace=u'rgb', opacity=1, texRes=128, interpolate=True, depth=-4.0)
         
+        #initialize correct and incorrect audio file
         self.ding=sound.Sound(value = audio_path + '/Ping.wav')
         self.ding.setVolume(0.15)
         self.honk=sound.Sound(value=audio_path+'/Basso.wav')
@@ -26,7 +28,7 @@ class fb:
     def present_fb(self, win, score, objects):
         """Display the feeback for the game. Requires the window, the score, 
             and a list of the objects already on the screen to be presented with the feedback."""
-        #determine fb
+        #determine feedback picture and audio based on score
         if score: 
             fb = self.green_check
             sound = self.ding
@@ -44,7 +46,6 @@ class fb:
         fb.draw()
         win.flip()
         sound.play()
-        
         
         #wait 2 seconds
         start_time=self.trialClock.getTime()

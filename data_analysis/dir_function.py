@@ -1,6 +1,7 @@
 import os
 
 def get_homepath(dir_hierarchy,go_home):
+
 	current_dir = os.getcwd()
 	dirname=list(current_dir.split('/'))
 	length = len(current_dir)-len(dirname[len(dirname)-dir_hierarchy])

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from psychopy import visual, core, data, event, logging, gui, sound
 from psychopy.constants import *
 import os, random, math, copy, xlwt, numpy, csv, itertools
@@ -21,7 +20,7 @@ try:
 except ImportError as e:
     VERSION = "no_version"
 
-#enable pickling of data
+#enable pickling of .data
 pickle_enabled = False
 
 #touchscreen? if False, uses conventional mouse
@@ -32,11 +31,11 @@ number_of_choices = 2
 
 #which tasks to run
 task_names=[
-    'Spatial',
-    'Phonology',
-    'Math',
-    'Music',
-    'Reading',
+#    'Spatial',
+#    'Phonology',
+#    'Math',
+#    'Music',
+#    'Reading',
     'Dots',
 ]
 
@@ -239,7 +238,7 @@ if just_choice:
         del all_thresholds[operation]
 
 # Initialize things regardless of pickle
-win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=True) #Window
+win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=False) #Window
 trialClock=core.Clock()
 image_choice_path = 'Images/Choice/'
 audio_path = 'Audio/General/'
@@ -461,16 +460,16 @@ if not just_choice:
         while trialClock.getTime()<start_time+3:
             if event.getKeys(keyList=['q', 'escape']): pickle_and_quit()
 
-        #run instructions for task
-        instructions_start = trialClock.getTime()
-        if all_games[task].run_instructions(win,task.lower())=='QUIT': pickle_and_quit()
-        instructions_times[task] = trialClock.getTime() - instructions_start
-
-        #run practice for task
-        practice_start = trialClock.getTime()
-        if hasattr(all_games[task], 'run_practice'):
-            if all_games[task].run_practice(win,task.lower(),grade)=='QUIT': pickle_and_quit()
-        practice_times[task] = trialClock.getTime() - practice_start
+#        #run instructions for task
+#        instructions_start = trialClock.getTime()
+#        if all_games[task].run_instructions(win,task.lower())=='QUIT': pickle_and_quit()
+#        instructions_times[task] = trialClock.getTime() - instructions_start
+#
+#        #run practice for task
+#        practice_start = trialClock.getTime()
+#        if hasattr(all_games[task], 'run_practice'):
+#            if all_games[task].run_practice(win,task.lower(),grade)=='QUIT': pickle_and_quit()
+#        practice_times[task] = trialClock.getTime() - practice_start
 
         # #run staircase; math needs special circumstances
         staircasing_start = trialClock.getTime()
@@ -486,27 +485,43 @@ if not just_choice:
                     if operation in active_operations:
                         #one trial of staircase is run here
                         output = run_staircase(task, operation=operation)
-
-                        for new_operation, reqs in math_benchmarks.items():
-                            if operation in reqs.keys() and output['score'] and (len(all_conditions[task][operation]) - output['thisIncrement']) >= reqs[operation]['thresh']: reqs[operation]['count']+=1
-                        for new_operation, reqs in math_benchmarks.items():
-                            if False not in [benchmark['count'] >=3 for req_operation, benchmark in reqs.items()]:
-                                active_operations.append(new_operation)
-                                math_benchmarks.pop(new_operation)
+                        if output=='QUIT': pickle_and_quit()
+                        elif output=='repeat_task': print 'asking to repeat, but do nothing instead'
+                        else:
+                            for new_operation, reqs in math_benchmarks.items():
+                                if operation in reqs.keys() and output['score'] and (len(all_conditions[task][operation]) - output['thisIncrement']) >= reqs[operation]['thresh']: reqs[operation]['count']+=1
+                            for new_operation, reqs in math_benchmarks.items():
+                                if False not in [benchmark['count'] >=3 for req_operation, benchmark in reqs.items()]:
+                                    active_operations.append(new_operation)
+                                    math_benchmarks.pop(new_operation)
+                                    print '{} is now active'.format(new_operation)
+                            #separate logic for OR case with multiplication
+                            if operation=='addition' and output['score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6:
+                                add_count_for_mult+=1
+    
+                            if 'multiplication' not in active_operations and 'multiplication' in math_benchmarks.keys() and add_count_for_mult >= 3:
+                                active_operations.append('multiplication')
+                                math_benchmarks.pop('multiplication')
                                 print '{} is now active'.format(new_operation)
-                        #separate logic for OR case with multiplication
-                        if operation=='addition' and output['score'] and (len(all_conditions[task]['multiplication']) - output['thisIncrement']) >= 6:
-                            add_count_for_mult+=1
-
-                        if 'multiplication' not in active_operations and 'multiplication' in math_benchmarks.keys() and add_count_for_mult >= 3:
-                            active_operations.append('multiplication')
-                            math_benchmarks.pop('multiplication')
-                            print '{} is now active'.format(new_operation)
-
-                        #handle StopIterations
-                        if output['score']=='StopIteration':
-                            if sum(streaks.get(operation, {}).get(output['thisIncrement'], []))/float(len(streaks.get(operation, {}).get(output['thisIncrement'], []))) >= 0.8:
+    
+                            #handle StopIterations
+                            if output['score']=='StopIteration':
+                                if sum(streaks.get(operation, {}).get(output['thisIncrement'], []))/float(len(streaks.get(operation, {}).get(output['thisIncrement'], []))) >= 0.8:
+                                    all_thresholds[task][operation] = output['thisIncrement']
+                                else:
+                                    all_thresholds[task][operation] = min(output['thisIncrement'] + 1, len(all_conditions[task][operation])-1)
+                                #record threshold and remove operation
+                                active_operations.remove(operation)
+                                continue
+    
+                            #keep track of streaks
+                            streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["score"]]
+    
+                            #handle streak breaking
+                            current_streak = sum([item_correct or 0 for item_correct in streaks[operation][output['thisIncrement']]])/float(len(streaks[operation][output['thisIncrement']]))
+                            if (len(streaks[operation][output['thisIncrement']]) > 9) and (current_streak >= 0.8):
                                 all_thresholds[task][operation] = output['thisIncrement']
+<<<<<<< Updated upstream
                             else:
                                 all_thresholds[task][operation] = min(output['thisIncrement'] + 1, len(all_conditions[task][operation])-1)
                             #record threshold and remove operation
@@ -524,7 +539,13 @@ if not just_choice:
                         #remove operation from being active, don't record a threshold
                         if output['thisIncrement']==len(all_conditions[task][operation])-1:
                             if (len(streaks[operation][output['thisIncrement']]) > 3) and (current_streak <= 0.5):
+=======
+>>>>>>> Stashed changes
                                 active_operations.remove(operation)
+                            #remove operation from being active, don't record a threshold
+                            if output['thisIncrement']==len(all_conditions[task][operation])-1:
+                                if (len(streaks[operation][output['thisIncrement']]) > 3) and (current_streak <= 0.5):
+                                    active_operations.remove(operation)
 
                 #add new operation if applicable
                 for new_operation, reqs in math_benchmarks.items():
@@ -633,7 +654,7 @@ win.flip()
 preferences = Preference(task_names, number_of_choices)
 
 track_spatial_errors = []
-
+choice_start = trialClock.getTime()
 while True:
     tasks = preferences.next()
     thesePoints=0

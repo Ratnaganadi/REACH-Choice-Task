@@ -29,8 +29,9 @@ class Reading_Game(practice_functions):
         self.trialClock = core.Clock()#to keep track of time
 
         #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Let's do some more.")
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
 
         #initializing audio files for practice and instructions
         self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
@@ -90,13 +91,24 @@ class Reading_Game(practice_functions):
     def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None,None,None,self.practice_cue3]
-        aud_set=[self.practice_aud1,None,None,None,None,self.practice_aud3]
-        stim_set = [10,9,8,6,5,None]
+        #instruction texts
+        inst_set=[self.practice_cue1,None,None,None,None,self.practice_cue2,self.practice_cue3]
+        
+        #instruction audio
+        aud_set=[self.practice_aud1,None,None,None,None]+[None]*2
+        
+        #stimuli set for practice
+        stim_set = [10,9,8,6,5]+[None]*2
+        
+        #stimuli for repeated practice (currently the same as the initial stimuli set)
         stim_repeat = stim_set
-        score_cond = [None,None,None,None,None,None]
+        
+        #variable, needed for some task's trial
+        score_cond = [None]*7
+        
+        #score condition, whether we want to constrain trial to be correct or incorrect
         var = ['prompt_ltr','prompt_sound','prompt_word','prompt_other','prompt_other']
-
+        
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 
 
@@ -132,15 +144,20 @@ class Reading_Game(practice_functions):
             return [audio,audio_length]
             os.remove(fn)
 
-
+        n = None
         trial_index = len(self.trialList)-index
         for question in range(0,len(self.trialList)):
             #'self.difficulty' increases in difficulty as numbers increase, index increases in difficulty as numbers decrease
-            if self.trialList[question]['Difficulty'] == (trial_index):
+            if int(self.trialList[question]['Difficulty']) == trial_index:
                 n = question
-                difficulty = self.trialList[n]['Difficulty']
-                grade_now = self.trialList[n]['Grade']
-                print 'Difficulty is:', difficulty, ', Grade:', grade_now
+
+        if n == None:
+            print 'could not find index for', index, 'in', range(len(self.trialList))
+            n = 0
+
+        difficulty = self.trialList[n]['Difficulty']
+        grade_now = self.trialList[n]['Grade']
+        print 'Difficulty is:', difficulty, ', Grade:', grade_now, 'index', n
 
 
         #target & foil properties (positions & string)
@@ -216,15 +233,32 @@ class Reading_Game(practice_functions):
                 text.draw()
             if top!=None: top.draw()
             if flip=='yes-flip': win.flip()
-            # if time>0: core.wait(time)
             core.wait(time)
-            if event.getKeys(keyList=['escape']): return 'QUIT'
-
+            
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
             for aud in audio:
                 aud[0].play()
                 start_time = self.trialClock.getTime()
+                
                 while self.trialClock.getTime() < start_time + aud[1]:
-                    if event.getKeys(keyList=['escape']): return 'QUIT'
+                    #get key inputs
+                    key = event.getKeys()
+                    if key==['escape'] or key==['period']*3: return 'QUIT'
+                    #check for triple click
+                    if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                    elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                    
+                    if double_click==False and key==['period']:
+                        double_click = 'maybe'
+                        double_time = self.trialClock.getTime()
+                    elif double_click=='maybe' and key==['period']:
+                        double_time2 = self.trialClock.getTime()
+                        if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                        elif double_time2 - double_time<=1:double_click = 'yes'
+                    elif double_click=='yes' and key==['period']:
+                        double_time3 = self.trialClock.getTime()
+                        if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                        elif double_time3-double_time2<=1: return 'QUIT'
 
         #display fixation with repeat, pause & continue button
         task_status = self.tf.fixation_function(win)
@@ -235,18 +269,14 @@ class Reading_Game(practice_functions):
 
         elif task_status=='continue_task':
             t=0; self.trialClock.reset()
-
-            draw_buttons(object_var,None,'yes-flip',self.t_initialbuttons,[])
-            draw_buttons(object_var,self.speaker,'yes-flip',self.t_initialspeaker,[])
-            draw_buttons(object_var,self.speaker_playing,'yes-flip',0,aud_list)
-            draw_buttons(object_var,self.speaker,'yes-flip',0,[])
-
+            
+            for pic,wait,aud in zip([None,self.speaker,self.speaker_playing,self.speaker],[self.t_initialbuttons,self.t_initialspeaker,0,0],[[],[],aud_list,[]]):
+                if draw_buttons(object_var,pic,'yes-flip',wait,aud)=='QUIT': return 'QUIT'
+            
             #start timer for response
             start_time=self.trialClock.getTime()
-            choice_time=0
-            thisResp=None
-            thisResp_pos=None
-            score = None
+            choice_time, score, thisResp, thisResp_pos = 0, None, None, None
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
             self.mouse.getPos()
 
             while thisResp==None and choice_time<=self.timer_limit:
@@ -257,7 +287,26 @@ class Reading_Game(practice_functions):
                             text.setColor('gold')
                     if self.speaker.contains(self.mouse):
                         draw_buttons(object_var,self.speaker_playing,'yes-flip',0,[audio_stim])
-                if event.getKeys(keyList=['escape']): return 'QUIT'
+                
+                #get key inputs
+                key = event.getKeys()
+                if key==['escape'] or key==['period']*3: return 'QUIT'
+                #check for triple click
+                if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                
+                if double_click==False and key==['period']:
+                    double_click = 'maybe'
+                    double_time = self.trialClock.getTime()
+                elif double_click=='maybe' and key==['period']:
+                    double_time2 = self.trialClock.getTime()
+                    if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                    elif double_time2 - double_time<=1:double_click = 'yes'
+                elif double_click=='yes' and key==['period']:
+                    double_time3 = self.trialClock.getTime()
+                    if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                    elif double_time3-double_time2<=1: return 'QUIT'
+                
                 choice_time = self.trialClock.getTime()-start_time
             if t>self.timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 

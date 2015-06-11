@@ -21,40 +21,27 @@ class Phonology_Game(practice_functions):
         aud_practice_path = 'Audio/Practice/'
         aud_inst_path = 'Audio/Instructions/'
         self.phonologystim_dir = 'Audio/Stimuli/Phonology/'
-        #get tempdir
+        #get tempdir for phoneme generated on the go
         self.temp_dir = tempfile.gettempdir()
 
-        #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
+        ## initialize trial components ##
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
-
-        #create stimuli, repeat and continue button
-        self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
-        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=image_path +'/speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
-        #repeat and continue button
-        self.repeat=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'black_button.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.cont=visual.ImageStim(win=win, name='continue_button', image= image_path + 'black_button.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        
-        self.same_button = visual.ImageStim(win, image=image_path + '/happy_button.png', pos=[-260, -200])
-        self.different_button = visual.ImageStim(win, image=image_path + '/sad_button.png', pos=[260, -200])
-        self.mouse=event.Mouse(win=win)
-        self.mouse.getPos()
+        #time components and time constrains for trial
         self.trialClock = core.Clock()
-
-        #time constrains
         self.t_initialspeaker = 1
         self.t_stimgap = 1
         self.timer_limit = 12
 
+        #trial condition
+        self.trialList=conditions
+
+        #mouse
+        self.mouse=event.Mouse(win=win)
+        self.mouse.getPos()
+
         #start feedback
         self.fb=feedback.fb(win)
         self.tf=task_function.task_functions(win)
-
-        self.trialList=conditions
 
         #create a dictionary to keep track of how many times you've displayed each difficulty level
         self.iteration = {}
@@ -65,15 +52,44 @@ class Phonology_Game(practice_functions):
         self.answer_history = []
 
 
+        ## initialize text, audio & image stimuli ##
+
+        #practice instructions texts
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Let's do some more.")
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+
+        #audio files for practice and instructions
+        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+
+        #create stimuli images & buttons
+        self.speaker = visual.ImageStim(win=win, name='speaker',image=image_path +'/speaker.png', mask = None, units=u'pix',ori=0, pos=[0,200], size=[115,115])
+        self.speaker_playing = visual.ImageStim(win=win, name='speaker',units=u'pix',image=image_path +'/speaker_playing_white.png', mask = None,ori=0, pos=[45,200], size=[220,155])
+        self.same_button = visual.ImageStim(win, image=image_path + '/happy_button.png', pos=[-260, -200])
+        self.different_button = visual.ImageStim(win, image=image_path + '/sad_button.png', pos=[260, -200])
+
+
     def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None,self.practice_cue3]
-        aud_set=[self.practice_aud1,None,None,self.practice_aud3]
-        stim_set = [4,3,1,None]
+        #instruction texts
+        inst_set=[self.practice_cue1,None,None,self.practice_cue2, self.practice_cue3]
+        
+        #instruction audio
+        aud_set=[self.practice_aud1,None,None]+[None]*2
+        
+        #stimuli set for practice
+        stim_set = [4,3,1]+[None]*2
+        
+        #stimuli for repeated practice (currently the same as the initial stimuli set)
         stim_repeat = stim_set
+        
+        #variable, needed for some task's trial
         var = ''
-        score_cond = [None,None,None,None]
+        
+        #score condition, whether we want to constrain trial to be correct or incorrect
+        score_cond = [None]*5
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 
@@ -97,23 +113,102 @@ class Phonology_Game(practice_functions):
     def run_trial(self, win, thisIncrement, var):
         "Run one iteration of the game."
 
-        #set the index to the current difficulty level for indexing into the conditions file
-        for question in range(len(self.trialList)):
-            print self.trialList[question].keys()
-            if self.trialList[question]['Difficulty'] == (len(self.trialList)-thisIncrement):
-                index = question
+        ## initialize functions ##
 
         def get_stims(stim):
+            # This function join stimuli strings, join audio file corresponding to those strings, 
+            # return audio, length and raw audio stimuli
+
+            #get phoneme strings and join the string
             phonemes = [stim[x:x+2] for x in [0,2,4]]
             stim_files = [join(self.phonologystim_dir, phoneme.upper()+'.wav') for phoneme in phonemes]
             fn = join(self.temp_dir,'%s.wav'%stim)
+
+            #concat/join audio file of phonemes
             self.concat_wavs(stim_files, fn)
+
+            #turn sound into useable audio format for psychopy, return audio, length and raw stim
             audio = sound.Sound(value=fn)
             audio_length = audio.getDuration()
             return [audio,audio_length,stim]
-            os.remove(fn)
 
-        # Ensure iteration does not exceed length of available trials:
+            #remove audio file from memory
+            os.remove(fn)
+        
+        def draw_play_phonemes(audio,wait_time):
+            # This function draw stimuli screen, play audio file 
+            # and make sure audio plays until the end before the next audio files play
+
+            #draw initial speaker before phoneme plays
+            self.speaker.draw()
+            win.flip()
+            core.wait(wait_time)
+            self.speaker_playing.draw()
+            win.flip()
+            
+            #play phoneme
+            audio.play()
+
+            #make sure the audio plays until the end of audio duration while checking for 'QUIT'
+            start_time = self.trialClock.getTime()
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
+            while self.trialClock.getTime() < start_time + audio.getDuration():
+                #get key inputs
+                key = event.getKeys()
+
+                #check for 'QUIT' from the keyboard
+                if key==['escape'] or key==['period']*3: return 'QUIT'
+
+                #check for 'QUIT' from the clicker (triple click)
+                if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                
+                if double_click==False and (key==['period'] or key==['down']):
+                    thisResp, pause = None, True
+                    double_click = 'maybe'
+                    double_time = self.trialClock.getTime()
+                elif double_click=='maybe' and key==['period']:
+                    double_time2 = self.trialClock.getTime()
+                    if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                    elif double_time2 - double_time<=1: double_click = 'yes'
+                elif double_click=='yes' and key==['period']:
+                    double_time3 = self.trialClock.getTime()
+                    if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                    elif double_time3-double_time2<=1: return 'QUIT'
+
+
+        ## get difficulty index ## 
+        #normally, the difficulty level would be the diff from staircasing -1, because difficulty is ordered in the stimuli file
+        try:
+            diff = len(self.trialList)-thisIncrement
+            index = diff-1
+
+            #double check. if 'difficulty'!=diff, look for matching index for difficulty
+            #for each index (=question) in trialList, check if the 'difficulty' value matches the difficulty from staircasing
+            #assign index as the 'index' we use if match is found
+            if self.trialList[index]['Difficulty']!=diff:
+                for question in range(len(self.trialList)):
+                    if int(self.trialList[question]['Difficulty']) == (len(self.trialList)-thisIncrement):
+                        index = question
+        except: 
+            print 'ERROR: index set to zero. Could not get index for', thisIncrement, 'in', range(len(self.trialList))
+            index = 0
+
+
+        # index = None
+        # #set the index to the current difficulty level for indexing into the conditions file
+        # for question in range(len(self.trialList)):
+        #     print self.trialList[question].keys()
+        #     if self.trialList[question]['Difficulty'] == (len(self.trialList)-thisIncrement):
+        #         index = question
+
+        # if index == None:
+        #     print 'could not find index for', len(self.trialList) - thisIncrement, 'in', [item["Difficulty"] for item in self.trialList]
+        #     index = 0
+
+
+        ## check iteration ##
+        #ensure iteration does not exceed length of available trials:
         if self.iteration[index] > len(self.trialList[index]['Stim1'])-1:
             self.iteration[index] = 0
 
@@ -126,7 +221,9 @@ class Phonology_Game(practice_functions):
                 self.iteration[index] += 1
             count+=1
 
-        #load trial variables
+
+        ## get trial variables ##
+        #using index and iteration info above ##
         difficulty = self.trialList[index]['Difficulty']
         stimA = self.trialList[index]['Stim1'][self.iteration[index]]
         stimB = self.trialList[index]['Stim2'][self.iteration[index]]
@@ -165,33 +262,9 @@ class Phonology_Game(practice_functions):
 
         elif task_status=='continue_task':
             t=0; self.trialClock.reset()
-
-            #draw initial speaker before phoneme plays
-            self.speaker.draw()
-            win.flip()
-            core.wait(self.t_initialspeaker)
-            self.speaker_playing.draw()
-            win.flip()
             
-            #play first phoneme
-            stim1.play()
-            start_time = self.trialClock.getTime()
-            while self.trialClock.getTime() < start_time + stim1.getDuration():
-                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-
-            #after phoneme is played, wait one second and then play second tone
-            self.speaker.draw()
-            win.flip()
-            core.wait(self.t_stimgap)
-            self.speaker_playing.draw()
-            win.flip()
-
-            #play second phoneme
-            stim2.play()
-            start_time = self.trialClock.getTime()
-            while self.trialClock.getTime() < start_time + stim2.getDuration():
-                if event.getKeys(keyList=['q', 'escape']): return 'QUIT'
-
+            for stim,wait in zip([stim1,stim2],[self.t_initialspeaker,self.t_stimgap]):
+                if draw_play_phonemes(stim,wait)=='QUIT': return 'QUIT'
             self.speaker.draw()
             self.target_button.draw()
             self.foil_button.draw()
@@ -199,16 +272,35 @@ class Phonology_Game(practice_functions):
 
             #start timer for response
             start_time=self.trialClock.getTime()
-            choice_time=0
-            thisResp=None
-            thisResp_pos=None
-            score = None
+            choice_time, score, thisResp, thisResp_pos = 0, None, None, None
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
             self.mouse.getPos() #called to prevent last movement of mouse from triggering click
+            
             while thisResp==None and choice_time<=self.timer_limit:
                 if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
                     if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
                     elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                if event.getKeys(keyList=['escape']): return 'QUIT'
+                
+                #get key inputs
+                key = event.getKeys()
+                if key==['escape'] or key==['period']*3: return 'QUIT'
+                #check for triple click
+                if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                
+                if double_click==False and key==['period']:
+                    double_click = 'maybe'
+                    double_time = self.trialClock.getTime()
+                elif double_click=='maybe' and key==['period']:
+                    double_time2 = self.trialClock.getTime()
+                    if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                    elif double_time2 - double_time<=1:double_click = 'yes'
+                elif double_click=='yes' and key==['period']:
+                    double_time3 = self.trialClock.getTime()
+                    if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                    elif double_time3-double_time2<=1: 
+                        return 'QUIT'
+                
                 choice_time=self.trialClock.getTime()-start_time
 
             if t>self.timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    

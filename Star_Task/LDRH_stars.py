@@ -29,11 +29,11 @@ class Star_Game(practice_functions):
         self.practice_instructions1 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 1: administrator demonstrates to child')
         self.practice_instructions2 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 2: administrator walks through trials with child')
         self.practice_instructions3 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text='Practice set 3: child completes trials on his/her own')
-        self.practice_instructions4 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's do some more practice")
+#        self.practice_instructions4 = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's do some more practice")
         self.try_again = visual.TextStim(win, units='pix', pos=[0,0], height=20, text="Let's try that again.")
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
-
-        #initializing audio files for practice and instructions
+        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Let's do some more.")
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+        self.practice_aud1 = sound.Sound(self.aud_practice_path + 'practice_cue1.wav')
         self.practice_aud3 = sound.Sound(self.aud_practice_path + 'practice_cue3.wav')
         
         #time constrains
@@ -70,26 +70,46 @@ class Star_Game(practice_functions):
         #create possible star positions in degrees
         self.degree_possibilities = []
         for x in [45,135,225,315]: self.degree_possibilities.extend(range(x-(44-self.cardinal_exclusion_range), x+(45-self.cardinal_exclusion_range)))
-
-    # def run_instructions(self, win, task):
-    #     self.tf.run_instruction_functions(win,task)
-
+        
+        
     def run_practice(self, win, task, grade):
         "Run practice"
-
-        inst_set = [[self.practice_instructions1,None,None],
+        
+        #instruction texts
+        inst_set = [
+            [self.practice_instructions1,None,None],
             [self.practice_instructions2,None],
-            [self.practice_instructions3,None,self.practice_cue3],
-            [self.practice_instructions4,None,self.practice_cue3]]
-        aud_set = [[None,None,None],[None,None],[None,None,self.practice_aud3]]#,[None,None,self.practice_aud3]]]
-        stim_set = [[150,100,115],[250,200],[200,150,None]]
-        var = 'star_task'
-        stim_repeat = [200,150,None]
-        score_cond = [[None,None,None],[None,None],[None,None,None]]
+            [self.practice_instructions3,None,self.practice_cue2, self.practice_cue3],
+            [self.practice_cue3,None,self.practice_cue2, self.practice_cue3]
+            ]
+        
+        #instruction audio
+        aud_set = [
+            [self.practice_aud1]+[None]*2,
+            [None]*2,
+            [None]*4,
+            [self.practice_aud1] +[None]*3
+            ]
+            
+        
+        #stimuli set for practice
+        stim_set = [
+            [150,100,115],
+            [250,200],
+            [200,150,None,None]]
+        
+        #stimuli for repeated practice (currently the same as the initial stimuli set)
+        var = [None,None,'repeat_option']
+        
+        #variable, needed for some task's trial
+        stim_repeat = [200,150]+[None]*2
+        
+        #score condition, whether we want to constrain trial to be correct or incorrect
+        score_cond = aud_set
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
-
-
+        
+        
     def run_game(self, win, grade, thisIncrement, var):
         "Run one iteration of the game with self.trialList as conditions."
         return self.run_trial(win, thisIncrement, var)
@@ -109,12 +129,12 @@ class Star_Game(practice_functions):
         self.circletwinkle.setPos([x,y]); self.circletwinkle.setRadius([sz/2]); self.circletwinkle.setLineColor('#f50af2')
         self.circledrag.setPos([0,0]); self.circledrag.setRadius([sz/2]); self.circledrag.setLineColor('white')
         self.drag.setPos([0,0]); self.drag.setSize([sz, sz]); self.drag.setImage(self.image_path + '/star2.png')
-
+        
         print 'degree:', degree
         print 'radians:', radians
         print 'x, y:', x, y
-
-
+        
+        
         #initializing variables
         score=None
         self.mouse.setVisible(0)
@@ -139,21 +159,40 @@ class Star_Game(practice_functions):
             t=0; self.trialClock.reset()
             
             # present twinkling star and then put up mask
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
             while t<=t2:
                 t=self.trialClock.getTime()
+                key = event.getKeys()
                 if t<=t1:
                     self.bintang.draw()
                     self.twinkle.setOpacity((math.sin((2*math.pi)*6*(t-2)))*0.5 + 0.5)
                     self.twinkle.draw()
                 if t>t1 and t<=t2: self.mask.draw()
-                theseKeys = event.getKeys()
-                if len(theseKeys)>0:
-                    if theseKeys[-1] in ['q','escape']: return 'QUIT'
+                
+                #get key inputs
+                if key==['escape'] or key==['period']*3: return 'QUIT'
+                #check for triple click
+                if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                
+                if double_click==False and (key==['period'] or key==['down']):
+                    thisResp, pause = None, True
+                    double_click = 'maybe'
+                    double_time = self.trialClock.getTime()
+                elif double_click=='maybe' and key==['period']:
+                    double_time2 = self.trialClock.getTime()
+                    if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                    elif double_time2 - double_time<=1: double_click = 'yes'
+                elif double_click=='yes' and key==['period']:
+                    double_time3 = self.trialClock.getTime()
+                    if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                    elif double_time3-double_time2<=1: return 'QUIT'
                 win.flip()
 
             #allow participant to move star and make response, then check if correct
             self.mouse.getPos()
             start_time = self.trialClock.getTime()
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
             while score==None:
                 if t>t2 and t<=tf:
                     t=self.trialClock.getTime()
@@ -171,8 +210,27 @@ class Star_Game(practice_functions):
                         y_resp = self.drag.pos[1]
                         distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
                         score = int(distance<=sz)
-                    if event.getKeys(keyList=['q', 'escape']):
-                        return 'QUIT'
+                    
+                    #get key inputs
+                    key = event.getKeys()
+                    if key==['escape'] or key==['period']*3: return 'QUIT'
+                    #check for triple click
+                    if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                    elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                    
+                    if double_click==False and (key==['period'] or key==['down']):
+                        thisResp, pause = None, True
+                        double_click = 'maybe'
+                        double_time = self.trialClock.getTime()
+                    elif double_click=='maybe' and key==['period']:
+                        double_time2 = self.trialClock.getTime()
+                        if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                        elif double_time2 - double_time<=1: double_click = 'yes'
+                    elif double_click=='yes' and key==['period']:
+                        double_time3 = self.trialClock.getTime()
+                        if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                        elif double_time3-double_time2<=1: return 'QUIT'
+                    
                     win.flip()
                     self.circledrag.setPos(self.drag.pos)
                     self.circletwinkle.setPos(self.twinkle2.pos)

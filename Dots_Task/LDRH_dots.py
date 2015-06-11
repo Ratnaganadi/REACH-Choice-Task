@@ -24,42 +24,21 @@ class Dots_Game(practice_functions):
         aud_inst_path = 'Audio/Instructions/'
         self.dotstim_path = 'Images/Stimuli/Dots/'
 
-        #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        ## initialize trial components ##
 
-        #Initialise components for routine: trial
+        #time components and time constrains for trial
         self.trialClock=core.Clock()
-
-        #time constrains
         self.timer_limit = 3
         self.t_fixcross = 1.5
         self.t_fixline = 1.5
 
-        #repeat and continue button
-        self.repeat=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'black_button.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.cont=visual.ImageStim(win=win, name='continue_button', image= image_path + 'black_button.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        #trial condition
+        self.trialList=conditions
 
-        #INITIALIZING FIXATION POINT, MASK & BLANK#
-        self.fix_point=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
-        self.right_mask = visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[230,0],size=[400,600])
-        self.blank=visual.TextStim(win, ori=0, text=None)
-        self.target = visual.ImageStim(win,image=None,pos=[0,0],size=[400,600])
-        self.foil = visual.ImageStim(win,image=None,pos=[0,0],size=[400,600])
-        self.target_box = visual.ImageStim(win,image= image_path +'box.png',pos=[0,0],size=[420,620])
-        self.foil_box = visual.ImageStim(win,image= image_path +'box.png',pos=[0,0],size=[420,620])
-
-        self.message1 = visual.TextStim(win, units=u'pix', pos=[0,+100],height=28, wrapWidth=700, text='In this game you will see two boxes with dots inside, one on each side of the screen. Touch the box that has more dots.')
-        self.message2 = visual.TextStim(win, units=u'pix', pos=[0,-150],height=28, wrapWidth=700, text="Touch anywhere on the screen when you're ready to start.")
-
+        #mouse
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
-
-        self.trialList=conditions
 
         #start feedback
         self.fb=feedback.fb(win)
@@ -71,15 +50,48 @@ class Dots_Game(practice_functions):
             self.iteration[question] = 0
 
 
+        ## initialize text, audio & image stimuli ##
+
+        #practice instruction texts
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Let's do some more.")
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+
+        #audio files for practice and instructions
+        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        
+        #fixation point, mask and blank
+        self.fix_point=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
+        self.right_mask = visual.ImageStim(win, units=u'pix', image= image_path +'mask.jpg', pos=[230,0],size=[400,600])
+        self.blank=visual.TextStim(win, ori=0, text=None)
+        self.target = visual.ImageStim(win,image=None,pos=[0,0],size=[400,600])
+        self.foil = visual.ImageStim(win,image=None,pos=[0,0],size=[400,600])
+        self.target_box = visual.ImageStim(win,image= image_path +'box.png',pos=[0,0],size=[420,620])
+        self.foil_box = visual.ImageStim(win,image= image_path +'box.png',pos=[0,0],size=[420,620])
+
+
+
     def run_practice(self, win, task, grade):
         "Run practice"
+        
+        #instruction texts
+        inst_set=[self.practice_cue1,None,None,self.practice_cue2, self.practice_cue3]
 
-        inst_set=[self.practice_cue1,None,None,self.practice_cue3]
-        aud_set=[self.practice_aud1,None,None,self.practice_aud3]
-        stim_set = [39,30,35,None]
+        #instruction audio
+        aud_set=[self.practice_aud1,None,None]+[None]*2#None,None]
+        
+        #stimuli set for practice
+        stim_set = [39,30,35]+[None]*2#,None,None]
+
+        #stimuli for repeated practice (currently the same as the initial stimuli set)
         stim_repeat = stim_set
+
+        #variable, needed for some task's trial
         var = ''
-        score_cond = [None,None,None,None]
+
+        #score condition, whether we want to constrain trial to be correct or incorrect
+        score_cond = [None]*5#,None,None,None,None]
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 
@@ -89,18 +101,30 @@ class Dots_Game(practice_functions):
 
     def run_trial(self, win, thisIncrement, var):
 
-        #set the index to the current difficulty level for indexing into the conditions file
-        for question in range(len(self.trialList)):
-            #'self.difficulty' increases in difficulty as numbers increase, thisIncrement increases in difficulty as numbers decrease
-            if self.trialList[question]['Difficulty'] == (len(self.trialList)-thisIncrement):
-                index = question
-                difficulty = self.trialList[index]['Difficulty']
+        #get index for difficulty level
+        #normally, the difficulty level would be the diff from staircasing -1, because difficulty is ordered in the stimuli file
+        try:
+            diff = len(self.trialList)-thisIncrement
+            index = diff-1
+
+            #double check. if 'difficulty'!=diff, look for matching index for difficulty
+            #for each index (=question) in trialList, check if the 'difficulty' value matches the difficulty from staircasing
+            #assign index as the 'index' we use if match is found
+            if self.trialList[index]['Difficulty']!=diff:
+                for question in range(len(self.trialList)):
+                    if int(self.trialList[question]['Difficulty']) == (len(self.trialList)-thisIncrement):
+                        index = question
+        except: 
+            print 'ERROR: index set to zero. Could not get index for', thisIncrement, 'in', range(len(self.trialList))
+            index = 0
+
+        #get difficulty level
+        difficulty = self.trialList[index]['Difficulty']
         print 'Difficulty is:', difficulty
 
-        # Ensure iteration does not exceed length of available trials:
+        #Ensure iteration does not exceed length of available trials:
         if self.iteration[index] > len(self.trialList[index]['Correct'])-1:
             self.iteration[index] = 0
-
 
         #initializing variables
         target_content = self.trialList[index]['Correct'][self.iteration[index]]
@@ -145,7 +169,8 @@ class Dots_Game(practice_functions):
             thisResp = None
             thisResp_pos = None
             self.mouse.getPos()
-
+            
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
             while score==None:
                 t = self.trialClock.getTime()
                 if t>t1 and t<=tf:
@@ -163,11 +188,31 @@ class Dots_Game(practice_functions):
                             elif self.foil_box.contains(self.mouse): 
                                 score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
                                 self.foil_box.color = "gold"
-                        if event.getKeys(keyList=['escape']): return 'QUIT'
+                        
+                        #get key inputs
+                        key = event.getKeys()
+                        if key==['escape'] or key==['period']*3: return 'QUIT'
+                        #check for triple click
+                        if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                        elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                        
+                        if double_click==False and key==['period']:
+                            double_click = 'maybe'
+                            double_time = self.trialClock.getTime()
+                        elif double_click=='maybe' and key==['period']:
+                            double_time2 = self.trialClock.getTime()
+                            if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                            elif double_time2 - double_time<=1:double_click = 'yes'
+                        elif double_click=='yes' and key==['period']:
+                            double_time3 = self.trialClock.getTime()
+                            if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                            elif double_time3-double_time2<=1: 
+                                return 'QUIT'
                         choice_time = self.trialClock.getTime()-start_time
-
                     
                 if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+                
+                
 
             #give feedback
             self.fb.present_fb(win,score,[self.target_box,self.foil_box,self.fix_point,self.target,self.foil])

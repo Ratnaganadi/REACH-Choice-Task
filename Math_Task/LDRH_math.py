@@ -26,49 +26,23 @@ class Math_Game(practice_functions):
         aud_inst_path = 'Audio/Instructions/'
         self.math_dotstims_path = 'Images/Stimuli/Math_dotstims/'
 
-        #create practice instructions
-        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="  Let's do some practice.\n\nTouch anywhere to begin.")
-        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Are you ready to begin?")
 
-        #initializing audio files for practice and instructions
-        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
-        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+        ## initialize trial components ##
 
-        #repeat and continue button
-        self.repeat=visual.ImageStim(win=win, name='repeat_button', image= image_path + 'black_button.png', units=u'pix', pos=[350, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
-        self.cont=visual.ImageStim(win=win, name='continue_button', image= image_path + 'black_button.png', units=u'pix', pos=[420, -300], size=[75,75], color=[1,1,1], colorSpace=u'rgb', opacity=1.0)
+        #time components and time constrains for trial
+        self.trialClock = core.Clock()
+        self.timer_limit = 12
 
-        #create stimuli
-        self.text_stimulus = visual.TextStim(win, pos=[0,200],height=80, text='Stimulus.')
-        self.dot_stimulus = visual.ImageStim(win,image=None,pos=[0,180],size=[260,260])
-        self.fixation = visual.ImageStim(win, color='black', image=None, mask='circle',size=5)
-        
-        #for texts
-        self.target = visual.TextStim(win, pos=[0,0],height=70, text='Target.')
-        self.foil1 = visual.TextStim(win, pos=[0,0],height=70, text='Foil1')
-        self.foil2 = visual.TextStim(win, pos=[0,0],height=70, text='Foil2')
-        self.foil3 = visual.TextStim(win, pos=[0,0],height=70, text='Foil3')
-        
-        #for 2 & 4 buttons
-        self.target_2button = visual.ImageStim(win,image= image_path + '/general_button.png')
-        self.foil_2button = visual.ImageStim(win, image= image_path + '/general_button.png')
-        self.target_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
-        self.foil1_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
-        self.foil2_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')
-        self.foil3_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')
+        #trial condition
+        self.trialList=conditions
 
+        #mouse
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
-
-        #time constrains
-        self.timer_limit = 12
 
         #start feedback
         self.fb=feedback.fb(win)
         self.tf=task_function.task_functions(win)
-
-        self.trialList=conditions
-        self.trialClock = core.Clock()
 
         #create a dictionary to keep track of how many times you've displayed each difficulty level
         self.iteration = {}
@@ -78,15 +52,57 @@ class Math_Game(practice_functions):
                 self.iteration[operation][question] = 0
 
 
+        ## initialize text, audio & image stimuli ##
+
+        #practice instructions texts
+        self.practice_cue1 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+        self.practice_cue2 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Let's do some more.")
+        self.practice_cue3 = visual.TextStim(win, units=u'pix', wrapWidth=700, pos=[0,0],height=28,text="Touch anywhere to begin.")
+
+        #audio files for practice and instructions
+        self.practice_aud1 = sound.Sound(aud_practice_path + 'practice_cue1.wav')
+        self.practice_aud3 = sound.Sound(aud_practice_path + 'practice_cue3.wav')
+
+        #create stimuli
+        self.text_stimulus = visual.TextStim(win, pos=[0,200],height=80, text='Stimulus.')
+        self.dot_stimulus = visual.ImageStim(win,image=None,pos=[0,180],size=[260,260])
+        self.fixation = visual.ImageStim(win, color='black', image=None, mask='circle',size=5)
+        
+        #for stimuli texts
+        self.target = visual.TextStim(win, pos=[0,0],height=70, text='Target.')
+        self.foil1 = visual.TextStim(win, pos=[0,0],height=70, text='Foil1')
+        self.foil2 = visual.TextStim(win, pos=[0,0],height=70, text='Foil2')
+        self.foil3 = visual.TextStim(win, pos=[0,0],height=70, text='Foil3')
+        
+        #for 2 & 4 stimuli buttons
+        self.target_2button = visual.ImageStim(win,image= image_path + '/general_button.png')
+        self.foil_2button = visual.ImageStim(win, image= image_path + '/general_button.png')
+        self.target_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
+        self.foil1_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')#, size=[300,120])
+        self.foil2_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')
+        self.foil3_4button = visual.ImageStim(win, image= image_path + '/general_button_4.png')
+
+
     def run_practice(self, win, task, grade):
         "Run practice"
 
-        inst_set=[self.practice_cue1,None,None,self.practice_cue3]
-        aud_set=[self.practice_aud1,None,None,self.practice_aud3]
-        stim_set = [13,11,11,None]
+        #instruction texts
+        inst_set=[self.practice_cue1,None,None,self.practice_cue2,self.practice_cue3]
+        
+        #instruction audio
+        aud_set=[self.practice_aud1,None,None]+[None]*2
+        
+        #stimuli set for practice
+        stim_set = [13,11,11]+[None]*2
+        
+        #stimuli for repeated practice (currently the same as the initial stimuli set)
         stim_repeat = stim_set
+        
+        #variable, needed for some task's trial
         var = 'addition'
-        score_cond = [None,None,None,None]
+        
+        #score condition, whether we want to constrain trial to be correct or incorrect
+        score_cond = [None]*5
         
         return self.run_practice_functions(win, grade, inst_set, aud_set, stim_set, stim_repeat, score_cond, var, task)
 
@@ -99,12 +115,19 @@ class Math_Game(practice_functions):
         these_conditions = self.trialList[operation]
         this_iteration = self.iteration[operation]
 
+        index = None
+
         #set the index to the current difficulty level for indexing into the conditions file
         for question in range(len(these_conditions)):
             #'self.difficulty' increases in difficulty as numbers increase, thisIncrement increases in difficulty as numbers decrease
-            if these_conditions[question]['Difficulty'] == (len(these_conditions)-thisIncrement):
+            if int(these_conditions[question]['Difficulty']) == (len(these_conditions)-thisIncrement):
                 index = question
-                difficulty = these_conditions[index]['Difficulty']
+
+        if index == None:
+            print 'could not find index for', thisIncrement, 'in', range(len(these_conditions))
+            index = 0
+
+        difficulty = these_conditions[index]['Difficulty']
         print 'Difficulty is:', difficulty
 
         # Ensure iteration does not exceed length of available trials:
@@ -171,18 +194,15 @@ class Math_Game(practice_functions):
         elif task_status=='continue_task':
             t=0; self.trialClock.reset()
 
-            score=None
             start_time = self.trialClock.getTime()
-            choice_time=0
-            thisResp = None
-            thisResp_pos = None
+            choice_time, score, thisResp, thisResp_pos = 0, None, None, None
+            double_click, double_time, double_time2, double_time3 = False, None, None, None
             self.mouse.getPos()
-
+            
             while score==None:
                 t = self.trialClock.getTime()
                 if t<=self.timer_limit:
                     self.stimulus.draw()
-                    # self.fixation.draw()
 
                     for text,button in zip([self.target]+foil_text,[target_button]+foil_button):
                         button.draw()
@@ -195,7 +215,26 @@ class Math_Game(practice_functions):
                                 if button.contains(self.mouse):
                                     score,thisResp,thisResp_pos = (pts,string,pos[xpos])
                                     text.setColor('gold')
-                        if event.getKeys(keyList=['escape']): return 'QUIT'
+                        
+                        #get key inputs
+                        key = event.getKeys()
+                        if key==['escape'] or key==['period']*3: return 'QUIT'
+                        #check for triple click
+                        if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
+                        elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                        
+                        if double_click==False and key==['period']:
+                            double_click = 'maybe'
+                            double_time = self.trialClock.getTime()
+                        elif double_click=='maybe' and key==['period']:
+                            double_time2 = self.trialClock.getTime()
+                            if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
+                            elif double_time2 - double_time<=1:double_click = 'yes'
+                        elif double_click=='yes' and key==['period']:
+                            double_time3 = self.trialClock.getTime()
+                            if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
+                            elif double_time3-double_time2<=1: return 'QUIT'
+                                
                         choice_time = self.trialClock.getTime()-start_time
                 if t>self.timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
 
