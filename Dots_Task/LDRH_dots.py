@@ -101,7 +101,7 @@ class Dots_Game(practice_functions):
 
     def run_trial(self, win, thisIncrement, var):
 
-        #get index for difficulty level
+        ## get difficulty index ##
         #normally, the difficulty level would be the diff from staircasing -1, because difficulty is ordered in the stimuli file
         try:
             diff = len(self.trialList)-thisIncrement
@@ -118,20 +118,29 @@ class Dots_Game(practice_functions):
             print 'ERROR: index set to zero. Could not get index for', thisIncrement, 'in', range(len(self.trialList))
             index = 0
 
-        #get difficulty level
-        difficulty = self.trialList[index]['Difficulty']
-        print 'Difficulty is:', difficulty
-
-        #Ensure iteration does not exceed length of available trials:
+        ## check iteration ##
+        #ensure iteration does not exceed length of available trials:
         if self.iteration[index] > len(self.trialList[index]['Correct'])-1:
             self.iteration[index] = 0
 
-        #initializing variables
+
+        ## get trial variables ## 
+        #using index & iteration info above
+
+        #difficulty level
+        difficulty = self.trialList[index]['Difficulty']
+
+        #target & foil content, file path
         target_content = self.trialList[index]['Correct'][self.iteration[index]]
         foil_content = self.trialList[index]['Incorrect'][self.iteration[index]]
         target_path = self.dotstim_path + target_content
         foil_path = self.dotstim_path + foil_content
+        print 'thisIncrement: {} | Difficulty: {} |'.format(thisIncrement, difficulty),
+        # print 'thisIncrement: {} | Difficulty: {} | target: {}, foil: {} |'.format(thisIncrement, difficulty, target_content, foil_content),
 
+        ## prepare stimuli, target & foil ##
+
+        #target & foil position
         box_pos = ['left','right']
         shuffle(box_pos)
         target_pos = box_pos[0]
@@ -139,85 +148,92 @@ class Dots_Game(practice_functions):
         xpos = {'left': -230, 'right': 230}
         self.mouse.setVisible(0)
         
+        #set appropriate dots image, position and color 
         for box,img,dots,pos in zip([self.target_box,self.foil_box],[self.target,self.foil],[target_path,foil_path],box_pos):
             img.setImage(dots)
             img.setPos([xpos[pos],0])
             box.setPos([xpos[pos],0])
             box.color = "white"
 
-        #display fixation with repeat, pause & continue button
+
+        ## trial ##
+
+        ## fixation ##
+        # displayed at the beginning of each trial.
+        # here, experimenter has the option to pause the task temporarily, or repeat the whole subtask in special cases
+
+        #check task_status from fixation function
         task_status = self.tf.fixation_function(win)
-        print '*********task_status',task_status
-        
-        if task_status in ['QUIT','repeat_task']:
-            return task_status
 
-        if task_status=='continue_task':
-            t=0; self.trialClock.reset()
+        #if 'QUIT' or 'repeat' returned, return task status to main choice code
+        if task_status in ['QUIT','repeat_task']: return task_status
 
-            t1 =  self.t_fixline
-            tf =  self.t_fixline + self.timer_limit
-            score = None
 
-            self.target_box.draw()
-            self.foil_box.draw()
-            win.flip()
-            core.wait(t1)
-
-            start_time = self.trialClock.getTime()
-            choice_time=0
-            thisResp = None
-            thisResp_pos = None
-            self.mouse.getPos()
+        ## if 'continue', proceed to trial ## 
+        elif task_status=='continue_task':
             
+            ## initialize variable ##
+
+            #for output and triple click check
+            choice_time, score, thisResp, thisResp_pos = 0, None, None, None
             double_click, double_time, double_time2, double_time3 = False, None, None, None
-            while score==None:
-                t = self.trialClock.getTime()
-                if t>t1 and t<=tf:
-                    self.target_box.draw()
-                    self.foil_box.draw()
-                    self.target.draw()
-                    self.foil.draw()
-                    win.flip()
 
-                    while thisResp==None and choice_time<=self.timer_limit:
-                        if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
-                            if self.target_box.contains(self.mouse): 
-                                score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                                self.target_box.color = "gold"
-                            elif self.foil_box.contains(self.mouse): 
-                                score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                                self.foil_box.color = "gold"
-                        
-                        #get key inputs
-                        key = event.getKeys()
-                        if key==['escape'] or key==['period']*3: return 'QUIT'
-                        #check for triple click
-                        if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
-                        elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
-                        
-                        if double_click==False and key==['period']:
-                            double_click = 'maybe'
-                            double_time = self.trialClock.getTime()
-                        elif double_click=='maybe' and key==['period']:
-                            double_time2 = self.trialClock.getTime()
-                            if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
-                            elif double_time2 - double_time<=1:double_click = 'yes'
-                        elif double_click=='yes' and key==['period']:
-                            double_time3 = self.trialClock.getTime()
-                            if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
-                            elif double_time3-double_time2<=1: 
-                                return 'QUIT'
-                        choice_time = self.trialClock.getTime()-start_time
+            #reset trialClock
+            self.trialClock.reset()
+            
+            while thisResp==None:
+
+                ## QUIT check ##
+                if self.tf.quit_check(win)=='QUIT': return 'QUIT'
+
+                ## display stimuli, target, foil and trial components ##
+                #display boxes for target & foil
+                self.target_box.draw()
+                self.foil_box.draw()
+                win.flip()
+
+                #wait for 1.5s / t1
+                core.wait(self.t_fixline)
+
+                #display boxes with target and foil dots pictures
+                self.target_box.draw()
+                self.foil_box.draw()
+                self.target.draw()
+                self.foil.draw()
+                win.flip()
+                
+
+                ## check response ##
+
+                #start timer for response
+                start_time=self.trialClock.getTime()
+                self.mouse.getPos()
+
+                #check for response when time is within time limit
+                while choice_time<=self.timer_limit:
+                    if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
+                        if self.target_box.contains(self.mouse): 
+                            score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                            self.target_box.color = "gold"
+                        elif self.foil_box.contains(self.mouse): 
+                            score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                            self.foil_box.color = "gold"
                     
-                if t>tf: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+                    #calculate reaction time
+                    choice_time = self.trialClock.getTime()-start_time
                 
-                
+                ## time out ##
+                #if participant does not respond by time limit  
+                if self.trialClock.getTime()-start_time>self.timer_limit:
+                    score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+                    print 'TIME OUT |',
 
-            #give feedback
+
+            ## feedback ##
             self.fb.present_fb(win,score,[self.target_box,self.foil_box,self.fix_point,self.target,self.foil])
 
-            #write data
+
+            ## data output dictionary ##
             output = {
                 'threshold_var': self.trialList[index]['Ratio'][self.iteration[index]],
                 'level': difficulty,
@@ -229,9 +245,11 @@ class Dots_Game(practice_functions):
                 'target_pos': target_pos,
                 }
             
-            #update iteration of current difficulty
-            if self.iteration[index] == len(self.trialList[index]['Incorrect'])-1: self.iteration[index] = 0
-            else: self.iteration[index] += 1
 
-            print output
+            ## update iteration of current difficulty ##
+            if self.iteration[index] == len(self.trialList[index]['Incorrect'])-1:
+                self.iteration[index] = 0
+            else:
+                self.iteration[index] += 1
+
             return output

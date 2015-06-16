@@ -20,6 +20,11 @@ try:
 except ImportError as e:
     VERSION = "no_version"
 
+#options of running instructions & practice or not, default to True
+run_inst = False
+run_pract = False
+full_screen = False
+
 #enable pickling of .data
 pickle_enabled = False
 
@@ -31,9 +36,9 @@ number_of_choices = 2
 
 #which tasks to run
 task_names=[
-#    'Spatial',
-#    'Phonology',
-#    'Math',
+    'Spatial',
+    'Phonology',
+    'Math',
 #    'Music',
 #    'Reading',
     'Dots',
@@ -146,6 +151,7 @@ math_operations = ['addition','subtraction','multiplication','division']
 
 #load pickled data if applicable
 if pdata:
+    print 'load pickle data'
     for k in pdata.keys():
         exec('{} = pdata[k]'.format(k))
     wb_read = open_workbook(old_filename)
@@ -156,7 +162,7 @@ if pdata:
         all_sheets[sheet] = dict(sheet = wb.get_sheet(i), headers=[ws_read.cell_value(0,col) for col in range(ws_read.ncols)], row=ws_read.nrows)
 
 else:
-    print 'loading things outside of pickle'
+    # print 'loading things outside of pickle'
     points = 0
     thesePoints=0
     first_pass=True
@@ -238,7 +244,7 @@ if just_choice:
         del all_thresholds[operation]
 
 # Initialize things regardless of pickle
-win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=False) #Window
+win = visual.Window(size=(1100, 700), allowGUI=True, monitor=u'testMonitor', color=[-1,-1,-1], colorSpace=u'rgb', units=u'pix', fullscr=full_screen) #Window
 trialClock=core.Clock()
 image_choice_path = 'Images/Choice/'
 audio_path = 'Audio/General/'
@@ -317,6 +323,7 @@ def save(complete=False):
 
 #save data to xls then quit
 def save_and_quit(complete=False):
+    print 'QUITing task...'
     save(complete=complete)
     core.quit()
 
@@ -359,7 +366,7 @@ def run_staircase(task, operation=None):
 
     try:
         thisIncrement = handler.next()
-        print 'thisIncrement:', thisIncrement
+        # print '\nthisIncrement:', thisIncrement
         #run game-- output is a dictionary of values
         if operation: output = all_games[task].run_game(win, grade, thisIncrement, operation)
         else: output = all_games[task].run_game(win, grade, thisIncrement, "")
@@ -453,25 +460,32 @@ total_times = {}
 if not just_choice:
     #run through instructions, practice, and staircase for each task
     for task in [task for task in task_names if task not in all_thresholds.keys()]: #only loops through tasks with no threshold yet
+        print '\n\n*** {} TASK ***'.format(task.upper())
+
         #display icon for the task
         all_icons[task].draw()
         win.flip()
         start_time=trialClock.getTime()
         while trialClock.getTime()<start_time+3:
             if event.getKeys(keyList=['q', 'escape']): pickle_and_quit()
-
-#        #run instructions for task
-#        instructions_start = trialClock.getTime()
-#        if all_games[task].run_instructions(win,task.lower())=='QUIT': pickle_and_quit()
-#        instructions_times[task] = trialClock.getTime() - instructions_start
-#
-#        #run practice for task
-#        practice_start = trialClock.getTime()
-#        if hasattr(all_games[task], 'run_practice'):
-#            if all_games[task].run_practice(win,task.lower(),grade)=='QUIT': pickle_and_quit()
-#        practice_times[task] = trialClock.getTime() - practice_start
+        
+        if run_inst:
+            #run instructions for task
+            print '\n* INSTRUCTION *'
+            instructions_start = trialClock.getTime()
+            if all_games[task].run_instructions(win,task.lower())=='QUIT': pickle_and_quit()
+            instructions_times[task] = trialClock.getTime() - instructions_start
+        
+        if run_pract:
+            #run practice for task
+            print '\n* PRACTICE *'
+            practice_start = trialClock.getTime()
+            if hasattr(all_games[task], 'run_practice'):
+               if all_games[task].run_practice(win,task.lower(),grade)=='QUIT': pickle_and_quit()
+            practice_times[task] = trialClock.getTime() - practice_start
 
         # #run staircase; math needs special circumstances
+        print '\n* TRIAL / THRESHOLD *'
         staircasing_start = trialClock.getTime()
         if task=='Math':
             if 'Math' not in all_thresholds.keys():
@@ -521,26 +535,6 @@ if not just_choice:
                             current_streak = sum([item_correct or 0 for item_correct in streaks[operation][output['thisIncrement']]])/float(len(streaks[operation][output['thisIncrement']]))
                             if (len(streaks[operation][output['thisIncrement']]) > 9) and (current_streak >= 0.8):
                                 all_thresholds[task][operation] = output['thisIncrement']
-<<<<<<< Updated upstream
-                            else:
-                                all_thresholds[task][operation] = min(output['thisIncrement'] + 1, len(all_conditions[task][operation])-1)
-                            #record threshold and remove operation
-                            active_operations.remove(operation)
-                            continue
-
-                        #keep track of streaks
-                        streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["score"]]
-
-                        #handle streak breaking
-                        current_streak = sum([item_correct or 0 for item_correct in streaks[operation][output['thisIncrement']]])/float(len(streaks[operation][output['thisIncrement']]))
-                        if (len(streaks[operation][output['thisIncrement']]) > 9) and (current_streak >= 0.8):
-                            all_thresholds[task][operation] = output['thisIncrement']
-                            active_operations.remove(operation)
-                        #remove operation from being active, don't record a threshold
-                        if output['thisIncrement']==len(all_conditions[task][operation])-1:
-                            if (len(streaks[operation][output['thisIncrement']]) > 3) and (current_streak <= 0.5):
-=======
->>>>>>> Stashed changes
                                 active_operations.remove(operation)
                             #remove operation from being active, don't record a threshold
                             if output['thisIncrement']==len(all_conditions[task][operation])-1:
@@ -847,9 +841,9 @@ while True:
     save()
 
 #record choice time
-# all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, 'Choice Section')
-# all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, trialClock.getTime()-choice_start)
-# print 'choice time:', trialClock.getTime()-choice_start
+all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],0, 'Choice Section')
+all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, trialClock.getTime()-choice_start)
+print 'choice time:', trialClock.getTime()-choice_start
 save(complete=True)
 
 #fireworks yay!!

@@ -4,7 +4,6 @@ from os.path import join
 from math import floor
 from random import randint, choice, shuffle
 from game_functions import task_function, feedback
-# from game_functions import task_function, practice, feedback
 from practice import practice_functions
 
 #touchscreen or not
@@ -23,6 +22,7 @@ class Phonology_Game(practice_functions):
         self.phonologystim_dir = 'Audio/Stimuli/Phonology/'
         #get tempdir for phoneme generated on the go
         self.temp_dir = tempfile.gettempdir()
+
 
         ## initialize trial components ##
 
@@ -151,34 +151,13 @@ class Phonology_Game(practice_functions):
 
             #make sure the audio plays until the end of audio duration while checking for 'QUIT'
             start_time = self.trialClock.getTime()
-            double_click, double_time, double_time2, double_time3 = False, None, None, None
+            # double_click, double_time, double_time2, double_time3 = False, None, None, None
             while self.trialClock.getTime() < start_time + audio.getDuration():
-                #get key inputs
-                key = event.getKeys()
-
-                #check for 'QUIT' from the keyboard
-                if key==['escape'] or key==['period']*3: return 'QUIT'
-
-                #check for 'QUIT' from the clicker (triple click)
-                if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
-                elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
+                if self.tf.quit_check(win)=='QUIT': return 'QUIT'
                 
-                if double_click==False and (key==['period'] or key==['down']):
-                    thisResp, pause = None, True
-                    double_click = 'maybe'
-                    double_time = self.trialClock.getTime()
-                elif double_click=='maybe' and key==['period']:
-                    double_time2 = self.trialClock.getTime()
-                    if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
-                    elif double_time2 - double_time<=1: double_click = 'yes'
-                elif double_click=='yes' and key==['period']:
-                    double_time3 = self.trialClock.getTime()
-                    if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
-                    elif double_time3-double_time2<=1: return 'QUIT'
-
 
         ## get difficulty index ## 
-        #normally, the difficulty level would be the diff from staircasing -1, because difficulty is ordered in the stimuli file
+        # normally, the difficulty level would be the diff from staircasing -1, because difficulty is ordered in the stimuli file
         try:
             diff = len(self.trialList)-thisIncrement
             index = diff-1
@@ -193,18 +172,6 @@ class Phonology_Game(practice_functions):
         except: 
             print 'ERROR: index set to zero. Could not get index for', thisIncrement, 'in', range(len(self.trialList))
             index = 0
-
-
-        # index = None
-        # #set the index to the current difficulty level for indexing into the conditions file
-        # for question in range(len(self.trialList)):
-        #     print self.trialList[question].keys()
-        #     if self.trialList[question]['Difficulty'] == (len(self.trialList)-thisIncrement):
-        #         index = question
-
-        # if index == None:
-        #     print 'could not find index for', len(self.trialList) - thisIncrement, 'in', [item["Difficulty"] for item in self.trialList]
-        #     index = 0
 
 
         ## check iteration ##
@@ -223,30 +190,44 @@ class Phonology_Game(practice_functions):
 
 
         ## get trial variables ##
-        #using index and iteration info above ##
+        #using index and iteration info above
+
+        #difficulty level
         difficulty = self.trialList[index]['Difficulty']
+
+        #stimuli content
         stimA = self.trialList[index]['Stim1'][self.iteration[index]]
         stimB = self.trialList[index]['Stim2'][self.iteration[index]]
+        
+        #content and foil
         target_content = self.trialList[index]['Correct Response'][self.iteration[index]]
         contents = ['same','different']
         contents.remove(target_content)
         foil_content = contents[0]
-        print stimA, stimB, target_content
+        print 'thisIncrement: {} | Difficulty: {} |'.format(thisIncrement, difficulty),
+        # print 'thisIncrement: {} | Difficulty: {} | {} {} {} | '.format(thisIncrement, difficulty, stimA, stimB, target_content),
 
         #update answer_history
         self.answer_history.append(target_content)
 
-        audioA = get_stims(stimA) #getstim() returns [audio,audio_length]
+
+        ## prepare stimuli, target & foil ##
+
+        #getstim() returns [audio,audio_length,raw audio]
+        audioA = get_stims(stimA) 
         audioB = get_stims(stimB)
 
+        #shuffle audio stimuli order
         audio_order = [audioA,audioB]
         shuffle(audio_order)
 
+        #prepare stimuli variable from get_stims() for trial
         stim1 = audio_order[0][0]
         stim2 = audio_order[1][0]
         raw_stim1 = audio_order[0][2]
         raw_stim2 = audio_order[1][2]
         
+        #target & foil position
         pos = {'same':['left',self.same_button], 'different':['right',self.different_button]}
         target_pos = pos[target_content][0]
         foil_pos = pos[foil_content][0]
@@ -254,61 +235,71 @@ class Phonology_Game(practice_functions):
         self.foil_button = pos[foil_content][1]
 
         
+        ## trial ##
+
+        ## fixation ##
+        # displayed at the beginning of each trial.
+        # here, experimenter has the option to pause the task temporarily, or repeat the whole subtask in special cases
+
+        #check task_status from fixation function
         task_status = self.tf.fixation_function(win)
-        print '*********task_status',task_status
-        
-        if task_status in ['QUIT','repeat_task']:
-            return task_status
 
+        #if 'QUIT' or 'repeat' returned, return task status to main choice code
+        if task_status in ['QUIT','repeat_task']: return task_status
+
+        ## if 'continue', proceed to trial ## 
         elif task_status=='continue_task':
-            t=0; self.trialClock.reset()
             
-            for stim,wait in zip([stim1,stim2],[self.t_initialspeaker,self.t_stimgap]):
-                if draw_play_phonemes(stim,wait)=='QUIT': return 'QUIT'
-            self.speaker.draw()
-            self.target_button.draw()
-            self.foil_button.draw()
-            win.flip()
-
-            #start timer for response
-            start_time=self.trialClock.getTime()
+            ## initialize variable ##
+                
+            #for output and triple click check
             choice_time, score, thisResp, thisResp_pos = 0, None, None, None
-            double_click, double_time, double_time2, double_time3 = False, None, None, None
-            self.mouse.getPos() #called to prevent last movement of mouse from triggering click
             
-            while thisResp==None and choice_time<=self.timer_limit:
-                if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
-                    if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
-                    elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
-                
-                #get key inputs
-                key = event.getKeys()
-                if key==['escape'] or key==['period']*3: return 'QUIT'
-                #check for triple click
-                if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: double_click, double_time = False, None
-                elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: double_click, double_time, double_time2 = False, None, None
-                
-                if double_click==False and key==['period']:
-                    double_click = 'maybe'
-                    double_time = self.trialClock.getTime()
-                elif double_click=='maybe' and key==['period']:
-                    double_time2 = self.trialClock.getTime()
-                    if double_time2 - double_time >1: double_click, double_time, double_time2 = False, None, None
-                    elif double_time2 - double_time<=1:double_click = 'yes'
-                elif double_click=='yes' and key==['period']:
-                    double_time3 = self.trialClock.getTime()
-                    if double_time3-double_time2>1: double_click, double_time, double_time2, double_time3 = False, None, None, None
-                    elif double_time3-double_time2<=1: 
-                        return 'QUIT'
-                
-                choice_time=self.trialClock.getTime()-start_time
+            #reset trialClock
+            self.trialClock.reset()
 
-            if t>self.timer_limit: score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')    
+            while thisResp==None:
 
-            #give feedback
+                ## QUIT check ##
+                if self.tf.quit_check(win)=='QUIT': return 'QUIT'
+                
+                ## display stimuli, target, foil and trial components##
+                #display appropriate images in appropriate order for the task
+                for stim,wait in zip([stim1,stim2],[self.t_initialspeaker,self.t_stimgap]):
+                    if draw_play_phonemes(stim,wait)=='QUIT': return 'QUIT'
+                self.speaker.draw()
+                self.target_button.draw()
+                self.foil_button.draw()
+                win.flip()
+
+
+                ## check response ##
+
+                #start timer for response
+                start_time=self.trialClock.getTime()
+                self.mouse.getPos() #called to prevent last movement of mouse from triggering click
+
+                #check for response when time is within time limit
+                while choice_time<=self.timer_limit:
+                    if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
+                        if self.target_button.contains(self.mouse): score,thisResp,thisResp_pos = (1,target_content,target_pos)
+                        elif self.foil_button.contains(self.mouse): score,thisResp,thisResp_pos = (0,foil_content,foil_pos)
+                    #calculate reaction time
+                    choice_time=self.trialClock.getTime()-start_time
+
+                
+                ## time out ##
+                #if participant does not respond by time limit
+                if self.trialClock.getTime()-start_time>self.timer_limit:
+                    score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
+                    print 'TIME OUT |',
+            
+
+            ## feedback ##
             self.fb.present_fb(win,score,[self.speaker,self.target_button,self.foil_button])
 
-            #write data
+            
+            ## data output dictionary ##
             thresh = ['D3_PA-GA_KA-BA','D2_both_BA-TA_GA-TA_PA-DA_KA-DA','D1_POA__PA-TA_KA-TA_BA-DA_GA-DA','D2_POA_TA-DA_PA-KA_BA-GA_TA-DA','D1_VOT_PA-BA_KA-GA']
             threshold_var = thresh[difficulty-1]
 
@@ -324,13 +315,14 @@ class Phonology_Game(practice_functions):
                 'target': target_content,
                 'target_pos': target_pos,
             }
-            
+            #output aditional information taken from stimuli file
             output_header = ['phoneme_difference','POA_steps','VOT_steps','VOT_or_POA','phoneme_dif_pos','phoneme_dist']
             stim_header = ['Phoneme Difference','POA_steps','VOT_steps','VOT_or_POA','Difference Position','Distance']
             for out_col,stim_col in zip(output_header,stim_header):
                 output.update({out_col:self.trialList[index][stim_col][self.iteration[index]]})
             
-            #update iteration of current difficulty
+
+            ## update iteration of current difficulty ##
             if self.iteration[index] == len(self.trialList[index]['Stim1'])-1:
                 self.iteration[index] = 0
             else:

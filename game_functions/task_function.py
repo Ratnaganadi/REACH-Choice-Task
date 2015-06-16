@@ -9,6 +9,36 @@ class task_functions:
         self.fixation=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
+        self.double_click = False
+        self.double_time = None
+        self.double_time2 = None
+        self.double_time3 = None
+
+    def quit_check(self,win):
+        ## QUIT check ##
+        #get key inputs
+        key = event.getKeys()
+
+        #check for 'QUIT' from the keyboard
+        if key==['escape'] or key==['period']*3: return 'QUIT'
+
+        #check for 'QUIT' from the clicker (triple click)
+        if self.double_time and not self.double_time2 and self.trialClock.getTime()-self.double_time>=1: self.double_click, self.double_time = False, None
+        elif self.double_time2 and not self.double_time3 and self.trialClock.getTime()-self.double_time2>=1: self.double_click, self.double_time, self.double_time2 = False, None, None
+        
+        if self.double_click==False and key==['period']:
+            self.double_click = 'maybe'
+            self.double_time = self.trialClock.getTime()
+        elif self.double_click=='maybe' and key==['period']:
+            self.double_time2 = self.trialClock.getTime()
+            if self.double_time2 - self.double_time >1: self.double_click, self.double_time, self.double_time2 = False, None, None
+            elif self.double_time2 - self.double_time<=1:self.double_click = 'yes'
+        elif self.double_click=='yes' and key==['period']:
+            self.double_time3 = self.trialClock.getTime()
+            if self.double_time3-self.double_time2>1: self.double_click, self.double_time, self.double_time2, self.double_time3 = False, None, None, None
+            elif self.double_time3-self.double_time2<=1: 
+                return 'QUIT'
+
 
     def fixation_function(self,win):
         'Fixation cross with pause, play, repeat the whole thing'
@@ -16,7 +46,7 @@ class task_functions:
         #initialize variables#
         thisResp=None #denotes if we continue, repeat, or pause the task
         pause=False #pause variable
-        double_click, double_time, double_time2, double_time3 = False, None, None, None #double click variable
+        # self.double_click, self.double_time, self.double_time2, self.double_time3 = False, None, None, None #double click variable
 
         #initialize clock time
         self.trialClock.reset(); t=0
@@ -44,34 +74,27 @@ class task_functions:
             if key==['escape'] or key==['period']*3: return 'QUIT'
             
             #check for triple click
-            if double_time and not double_time2 and self.trialClock.getTime()-double_time>=1: 
-                double_click, double_time = False, None
-#                print 'no click2, double_time reset to False '
-            elif double_time2 and not double_time3 and self.trialClock.getTime()-double_time2>=1: 
-                double_click, double_time, double_time2 = False, None, None
-#                print 'no_click3, double_time reset to False'
+            if self.double_time and not self.double_time2 and self.trialClock.getTime()-self.double_time>=1: 
+                self.double_click, self.double_time = False, None
+            elif self.double_time2 and not self.double_time3 and self.trialClock.getTime()-self.double_time2>=1: 
+                self.double_click, self.double_time, self.double_time2 = False, None, None
             
             #pausing if pressed once, quit if pressed three times
-            if double_click==False and (key==['period'] or key==['down']):
+            if self.double_click==False and (key==['period'] or key==['down']):
                 thisResp, pause = None, True
-                double_click = 'maybe'
-                double_time = self.trialClock.getTime()
-#                print 'double_time',double_time,'pausing task...'
-            elif double_click=='maybe' and key==['period']:
-                double_time2 = self.trialClock.getTime()
-                if double_time2 - double_time >1: 
-                    double_click, double_time, double_time2 = False, None, None
-#                    print 'gap12 too long',double_time2-double_time
-                elif double_time2 - double_time<=1:
-#                    print 'gap12', double_time2-double_time
-                    double_click = 'yes'
-            elif double_click=='yes' and key==['period']:
-                double_time3 = self.trialClock.getTime()
-                if double_time3-double_time2>1: 
-                    double_click, double_time, double_time2, double_time3 = False, None, None, None
-#                    print 'gap23 too long',double_time3-double_time2
-                elif double_time3-double_time2<=1:
-#                    print 'gap23',double_time3-double_time2
+                self.double_click = 'maybe'
+                self.double_time = self.trialClock.getTime()
+            elif self.double_click=='maybe' and key==['period']:
+                self.double_time2 = self.trialClock.getTime()
+                if self.double_time2 - self.double_time >1: 
+                    self.double_click, self.double_time, self.double_time2 = False, None, None
+                elif self.double_time2 - self.double_time<=1:
+                    self.double_click = 'yes'
+            elif self.double_click=='yes' and key==['period']:
+                self.double_time3 = self.trialClock.getTime()
+                if self.double_time3-self.double_time2>1: 
+                    self.double_click, self.double_time, self.double_time2, self.double_time3 = False, None, None, None
+                elif self.double_time3-self.double_time2<=1:
                     return 'QUIT'
             choice_time=self.trialClock.getTime()-start_time
         
