@@ -14,56 +14,64 @@ from Phonology_Task import LDRH_phonology as Phonology_Script
 from Star_Task import LDRH_stars as Star_Script
 from game_functions import task_function, feedback
 
+
+## task to run ##
+task_names=[
+    'Spatial',
+    'Phonology',
+    'Math',
+    'Music',
+    'Reading',
+    'Dots',
+]
+
+## settings ##
+#option to run_instructions, run_practice, have full_screen and touch_screen
+run_inst = False
+run_pract = False
+full_screen = False
+touchscreen = True
+
+#enable pickling of .data
+pickle_enabled = False
+
+#How many alternatives in the choice phase
+number_of_choices = 2
+
+
+#task version
 try:
     import taskversion
     VERSION = taskversion.__doc__
 except ImportError as e:
     VERSION = "no_version"
 
-#options of running instructions & practice or not, default to True
-run_inst = False
-run_pract = False
-full_screen = False
 
-#enable pickling of .data
-pickle_enabled = False
-
-#touchscreen? if False, uses conventional mouse
-touchscreen = True
-
-#How many alternatives in the choice phase
-number_of_choices = 2
-
-#which tasks to run
-task_names=[
-    'Spatial',
-    'Phonology',
-    'Math',
-#    'Music',
-#    'Reading',
-    'Dots',
-]
-
-#store info about the experiment session
-expName='REaCh Task'
+## expreiment info ##
+#create gui to get experiment information
+expName = 'REaCh Task'
 expInfo={'participant':'','grade':'', 'choice': False}
-dlg=gui.DlgFromDict(dictionary=expInfo,title=expName)
-if dlg.OK==False:
-    core.quit() #user pressed cancel
-expInfo['date']=data.getDateStr()
-expInfo['expName']=expName
+dlg = gui.DlgFromDict(dictionary=expInfo,title=expName)
+if dlg.OK==False: core.quit() #user pressed cancel
+expInfo['date'] = data.getDateStr()
+expInfo['expName'] = expName
+
+
+#get info from expInfo
 just_choice = expInfo['choice']
-# Setup files for saving
-if not os.path.isdir('data'):
-    os.makedirs('data')  # if this fails (e.g. permissions) we will get error
 subject_ID = (str(expInfo['participant'])).split('_')[0]
 grade = str(expInfo['grade'])
 filename = 'data' + os.path.sep + '%s_%s' %(expInfo['participant'], expInfo['date'])
 ppt = expInfo['participant']
+
+#setup files and logfiles for saving
+if not os.path.isdir('data'):
+    os.makedirs('data')  # if this fails (e.g. permissions) we will get error
 logFile = logging.LogFile(filename+'.log', level=logging.EXP)
 logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a file
 
-# Check for pickle
+
+## Check for pickle ##
 if os.path.isfile('data.p') and pickle_enabled:
     f = open('data.p', 'r')
     pdata = pickle.load(f)
@@ -107,6 +115,10 @@ if os.path.isfile('data.p') and pickle_enabled:
     else: pdata=None
 else: pdata=None
 
+
+
+## IMPORT CONDITIONS ##
+
 def can_evaluate(value):
     try:
         eval(value)
@@ -137,7 +149,6 @@ all_conditions = {
     'Spatial': None,
     'Music': importConditions('Tones_Task/tones_stims_new.csv')}
 
-#[Music, Phonology, Dots, Reading, Spatial]
 low_thresh = {
     'Music':len(all_conditions['Music'])-1,
     'Phonology':len(all_conditions['Phonology'])-1,
@@ -224,7 +235,6 @@ else:
     all_thresholds = {}
 
     #create list to randomize order of presentation
-    # shuffle(task_names)
     staircased = []
 
 if just_choice:
@@ -449,13 +459,16 @@ def run_staircase(task, operation=None):
     return output
 
 
+## QUESTIONNAIRE ##
+Questions = task_function.questionnaire(win)
+if Questions.run_questionnaire(win)=='QUIT': pickle_and_quit()
+
+
+
 #STAIRCASING SECTION
 
-# set up timers
-instructions_times = {}
-practice_times = {}
-staircasing_times = {}
-total_times = {}
+#set up timers
+instructions_times, practice_times, staircasing_times, total_times = {}, {}, {}, {}
 
 if not just_choice:
     #run through instructions, practice, and staircase for each task
@@ -846,7 +859,15 @@ all_sheets['Task_Times']['sheet'].write(all_sheets['Task_Times']['row'],4, trial
 print 'choice time:', trialClock.getTime()-choice_start
 save(complete=True)
 
-#fireworks yay!!
+
+
+## QUESTIONNAIRE ##
+Questions = task_function.questionnaire(win)
+if Questions.run_questionnaire()=='QUIT': pickle_and_quit()
+
+
+
+## fireworks yay!! ##
 start_time = trialClock.getTime()
 applause.play()
 if fireworks:
