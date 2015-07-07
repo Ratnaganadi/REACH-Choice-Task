@@ -1,17 +1,29 @@
 import pandas
 import glob
 import numpy as np
+import datetime
 from dir_function import get_homepath
 
 dir_hierarchy = 1
 homepath = get_homepath(dir_hierarchy,go_home='')
 path = "data/complete_data/"
 
+def correct_reading_level(date, level):
+    if datetime.datetime(2014,10,15) <= date < datetime.datetime(2014,11,22):
+        return level + 2
+    elif datetime.datetime(2014,11,22) <= date < datetime.datetime(2014,12,6):
+        return level + 1
+    else:
+        return level
+
+
 main_data = []
 for filename in glob.glob(path + "*.xls"):
     if ("conflicted copy" not in filename) and ("test" not in filename):
         in_data = pandas.read_excel(filename, "Main")
         math_data = pandas.read_excel(filename, "Math")
+
+        date = datetime.datetime.strptime(" ".join(filename.split("_")[1:-1]), "%Y %b %d")
         out_data = {}
 
         out_data["subject_id"] = filename.split("/")[-1].split("_")[0]
@@ -138,11 +150,11 @@ for filename in glob.glob(path + "*.xls"):
                     out_data["music_final_level_threshold"] = in_data[(in_data.Type=="threshold")&(in_data.Game=="Music")].Difficulty.iloc[-1]
             try:
                 if len(in_data[(in_data.type=="threshold")&(in_data.task=="Reading")].threshold_var):
-                    out_data["read_final_level_threshold"] = in_data[(in_data.type=="threshold")&(in_data.task=="Reading")].level.iloc[-1]
+                    out_data["read_final_level_threshold"] = correct_reading_level(date, in_data[(in_data.type=="threshold")&(in_data.task=="Reading")].level.iloc[-1])
                     out_data["read_final_level_exp_threshold"] = in_data[(in_data.type=="threshold")&(in_data.task=="Reading")].threshold_var.iloc[-1]
             except AttributeError:
                 if len(in_data[(in_data.Type=="threshold")&(in_data.Game=="Reading")].Difficulty):
-                    out_data["read_final_level_threshold"] = in_data[(in_data.Type=="threshold")&(in_data.Game=="Reading")].Difficulty.iloc[-1]
+                    out_data["read_final_level_threshold"] = correct_reading_level(date, in_data[(in_data.Type=="threshold")&(in_data.Game=="Reading")].Difficulty.iloc[-1])
             try:
                 if len(in_data[(in_data.type=="threshold")&(in_data.task=="Dots")].threshold_var):
                     out_data["dots_final_level_threshold"] = in_data[(in_data.type=="threshold")&(in_data.task=="Dots")].level.iloc[-1]
@@ -324,11 +336,11 @@ for filename in glob.glob(path + "*.xls"):
                     out_data["music_final_level_choice"] = in_data[(in_data.Type=="choice")&(in_data.Game=="Music")].Difficulty.iloc[-1]
             try:
                 if len(in_data[(in_data.type=="choice")&(in_data.task=="Reading")].threshold_var):
-                    out_data["read_final_level_choice"] = in_data[(in_data.type=="choice")&(in_data.task=="Reading")].level.iloc[-1]
+                    out_data["read_final_level_choice"] = correct_reading_level(date, in_data[(in_data.type=="choice")&(in_data.task=="Reading")].level.iloc[-1])
                     out_data["read_final_level_exp_choice"] = in_data[(in_data.type=="choice")&(in_data.task=="Reading")].threshold_var.iloc[-1]
             except AttributeError:
                 if len(in_data[(in_data.Type=="choice")&(in_data.Game=="Reading")].Difficulty):
-                    out_data["read_final_level_choice"] = in_data[(in_data.Type=="choice")&(in_data.Game=="Reading")].Difficulty.iloc[-1]
+                    out_data["read_final_level_choice"] = correct_reading_level(date, in_data[(in_data.Type=="choice")&(in_data.Game=="Reading")].Difficulty.iloc[-1])
             try:
                 if len(in_data[(in_data.type=="choice")&(in_data.task=="Dots")].threshold_var):
                     out_data["dots_final_level_choice"] = in_data[(in_data.type=="choice")&(in_data.task=="Dots")].level.iloc[-1]
