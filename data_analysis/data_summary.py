@@ -2,6 +2,7 @@ import pandas
 import glob
 import numpy as np
 import datetime
+import os
 from dir_function import get_homepath
 
 dir_hierarchy = 1
@@ -23,7 +24,7 @@ for filename in glob.glob(path + "*.xls"):
         in_data = pandas.read_excel(filename, "Main")
         math_data = pandas.read_excel(filename, "Math")
 
-        date = datetime.datetime.strptime(" ".join(filename.split("_")[1:-1]), "%Y %b %d")
+        date = datetime.datetime.strptime(" ".join(filename.split("_")[-4:-1]), "%Y %b %d")
         out_data = {}
 
         out_data["subject_id"] = filename.split("/")[-1].split("_")[0]
@@ -133,14 +134,14 @@ for filename in glob.glob(path + "*.xls"):
                 if len(in_data[(in_data.Type=="threshold")&(in_data.Game=="Math")].Difficulty):
                     math_thresh_trial_number = in_data[(in_data.Type=="threshold")&(in_data.Game=="Math")]["Trial Number"].iloc[-1]
                     threshold_math_data = math_data[math_data["Trial Number"]<=math_thresh_trial_number]
-                    if len(threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="addition")].Operation):
-                        out_data["math_final_level_threshold_addition"] = threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="addition")].Difficulty.iloc[-1]
-                    if len(threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="subtraction")].Operation):
-                        out_data["math_final_level_threshold_subtraction"] = threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="subtraction")].Difficulty.iloc[-1]
-                    if len(threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="multiplication")].Operation):
-                        out_data["math_final_level_threshold_multiplication"] = threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="multiplication")].Difficulty.iloc[-1]
-                    if len(threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="division")].Operation):
-                        out_data["math_final_level_threshold_division"] = threshold_math_data[(threshold_math_data.Game=="Math")&(threshold_math_data.Operation=="division")].Difficulty.iloc[-1]
+                    if len(threshold_math_data[(threshold_math_data.Operation=="addition")].Operation):
+                        out_data["math_final_level_threshold_addition"] = threshold_math_data[(threshold_math_data.Operation=="addition")].Difficulty.iloc[-1]
+                    if len(threshold_math_data[(threshold_math_data.Operation=="subtraction")].Operation):
+                        out_data["math_final_level_threshold_subtraction"] = threshold_math_data[(threshold_math_data.Operation=="subtraction")].Difficulty.iloc[-1]
+                    if len(threshold_math_data[(threshold_math_data.Operation=="multiplication")].Operation):
+                        out_data["math_final_level_threshold_multiplication"] = threshold_math_data[(threshold_math_data.Operation=="multiplication")].Difficulty.iloc[-1]
+                    if len(threshold_math_data[(threshold_math_data.Operation=="division")].Operation):
+                        out_data["math_final_level_threshold_division"] = threshold_math_data[(threshold_math_data.Operation=="division")].Difficulty.iloc[-1]
             try:
                 if len(in_data[(in_data.type=="threshold")&(in_data.task=="Music")].threshold_var):
                     out_data["music_final_level_threshold"] = in_data[(in_data.type=="threshold")&(in_data.task=="Music")].level.iloc[-1]
@@ -319,14 +320,14 @@ for filename in glob.glob(path + "*.xls"):
                 if len(in_data[(in_data.Type=="choice")&(in_data.Game=="Math")].Difficulty):
                     math_choice_trial_number = in_data[(in_data.Type=="choice")&(in_data.Game=="Math")]["Trial Number"].iloc[0]
                     choice_math_data = math_data[math_data["Trial Number"]>=math_thresh_trial_number]
-                    if len(choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="addition")].Operation):
-                        out_data["math_final_level_choice_addition"] = choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="addition")].Difficulty.iloc[-1]
-                    if len(choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="subtraction")].Operation):
-                        out_data["math_final_level_choice_subtraction"] = choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="subtraction")].Difficulty.iloc[-1]
-                    if len(choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="multiplication")].Operation):
-                        out_data["math_final_level_choice_multiplication"] = choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="multiplication")].Difficulty.iloc[-1]
-                    if len(choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="division")].Operation):
-                        out_data["math_final_level_choice_division"] = choice_math_data[(choice_math_data.Game=="Math")&(choice_math_data.Operation=="division")].Difficulty.iloc[-1]
+                    if len(choice_math_data[(choice_math_data.Operation=="addition")].Operation):
+                        out_data["math_final_level_choice_addition"] = choice_math_data[(choice_math_data.Operation=="addition")].Difficulty.iloc[-1]
+                    if len(choice_math_data[(choice_math_data.Operation=="subtraction")].Operation):
+                        out_data["math_final_level_choice_subtraction"] = choice_math_data[(choice_math_data.Operation=="subtraction")].Difficulty.iloc[-1]
+                    if len(choice_math_data[(choice_math_data.Operation=="multiplication")].Operation):
+                        out_data["math_final_level_choice_multiplication"] = choice_math_data[(choice_math_data.Operation=="multiplication")].Difficulty.iloc[-1]
+                    if len(choice_math_data[(choice_math_data.Operation=="division")].Operation):
+                        out_data["math_final_level_choice_division"] = choice_math_data[(choice_math_data.Operation=="division")].Difficulty.iloc[-1]
             try:
                 if len(in_data[(in_data.type=="choice")&(in_data.task=="Music")].threshold_var):
                     out_data["music_final_level_choice"] = in_data[(in_data.type=="choice")&(in_data.task=="Music")].level.iloc[-1]
