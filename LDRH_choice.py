@@ -38,6 +38,12 @@ pickle_enabled = False
 #How many alternatives in the choice phase
 number_of_choices = 2
 
+## Overwrite default settings above. ##
+## To use, create 'settings.py' with your desired settings. ##
+try:
+    from settings import *
+except ImportError as e:
+    pass
 
 #task version
 try:
@@ -460,8 +466,8 @@ def run_staircase(task, operation=None):
 
 
 ## QUESTIONNAIRE ##
-Questions = task_function.questionnaire(win)
-if Questions.run_questionnaire(win)=='QUIT': pickle_and_quit()
+# Questions = task_function.questionnaire(win)
+# if Questions.run_questionnaire(win)=='QUIT': pickle_and_quit()
 
 
 
