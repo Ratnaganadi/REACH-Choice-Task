@@ -135,14 +135,14 @@ class questionnaire:
         self.line = visual.Line(win, units='pix', start=[0,0], end=[0,0], lineWidth = 5)
         
         #questions
-        self.q_favorite_task = visual.TextStim(win, name='favorite_game', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Which one of these games\n    do you like the most?')
+        self.q_favorite_task = visual.TextStim(win, name='favorite_6_most', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Which one of these games\n    do you like the most?')
         self.q_why_most_favorite = visual.TextStim(win, name='why_most_favorite', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Why did you like this game the most?')
         self.q_why_least_favorite = visual.TextStim(win, name='why_least_favorite', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Why did you like this game the least?')
-        self.q_easiest_task = visual.TextStim(win, name='easiest_game', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Which one of the games below is the easiest?')
+        self.q_easiest_task = visual.TextStim(win, name='easiest_1', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Which one of the games below is the easiest?')
         self.q_why_easiest = visual.TextStim(win, name='why_easiest', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Why is this game the easiest?')
         self.q_why_hardest = visual.TextStim(win, name='why_hardest', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'Why is this game the hardest?')
-        self.q_like_reading = visual.TextStim(win, name='rank_reading', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'How much do you like reading?')
-        self.q_like_math = visual.TextStim(win, name='rank_math', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'How much do you like math?')
+        self.q_like_reading = visual.TextStim(win, name='rank_reading_1to6', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'How much do you like reading?')
+        self.q_like_math = visual.TextStim(win, name='rank_math_1to6', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'How much do you like math?')
         self.why_instruction = visual.TextStim(win, ori=0, font=u'Arial', height=20, pos=[0, -100], color=u'white',text=u"(Start typing when you are ready)")
         
         #next button
@@ -189,7 +189,7 @@ class questionnaire:
                     if self.reading_icon in icons and self.reading_icon.contains(self.mouse): thisResp = str(self.reading_icon.name)
                     if self.dots_icon in icons and self.dots_icon.contains(self.mouse): thisResp = str(self.dots_icon.name)
 
-
+            #return the name of game icon chosen
             return thisResp
 
 
@@ -232,7 +232,8 @@ class questionnaire:
                 # if self.tf.quit_check(win)=='QUIT': return 'QUIT'
                 win.flip()
             event.clearEvents()
-            print txt
+            
+            #return long text response for 'why questions'
             return txt
 
         def run_rank_games(thisquestion,thiswhy1,thiswhy2):
@@ -249,31 +250,37 @@ class questionnaire:
             thisRank = []
             thisWhy = []
             for i in range(0, len(icon_list)):
-                print [x.name for x in icon_list]
+                # print [x.name for x in icon_list]
                 thisText, whyTxt, task, ans = None, None, None, None
                 if len(icon_list)!=1:
-                    ans = rank_games(thisquestion, icon_list)
-                    print ans,
-                    if ans=='QUIT': return 'QUIT'
-                    elif ans: 
-                        print 'removed'
-                        thisRank.append(ans)
-                        icon_list.remove(icon_dict[ans])
+                    if i!=0: 
+                        if 'like the most' in str(thisquestion.text): thisqText = str(thisquestion.text).replace('the most','more')
+                        elif 'the easiest' in str(thisquestion.text): thisqText = str(thisquestion.text).replace('the easiest','easier')
+                        thisquestion.setText(thisqText)
 
-                elif len(icon_list)==1: 
+                    ans = rank_games(thisquestion, icon_list)
+
+                elif len(icon_list)==1:
+                    ans = str(icon_list[-1].name)
                     whyTxt = thiswhy2
-                    task = str(icon_list[-1].name)
-                if i==0: 
+                    task = ans
+                if i==0:
                     whyTxt = thiswhy1
                     task = ans
+
+                if ans=='QUIT': return 'QUIT'
+                elif ans:
+                    # print ans,'chosen'
+                    thisRank.append(ans)
+                    icon_list.remove(icon_dict[ans])
 
                 if whyTxt:
                     thisText = str(whyTxt.text).replace('this game','the {} game'.format(task.upper()))
                     whyTxt.setText(thisText)
                     ans_why = ask_why(icon_dict[task],whyTxt)
                     if ans_why=='QUIT': return 'QUIT'
-                    elif ans_why: thisWhy.extend(ans_why)
-
+                    elif ans_why: thisWhy.append(ans_why)
+            print 'thisRank',thisRank
             return [thisRank, thisWhy]
 
         def rank16_icons(thisquestion):
@@ -342,7 +349,13 @@ class questionnaire:
             answers = run_rank_games(q,qwhy1,qwhy2)
             if answers=='QUIT': return 'QUIT'
             else:
-                output[str(q.name)] = answers[0]
+                #create output structure for ranking by icons
+                if 'favorite' in str(q.name): hdrlist = ['favorite_6_most','favorite_5','favorite_4','favorite_3','favorite_2','favorite_1_least']
+                elif 'easiest' in str(q.name): hdrlist = ['easiest_1','easy_2','easy_3','easy_4','easy_5','easy_6_hardest']
+                for no,hdr in enumerate(hdrlist):
+                    output[hdr] = answers[0][no]
+
+                #create output structure for 'why' answers
                 output[str(qwhy1.name)] = answers[1][0]
                 output[str(qwhy2.name)] = answers[1][1]
 
@@ -350,18 +363,14 @@ class questionnaire:
         answers2 = rank16_icons([self.q_like_reading, self.q_like_math])
         if answers2=='QUIT': return 'QUIT'
         elif answers2: 
-            output['rank_reading'] = answers2[0]
-            output['rank_math'] = answers2[1]
+            output['rank_reading_1to6'] = answers2[0]
+            output['rank_math_1to6'] = answers2[1]
 
         core.wait(0.5)
+
+        # print 'questionnaire output', output
+        return output
         
-        
-
-                    
-
-
-
-
 
 
 

@@ -38,12 +38,6 @@ pickle_enabled = False
 #How many alternatives in the choice phase
 number_of_choices = 2
 
-## Overwrite default settings above. ##
-## To use, create 'settings.py' with your desired settings. ##
-try:
-    from settings import *
-except ImportError as e:
-    pass
 
 #task version
 try:
@@ -197,7 +191,8 @@ else:
         'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
         'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
         'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
-        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1)
+        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1),
+        'Questionnaire': dict(sheet = wb.add_sheet('Questionnaire'), headers = ['subject_ID','favorite_6_most','why_most_favorite','favorite_5','favorite_4','favorite_3','favorite_2','favorite_1_least','why_least_favorite','easiest_1','why_easiest','easy_2','easy_3','easy_4','easy_5','easy_6_hardest','why_hardest','rank_reading_1to6','rank_math_1to6'],row=1)
     }
     
     #initialize headers for each sheet
@@ -463,12 +458,6 @@ def run_staircase(task, operation=None):
         output['thisIncrement'] = handler.intensities[-1]
 
     return output
-
-
-## QUESTIONNAIRE ##
-# Questions = task_function.questionnaire(win)
-# if Questions.run_questionnaire(win)=='QUIT': pickle_and_quit()
-
 
 
 #STAIRCASING SECTION
@@ -869,8 +858,20 @@ save(complete=True)
 
 ## QUESTIONNAIRE ##
 Questions = task_function.questionnaire(win)
-if Questions.run_questionnaire()=='QUIT': pickle_and_quit()
+questionnaire_output = Questions.run_questionnaire(win)
+questionnaire_output['subject_ID'] = subject_ID
 
+print 'output:', questionnaire_output
+if questionnaire_output=='QUIT': pickle_and_quit()
+else:
+    try:
+        for col,header in enumerate(all_sheets['Questionnaire']['headers']):
+            all_sheets['Questionnaire']['sheet'].write(all_sheets['Questionnaire']['row'],col,questionnaire_output[header])
+    except:
+        print 'ERROR: Cannot save questionnaire data, please add this data to output file:'
+        print questionnaire_output
+
+    save()
 
 
 ## fireworks yay!! ##
