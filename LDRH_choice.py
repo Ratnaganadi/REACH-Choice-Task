@@ -12,7 +12,7 @@ from Dots_Task import LDRH_dots as Dots_Script
 from Reading_Task import LDRH_reading as Reading_Script
 from Phonology_Task import LDRH_phonology as Phonology_Script
 from Star_Task import LDRH_stars as Star_Script
-from game_functions import task_function, feedback
+from game_functions import task_function, feedback, handler_function
 
 
 ## task to run ##
@@ -28,9 +28,11 @@ task_names=[
 ## settings ##
 #option to run_instructions, run_practice, have full_screen and touch_screen
 run_inst = False
-run_pract = False
+run_pract = True
 full_screen = False
 touchscreen = True
+use_posterior_matching = False
+testing_questionnaire = False
 
 #enable pickling of .data
 pickle_enabled = False
@@ -199,6 +201,25 @@ else:
     for key in all_sheets.keys():
         for col, header in enumerate(all_sheets[key]['headers']): all_sheets[key]['sheet'].write(0,col,header)
 
+    #create dictionary for min and max level of difficulty
+    level_dict = {
+        'Math': {
+                'addition': {'startval':len(all_conditions['Math']['addition'])-1, 'min':0, 'max':len(all_conditions['Math']['addition'])-1},
+                'subtraction': {'startval':len(all_conditions['Math']['subtraction'])-1, 'min':0, 'max':len(all_conditions['Math']['subtraction'])-1},
+                'multiplication': {'startval':len(all_conditions['Math']['multiplication'])-1, 'min':0, 'max':len(all_conditions['Math']['multiplication'])-1},
+                'division': {'startval':len(all_conditions['Math']['division'])-1, 'min':0, 'max':len(all_conditions['Math']['division'])-1}
+                },
+        'Music': {'startval':14, 'min':0, 'max':len(all_conditions['Music'])-1},
+        'Dots': {'startval':35, 'min':0, 'max':len(all_conditions['Dots'])-1},
+        'Reading': {'startval':8, 'min':0, 'max':len(all_conditions['Reading'])-1},
+        'Phonology': {'startval':4, 'min':0, 'max':len(all_conditions['Phonology'])-1},
+        'Spatial': {'startval':150, 'min':0, 'max': 350}
+    }
+    math_max = [len(all_conditions['Math']['addition'])-1, 
+        len(all_conditions['Math']['subtraction'])-1, 
+        len(all_conditions['Math']['multiplication'])-1, 
+        len(all_conditions['Math']['division'])-1]
+
     #create handlers
     all_handlers = {
         'Math': {
@@ -226,7 +247,14 @@ else:
         'Spatial': data.StairHandler(startVal = 150,
             stepType = 'db', stepSizes=[3,3,2,2,1,1],#[8,4,4,2,2,1,1], #reduce step size every two reversals
             minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10)
+            nTrials = 10),
+        'posterior_matching': {
+            'Math': handler_function.posterior_matching(startval = math_max , minval = [0,0,0,0], maxval = math_max, axis = 4),
+            'Music': handler_function.posterior_matching(startval = 14, minval = 0, maxval = len(all_conditions['Music'])-1, axis = 1),
+            'Dots': handler_function.posterior_matching(startval = 35, minval = 0, maxval = len(all_conditions['Dots'])-1, axis = 1),
+            'Reading': handler_function.posterior_matching(startval = 8, minval = 0, maxval = len(all_conditions['Reading'])-1, axis = 1),
+            'Spatial': handler_function.posterior_matching(startval = 150, minval = 0, maxval = 350, axis = 1)
+            }
         }
 
     #dictionry of ring tracking
@@ -242,9 +270,9 @@ if just_choice:
     for task in task_names:
         if task=='Math':
             for operation in math_operations:
-                all_thresholds[operation] = all_handlers[task][operation].startVal
+                all_thresholds[operation] = level_dict[task][operation]['startval']
         else:
-            all_thresholds[task] = all_handlers[task].startVal
+            all_thresholds[task] = level_dict[task]['startval']
     dialog=gui.DlgFromDict(dictionary=all_thresholds,title="Thresholds (set to -1 to exclude)")
     if dialog.OK==False:
         core.quit() #user pressed cancel
@@ -370,10 +398,14 @@ def pickle_and_quit():
 
 def run_staircase(task, operation=None):
     global trial_number
-    if operation:
-        handler = all_handlers[task][operation]
+
+    if use_posterior_matching:
+        handler = handler_function['posterior_matching'][task]
     else:
-        handler = all_handlers[task]
+        if operation:
+            handler = all_handlers[task][operation]
+        else:
+            handler = all_handlers[task]
 
     try:
         thisIncrement = handler.next()
@@ -434,6 +466,10 @@ def run_staircase(task, operation=None):
         #update handler only if not a "same" trial from tones or phonology
         #if 'Correct Response' in output.keys() and output['Correct Response'].lower() != 'same': all_handlers[task].addData(output['score'])
         #else: print 'same trial-- did not update stairhandler'
+        order_dict = {'addition':1, 'subtraction':2, 'multiplication':3, 'division':4}
+        if operation: output_score = [output['score'] if i==order_dict[operation] else None for i in range(1,5)]
+        else: output_score = output['score']
+
         handler.addData(output['score'])
 
         # This code is to boost the staircase level of 'lower' operations when a student is successful on
@@ -455,10 +491,28 @@ def run_staircase(task, operation=None):
     except StopIteration:
         output={}
         output['score'] = 'StopIteration'
-        output['thisIncrement'] = handler.intensities[-1]
+        if not use_posterior_matching:
+            output['thisIncrement'] = handler.intensities[-1]
 
     return output
 
+if testing_questionnaire:
+    ## QUESTIONNAIRE ##
+    Questions = task_function.questionnaire(win)
+    questionnaire_output = Questions.run_questionnaire(win)
+    questionnaire_output['subject_ID'] = subject_ID
+
+    print 'output:', questionnaire_output
+    if questionnaire_output=='QUIT': pickle_and_quit()
+    else:
+        try:
+            for col,header in enumerate(all_sheets['Questionnaire']['headers']):
+                all_sheets['Questionnaire']['sheet'].write(all_sheets['Questionnaire']['row'],col,questionnaire_output[header])
+        except:
+            print 'ERROR: Cannot save questionnaire data, please add this data to output file:'
+            print questionnaire_output
+
+        save()
 
 #STAIRCASING SECTION
 

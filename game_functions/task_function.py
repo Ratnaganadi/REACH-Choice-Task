@@ -145,21 +145,17 @@ class questionnaire:
         self.q_like_math = visual.TextStim(win, name='rank_math_1to6', ori=0, font=u'Arial', height=32, pos=[0, 150], color=u'white',text=u'How much do you like math?')
         self.why_instruction = visual.TextStim(win, ori=0, font=u'Arial', height=20, pos=[0, -100], color=u'white',text=u"(Start typing when you are ready)")
         
-        #next button
-        self.button = visual.ImageStim(win=win, name='next_button', image = image_q_path + 'general_button.png', units = 'pix', ori = 0, pos = [0,-300], size = [120, 60], opacity = 1, mask =None, interpolate = True)
-        self.next = visual.TextStim(win, ori=0, font=u'Arial', height = 32, pos=[0, -300], color=u'white',text=u'NEXT')
-        self.next_instructions = visual.TextStim(win, ori=0, font=u'Arial', height = 22, pos=[0, -250], color=u'white',text=u"(Click 'NEXT' to confirm your answer)")
         self.tf = task_functions(win)
 
     def run_questionnaire(self,win):
 
         def rank_games(txt, icons):
 
-            thisResp = None
+            thisResp, ans = None, None
 
             w = 700
             y = 0
-            xpos = [-140*(len(icons)-1)/2 + 140*i for i in range(0, len(icons))]
+            xpos = [-150*(len(icons)-1)/2 + 150*i for i in range(0, len(icons))]
             # xpos = [-w/2 + (w*i)/len(icons) for i in range(0, len(icons)+1)]
             xypos = [[x,y] for x in xpos]
             shuffle(xypos)
@@ -167,6 +163,7 @@ class questionnaire:
             # self.trialClock.reset()
             for icon, pos in zip(icons, xypos):
                 icon.setPos(pos)
+                icon.setSize([120,120])
                 icon.draw()
 
             if txt: txt.draw()
@@ -177,17 +174,50 @@ class questionnaire:
             self.mouse.getPos()
 
             while thisResp==None:
-                # key = event.getKeys()
+                key = event.getKeys()
                 # if key: print 'key',key
                 
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
+
+                # self.trialClock.reset()
+                for icon, pos in zip(icons, xypos):
+                    icon.setPos(pos)
+                    icon.draw()
+
+                if txt: txt.draw()
+                # win.flip()
+                # core.wait(0.5)
                 if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
-                    if self.star_icon in icons and self.star_icon.contains(self.mouse): thisResp = str(self.star_icon.name)
-                    if self.phonology_icon in icons and self.phonology_icon.contains(self.mouse): thisResp = str(self.phonology_icon.name)
-                    if self.math_icon in icons and self.math_icon.contains(self.mouse): thisResp = str(self.math_icon.name)
-                    if self.music_icon in icons and self.music_icon.contains(self.mouse): thisResp = str(self.music_icon.name)
-                    if self.reading_icon in icons and self.reading_icon.contains(self.mouse): thisResp = str(self.reading_icon.name)
-                    if self.dots_icon in icons and self.dots_icon.contains(self.mouse): thisResp = str(self.dots_icon.name)
+                    if self.star_icon in icons and self.star_icon.contains(self.mouse): 
+                        if ans: ans.setSize([120,120])
+                        ans = self.star_icon
+                        self.star_icon.setSize([145,145])
+                    if self.phonology_icon in icons and self.phonology_icon.contains(self.mouse): 
+                        if ans: ans.setSize([120,120])
+                        ans = self.phonology_icon
+                        self.phonology_icon.setSize([145,145])
+                    if self.math_icon in icons and self.math_icon.contains(self.mouse): 
+                        if ans: ans.setSize([120,120])
+                        ans = self.math_icon
+                        self.math_icon.setSize([145,145])
+                    if self.music_icon in icons and self.music_icon.contains(self.mouse): 
+                        if ans: ans.setSize([120,120])
+                        ans = self.music_icon
+                        self.music_icon.setSize([145,145])
+                    if self.reading_icon in icons and self.reading_icon.contains(self.mouse): 
+                        if ans: ans.setSize([120,120])
+                        ans = self.reading_icon
+                        self.reading_icon.setSize([145,145])
+                    if self.dots_icon in icons and self.dots_icon.contains(self.mouse): 
+                        if ans: ans.setSize([120,120])
+                        ans = self.dots_icon
+                        self.dots_icon.setSize([145,145])
+
+                if self.tf.quit_check(win)=='QUIT': return 'QUIT'
+                if key==['pagedown'] or key==['right']: 
+                    if ans: thisResp = str(ans.name)
+
+                win.flip()
 
             #return the name of game icon chosen
             return thisResp
@@ -207,23 +237,22 @@ class questionnaire:
             self.mouse.getPos()
             
             while thisResp==None:
+                # key = event.getKeys()
                 thisIcon.draw()
                 whyText.draw()
                 self.why_instruction.draw()
-                self.button.draw()
-                self.next.draw()
-
-                if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and self.button.contains(self.mouse): 
-                    if txt!='': thisResp = 'next'
-
-                letterlist=event.getKeys(keyList=['escape','q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m','backspace','space','comma','period','apostrophe','return'])
+                
+                letterlist=event.getKeys(keyList=['escape','pagedown','right','q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m','backspace','space','comma','period','apostrophe','return'])
                 for l in letterlist:
                     #if key isn't backspace, add key pressed to the string
                     if l=='backspace': txt=txt[:-1]
                     elif l=='escape': return 'QUIT'
+                    elif l=='pagedown' or l=='right': 
+                        if txt!='': thisResp = 'next'
                     else:
                         if l in symbols.keys(): l = symbols[l]
                         txt+=l
+
 
                 #continually redraw text onscreen until return pressed
                 response = visual.TextStim(win, units = 'pix', font=u'Arial', height=28, pos=[0,-160], color=u'white', text=txt)
@@ -294,18 +323,14 @@ class questionnaire:
 
             thisList = []
             for q in thisquestion:
-                
-
-                # core.wait(0.5)
+                win.flip()
+                core.wait(0.5)
                 thisResp, ans = None, None
                 self.mouse.getPos()
                 while thisResp==None:
+                    key = event.getKeys()
                     q.draw()
-                    self.button.draw()
-                    self.next.draw()
-                    self.next_instructions.draw()
-
-                    # self.line.draw()
+                    
                     for icon,pos in zip(icons,xypos):
                         icon.setPos(pos)
                         icon.draw()
@@ -331,11 +356,12 @@ class questionnaire:
                             if ans: icons[ans-1].setSize([100,100])
                             ans = 6; self.smile6.setSize([120,120])
 
-                        if ans and self.button.contains(self.mouse):
+                    if key==['pagedown'] or key==['right']: 
+                        if ans:
                             icons[ans-1].setSize([100,100])
                             thisResp = ans
                     win.flip()
-                if thisResp: thisList.extend(str(thisResp))
+                thisList.extend(str(thisResp))
 
             return thisList
 
@@ -368,7 +394,6 @@ class questionnaire:
 
         core.wait(0.5)
 
-        # print 'questionnaire output', output
         return output
         
 
