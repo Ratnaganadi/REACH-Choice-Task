@@ -146,6 +146,8 @@ class Phonology_Game(practice_functions):
             self.speaker_playing.draw()
             win.flip()
             
+            if self.tf.quit_check(win)=='QUIT': return 'QUIT'
+            
             #play phoneme
             audio.play()
 
