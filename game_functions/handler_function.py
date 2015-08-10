@@ -1,15 +1,15 @@
 
 class posterior_matching:
-    def __init__(self,startval,minval,maxval,axis):
+    def __init__(self,startVal,minVal,maxVal,axis):
         #these are the info for the specific task
-        # startval = the starting level
-        # minval = the lowest level possible in the task
+        # startVal = the starting level
+        # minVal = the lowest level possible in the task
         # maxval = the highest level possible int he task
         #for math task
         # - the total_axis will be indicated as 4
-        # - the startval, minval, maxval will be a list of 4 values in this order [addition, substraction, multiplication, division]
-        self.startval = startval
-        self.minval = minval
+        # - the startVal, minVal, maxval will be a list of 4 values in this order [addition, substraction, multiplication, division]
+        self.startVal = startVal
+        self.minVal = minVal
         self.maxval = maxval
         self.axis = axis
         

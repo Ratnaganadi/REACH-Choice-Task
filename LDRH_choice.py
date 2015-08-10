@@ -242,6 +242,11 @@ else:
             }
 
     elif use_posterior_matching==True:
+        math_max = [len(all_conditions['Math']['addition'])-1,
+            len(all_conditions['Math']['subtraction'])-1,
+            len(all_conditions['Math']['multiplication'])-1,
+            len(all_conditions['Math']['division'])-1]
+
         all_handlers = {
             'Math': {
                 'addition': handler_function.posterior_matching(startVal = len(all_conditions['Math']['addition'])-1 , minVal = 0, maxVal = len(all_conditions['Math']['addition'])-1, axis = 4),
@@ -397,7 +402,7 @@ def pickle_and_quit():
 def run_staircase(task, operation=None):
     global trial_number
 
-    if use_posterior_matching==False and operation:
+    if operation:
         handler = all_handlers[task][operation]
     else:
         handler = all_handlers[task]
