@@ -40,6 +40,12 @@ pickle_enabled = False
 #How many alternatives in the choice phase
 number_of_choices = 2
 
+## Overwrite default settings above. ##
+## To use, create 'settings.py' with your desired settings. ##
+try:
+    from settings import *
+except ImportError as e:
+    pass
 
 #task version
 try:
@@ -201,61 +207,56 @@ else:
     for key in all_sheets.keys():
         for col, header in enumerate(all_sheets[key]['headers']): all_sheets[key]['sheet'].write(0,col,header)
 
-    #create dictionary for min and max level of difficulty
-    level_dict = {
-        'Math': {
-                'addition': {'startval':len(all_conditions['Math']['addition'])-1, 'min':0, 'max':len(all_conditions['Math']['addition'])-1},
-                'subtraction': {'startval':len(all_conditions['Math']['subtraction'])-1, 'min':0, 'max':len(all_conditions['Math']['subtraction'])-1},
-                'multiplication': {'startval':len(all_conditions['Math']['multiplication'])-1, 'min':0, 'max':len(all_conditions['Math']['multiplication'])-1},
-                'division': {'startval':len(all_conditions['Math']['division'])-1, 'min':0, 'max':len(all_conditions['Math']['division'])-1}
-                },
-        'Music': {'startval':14, 'min':0, 'max':len(all_conditions['Music'])-1},
-        'Dots': {'startval':35, 'min':0, 'max':len(all_conditions['Dots'])-1},
-        'Reading': {'startval':8, 'min':0, 'max':len(all_conditions['Reading'])-1},
-        'Phonology': {'startval':4, 'min':0, 'max':len(all_conditions['Phonology'])-1},
-        'Spatial': {'startval':150, 'min':0, 'max': 350}
-    }
-    math_max = [len(all_conditions['Math']['addition'])-1, 
-        len(all_conditions['Math']['subtraction'])-1, 
-        len(all_conditions['Math']['multiplication'])-1, 
-        len(all_conditions['Math']['division'])-1]
+
 
     #create handlers
-    all_handlers = {
-        'Math': {
-                'addition': data.StairHandler(startVal= len(all_conditions['Math']['addition'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['addition'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
-                'subtraction': data.StairHandler(startVal= len(all_conditions['Math']['subtraction'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['subtraction'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
-                'multiplication': data.StairHandler(startVal= len(all_conditions['Math']['multiplication'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['multiplication'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
-                'division': data.StairHandler(startVal= len(all_conditions['Math']['division'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['division'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin')
-                },
-        'Music': data.StairHandler(startVal = 14, stepType = 'lin', stepSizes=[2,1,1,1,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Music'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10),
-        'Dots': data.StairHandler(startVal = 35, stepType = 'lin', stepSizes=[5,3,2,2,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Dots'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10),
-        'Reading': data.StairHandler(startVal = 8, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Reading'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10, nReversals = 0),
-        'Phonology': data.StairHandler(startVal = 4, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Phonology'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10, nReversals = 0),
-        'Spatial': data.StairHandler(startVal = 150,
-            stepType = 'db', stepSizes=[3,3,2,2,1,1],#[8,4,4,2,2,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10),
-        'posterior_matching': {
-            'Math': handler_function.posterior_matching(startval = math_max , minval = [0,0,0,0], maxval = math_max, axis = 4),
-            'Music': handler_function.posterior_matching(startval = 14, minval = 0, maxval = len(all_conditions['Music'])-1, axis = 1),
-            'Dots': handler_function.posterior_matching(startval = 35, minval = 0, maxval = len(all_conditions['Dots'])-1, axis = 1),
-            'Reading': handler_function.posterior_matching(startval = 8, minval = 0, maxval = len(all_conditions['Reading'])-1, axis = 1),
-            'Spatial': handler_function.posterior_matching(startval = 150, minval = 0, maxval = 350, axis = 1)
+    all_handlers = {}
+    if use_posterior_matching==False:
+        all_handlers['staircasing'] = {
+            'Math': {
+                    'addition': data.StairHandler(startVal= len(all_conditions['Math']['addition'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['addition'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
+                    'subtraction': data.StairHandler(startVal= len(all_conditions['Math']['subtraction'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['subtraction'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
+                    'multiplication': data.StairHandler(startVal= len(all_conditions['Math']['multiplication'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['multiplication'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
+                    'division': data.StairHandler(startVal= len(all_conditions['Math']['division'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['division'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin')
+                    },
+            'Music': data.StairHandler(startVal = 14, stepType = 'lin', stepSizes=[2,1,1,1,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Music'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10),
+            'Dots': data.StairHandler(startVal = 35, stepType = 'lin', stepSizes=[5,3,2,2,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Dots'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10),
+            'Reading': data.StairHandler(startVal = 8, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Reading'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10, nReversals = 0),
+            'Phonology': data.StairHandler(startVal = 4, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Phonology'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10, nReversals = 0),
+            'Spatial': data.StairHandler(startVal = 150,
+                stepType = 'db', stepSizes=[3,3,2,2,1,1],#[8,4,4,2,2,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10)
             }
-        }
+        this_handler = all_handlers['staircasing']
+
+    elif use_posterior_matching==True:
+        all_handlers['posterior_matching'] = {
+            'Math': {
+                'addition': handler_function.posterior_matching(startVal = len(all_conditions['Math']['addition'])-1 , minVal = 0, maxVal = len(all_conditions['Math']['addition'])-1, axis = 4),
+                'subtraction': handler_function.posterior_matching(startVal = len(all_conditions['Math']['subtraction'])-1, minVal = 0, maxVal = len(all_conditions['Math']['subtraction'])-1, axis = 4),
+                'multiplication': handler_function.posterior_matching(startVal = len(all_conditions['Math']['multiplication'])-1, minVal = 0, maxVal = len(all_conditions['Math']['multiplication'])-1, axis = 4),
+                'division': handler_function.posterior_matching(startVal = len(all_conditions['Math']['division'])-1, minVal = 0, maxVal = len(all_conditions['Math']['division'])-1, axis = 4)
+                },
+                handler_function.posterior_matching(startVal = math_max , minVal = [0,0,0,0], maxVal = math_max, axis = 4),
+            'Music': handler_function.posterior_matching(startVal = 14, minVal = 0, maxVal = len(all_conditions['Music'])-1, axis = 1),
+            'Dots': handler_function.posterior_matching(startVal = 35, minVal = 0, maxVal = len(all_conditions['Dots'])-1, axis = 1),
+            'Reading': handler_function.posterior_matching(startVal = 8, minVal = 0, maxVal = len(all_conditions['Reading'])-1, axis = 1),
+            'Spatial': handler_function.posterior_matching(startVal = 150, minVal = 0, maxVal = 350, axis = 1)
+            }
+        this_handler = all_handlers['posterior_matching']
 
     #dictionry of ring tracking
     num_rings = {'Math': 4, 'Music': 4, 'Reading': 4, 'Dots': 4, 'Phonology': 4, 'Spatial': 4}
@@ -270,9 +271,9 @@ if just_choice:
     for task in task_names:
         if task=='Math':
             for operation in math_operations:
-                all_thresholds[operation] = level_dict[task][operation]['startval']
+                all_thresholds[operation] = all_handlers[task][operation].startVal
         else:
-            all_thresholds[task] = level_dict[task]['startval']
+            all_thresholds[task] = all_handlers[task].startVal
     dialog=gui.DlgFromDict(dictionary=all_thresholds,title="Thresholds (set to -1 to exclude)")
     if dialog.OK==False:
         core.quit() #user pressed cancel
@@ -399,13 +400,11 @@ def pickle_and_quit():
 def run_staircase(task, operation=None):
     global trial_number
 
-    if use_posterior_matching:
-        handler = handler_function['posterior_matching'][task]
+    if use_posterior_matching==False and operation:
+        handler = this_handler[task][operation]
     else:
-        if operation:
-            handler = all_handlers[task][operation]
-        else:
-            handler = all_handlers[task]
+        handler = all_handlers[task]
+    
 
     try:
         thisIncrement = handler.next()
