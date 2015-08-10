@@ -83,27 +83,7 @@ class practice_functions:
             anslist = {
                 'happy': {'correct': ans_happy_correct, 'incorrect': ans_happy_incorrect},
                 'sad': {'correct': ans_sad_correct, 'incorrect': ans_sad_incorrect}
-                }
-
-            # def draw_play_phonemes(audio,wait_time):
-            #     # This function draw stimuli screen, play audio file 
-            #     # and make sure audio plays until the end before the next audio files play
-
-            #     #draw initial speaker before phoneme plays
-            #     self.speaker.draw()
-            #     win.flip()
-            #     core.wait(wait_time)
-            #     self.speaker_playing.draw()
-            #     win.flip()
-                
-            #     #play phoneme
-            #     audio.play()
-
-            #     #make sure the audio plays until the end of audio duration while checking for 'QUIT'
-            #     start_time = self.trialClock.getTime()
-            #     # double_click, double_time, double_time2, double_time3 = False, None, None, None
-            #     while self.trialClock.getTime() < start_time + audio.getDuration():
-            #         if self.tf.quit_check(win)=='QUIT': return 'QUIT'            
+                }         
 
 
             def ask_question1(q,task):
@@ -298,8 +278,8 @@ class practice_functions:
                         if isinstance(test,int) or len(test)==1: output_streak.append(float(test))
                         elif len(test)>1 and test!='cont': return test
                 success_rate = float(sum(output_streak)/len(output_streak))
-                if success_rate<0.8 and task in ['phonology','music']:
-                    if run_comp_check(task)=='QUIT': return 'QUIT'
+                # if success_rate<0.8 and task in ['phonology','music']:
+                #     if run_comp_check(task)=='QUIT': return 'QUIT'
         
         instructions,audio,stimuli,score_conditions,vars = [inst_set],[aud_set],[stim_set],[score_cond],var
         if task=='spatial': instructions,audio,stimuli,score_conditions = inst_set[:-1],aud_set,stim_set,score_cond

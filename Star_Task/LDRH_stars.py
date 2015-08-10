@@ -199,7 +199,7 @@ class Star_Game(practice_functions):
                             status='STARTED'
                             first_click_time = t - start_time
                             self.drag.setImage(self.image_path + '/star_selected.png')
-                    if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.5:
+                    if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.3:
                         second_click_time = t - start_time
                         self.drag.setImage(self.image_path + '/star2.png')
                         self.drag.setPos(self.mouse.getPos())
