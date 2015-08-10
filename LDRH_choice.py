@@ -249,7 +249,6 @@ else:
                 'multiplication': handler_function.posterior_matching(startVal = len(all_conditions['Math']['multiplication'])-1, minVal = 0, maxVal = len(all_conditions['Math']['multiplication'])-1, axis = 4),
                 'division': handler_function.posterior_matching(startVal = len(all_conditions['Math']['division'])-1, minVal = 0, maxVal = len(all_conditions['Math']['division'])-1, axis = 4)
                 },
-                handler_function.posterior_matching(startVal = math_max , minVal = [0,0,0,0], maxVal = math_max, axis = 4),
             'Music': handler_function.posterior_matching(startVal = 14, minVal = 0, maxVal = len(all_conditions['Music'])-1, axis = 1),
             'Dots': handler_function.posterior_matching(startVal = 35, minVal = 0, maxVal = len(all_conditions['Dots'])-1, axis = 1),
             'Reading': handler_function.posterior_matching(startVal = 8, minVal = 0, maxVal = len(all_conditions['Reading'])-1, axis = 1),
@@ -488,8 +487,7 @@ def run_staircase(task, operation=None):
     except StopIteration:
         output={}
         output['score'] = 'StopIteration'
-        if not use_posterior_matching:
-            output['thisIncrement'] = handler.intensities[-1]
+        output['thisIncrement'] = handler.intensities[-1]
 
     return output
 
