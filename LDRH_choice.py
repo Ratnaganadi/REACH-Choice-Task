@@ -212,7 +212,7 @@ else:
     #create handlers
     all_handlers = {}
     if use_posterior_matching==False:
-        all_handlers['staircasing'] = {
+        all_handlers = {
             'Math': {
                     'addition': data.StairHandler(startVal= len(all_conditions['Math']['addition'])-1, stepSizes=[2,1,1,1],
                         minVal=0, maxVal=len(all_conditions['Math']['addition'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
@@ -240,10 +240,9 @@ else:
                 minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
                 nTrials = 10)
             }
-        this_handler = all_handlers['staircasing']
 
     elif use_posterior_matching==True:
-        all_handlers['posterior_matching'] = {
+        all_handlers = {
             'Math': {
                 'addition': handler_function.posterior_matching(startVal = len(all_conditions['Math']['addition'])-1 , minVal = 0, maxVal = len(all_conditions['Math']['addition'])-1, axis = 4),
                 'subtraction': handler_function.posterior_matching(startVal = len(all_conditions['Math']['subtraction'])-1, minVal = 0, maxVal = len(all_conditions['Math']['subtraction'])-1, axis = 4),
@@ -256,7 +255,6 @@ else:
             'Reading': handler_function.posterior_matching(startVal = 8, minVal = 0, maxVal = len(all_conditions['Reading'])-1, axis = 1),
             'Spatial': handler_function.posterior_matching(startVal = 150, minVal = 0, maxVal = 350, axis = 1)
             }
-        this_handler = all_handlers['posterior_matching']
 
     #dictionry of ring tracking
     num_rings = {'Math': 4, 'Music': 4, 'Reading': 4, 'Dots': 4, 'Phonology': 4, 'Spatial': 4}
@@ -401,7 +399,7 @@ def run_staircase(task, operation=None):
     global trial_number
 
     if use_posterior_matching==False and operation:
-        handler = this_handler[task][operation]
+        handler = all_handlers[task][operation]
     else:
         handler = all_handlers[task]
     
