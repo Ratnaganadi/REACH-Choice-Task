@@ -295,24 +295,24 @@ class Tones_Game(practice_functions):
             #reset trialClock
             self.trialClock.reset()
             
-            while thisResp==None:
+            ## display stimuli, target, foil and trial components ##
+            #display speaker, target & foil buttons, play audio
+            for stim,wait in zip([stim1,stim2],[self.t_initialspeaker,self.t_initialspeaker]):
+                if draw_play_phonemes(stim,wait)=='QUIT': return 'QUIT'
+
+            self.speaker.draw()
+            self.target_button.draw()
+            self.foil_button.draw()
+            win.flip()
+
+            #start timer for response
+            start_time=self.trialClock.getTime()
+            self.mouse.getPos()
+
+            while score==None:
 
                 ## QUIT check ##
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
-
-                ## display stimuli, target, foil and trial components ##
-                #display speaker, target & foil buttons, play audio
-                for stim,wait in zip([stim1,stim2],[self.t_initialspeaker,self.t_initialspeaker]):
-                    if draw_play_phonemes(stim,wait)=='QUIT': return 'QUIT'
-
-                self.speaker.draw()
-                self.target_button.draw()
-                self.foil_button.draw()
-                win.flip()
-
-                #start timer for response
-                start_time=self.trialClock.getTime()
-                self.mouse.getPos()
 
                 #check for response when time is within time limit
                 while choice_time<=self.timer_limit:

@@ -298,14 +298,17 @@ class Reading_Game(practice_functions):
             #reset trialClock
             self.trialClock.reset()
 
-            while thisResp==None:
-                ## display stimuli, target, foil and trial components ##
-                for pic,wait,aud in zip([None,self.speaker,self.speaker_playing,self.speaker],[self.t_initialbuttons,self.t_initialspeaker,0,0],[[],[],aud_list,[]]):
-                    if draw_buttons(object_var,pic,'yes-flip',wait,aud)=='QUIT': return 'QUIT'
-                
-                #start timer for response
-                start_time=self.trialClock.getTime()
-                self.mouse.getPos()
+            ## display stimuli, target, foil and trial components ##
+            for pic,wait,aud in zip([None,self.speaker,self.speaker_playing,self.speaker],[self.t_initialbuttons,self.t_initialspeaker,0,0],[[],[],aud_list,[]]):
+                if draw_buttons(object_var,pic,'yes-flip',wait,aud)=='QUIT': return 'QUIT'
+            
+            #start timer for response
+            start_time=self.trialClock.getTime()
+            self.mouse.getPos()
+
+            while score==None:
+                ## QUIT check ##
+                if self.tf.quit_check(win)=='QUIT': return 'QUIT'
 
                 #check for response when time is within time limit
                 while choice_time<=self.timer_limit:
@@ -325,10 +328,6 @@ class Reading_Game(practice_functions):
                 if self.trialClock.getTime()-start_time>self.timer_limit:
                     score,thisResp,thisResp_pos,choice_time = (0,'timed_out','timed_out','timed_out')
                     print 'TIME OUT |',
-
-
-                ## QUIT check ##
-                if self.tf.quit_check(win)=='QUIT': return 'QUIT'
 
             
             ### feedback ##

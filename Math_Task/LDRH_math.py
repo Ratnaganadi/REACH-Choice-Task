@@ -232,23 +232,22 @@ class Math_Game(practice_functions):
             #reset trialClock
             self.trialClock.reset()
 
+            ## display stimuli, target, foil and trial components ##    
+            self.stimulus.draw()
+            for text,button in zip([self.target]+foil_text,[target_button]+foil_button):
+                button.draw()
+                text.draw()
+            win.flip()
+
+            #start timer for response
+            start_time = self.trialClock.getTime()
+            self.mouse.getPos()
             
-            while thisResp==None:
+            while score==None:
 
                 ## QUIT check ##
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
-
-                ## display stimuli, target, foil and trial components ##    
-                self.stimulus.draw()
-                for text,button in zip([self.target]+foil_text,[target_button]+foil_button):
-                    button.draw()
-                    text.draw()
-                win.flip()
-
-                #start timer for response
-                start_time = self.trialClock.getTime()
-                self.mouse.getPos()
-                        
+  
                 #check for response when time is within time limit
                 while choice_time<=self.timer_limit:
                     if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):

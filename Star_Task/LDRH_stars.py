@@ -195,18 +195,18 @@ class Star_Game(practice_functions):
                     t=self.trialClock.getTime()
                     self.drag.draw()
                     if self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0]):
-                        if self.drag.contains(self.mouse.getPos()):
+                        if self.drag.contains(self.mouse.getPos()) and status=='NOT_STARTED':
                             status='STARTED'
                             first_click_time = t - start_time
                             self.drag.setImage(self.image_path + '/star_selected.png')
-                    if status == 'STARTED' and (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])) and t >= first_click_time + start_time + 0.3:
-                        second_click_time = t - start_time
-                        self.drag.setImage(self.image_path + '/star2.png')
-                        self.drag.setPos(self.mouse.getPos())
-                        x_resp = self.drag.pos[0]
-                        y_resp = self.drag.pos[1]
-                        distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
-                        score = int(distance<=sz)
+                        elif status == 'STARTED' and t >= first_click_time + start_time + 0.3:
+                            second_click_time = t - start_time
+                            self.drag.setImage(self.image_path + '/star2.png')
+                            self.drag.setPos(self.mouse.getPos())
+                            x_resp = self.drag.pos[0]
+                            y_resp = self.drag.pos[1]
+                            distance = ((y_resp - y)**2 + (x_resp - x)**2)**(0.5)
+                            score = int(distance<=sz)
                     
                     #quit check
                     if self.tf.quit_check(win)=='QUIT': return 'QUIT'

@@ -181,33 +181,33 @@ class Dots_Game(practice_functions):
             #reset trialClock
             self.trialClock.reset()
             
-            while thisResp==None:
+            ## display stimuli, target, foil and trial components ##
+            #display boxes for target & foil
+            self.target_box.draw()
+            self.foil_box.draw()
+            win.flip()
+
+            #wait for 1.5s / t1
+            core.wait(self.t_fixline)
+
+            #display boxes with target and foil dots pictures
+            self.target_box.draw()
+            self.foil_box.draw()
+            self.target.draw()
+            self.foil.draw()
+            win.flip()
+            
+
+            ## check response ##
+
+            #start timer for response
+            start_time=self.trialClock.getTime()
+            self.mouse.getPos()
+
+            while score==None:
 
                 ## QUIT check ##
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
-
-                ## display stimuli, target, foil and trial components ##
-                #display boxes for target & foil
-                self.target_box.draw()
-                self.foil_box.draw()
-                win.flip()
-
-                #wait for 1.5s / t1
-                core.wait(self.t_fixline)
-
-                #display boxes with target and foil dots pictures
-                self.target_box.draw()
-                self.foil_box.draw()
-                self.target.draw()
-                self.foil.draw()
-                win.flip()
-                
-
-                ## check response ##
-
-                #start timer for response
-                start_time=self.trialClock.getTime()
-                self.mouse.getPos()
 
                 #check for response when time is within time limit
                 while choice_time<=self.timer_limit:
