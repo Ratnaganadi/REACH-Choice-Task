@@ -12,7 +12,7 @@ from Dots_Task import LDRH_dots as Dots_Script
 from Reading_Task import LDRH_reading as Reading_Script
 from Phonology_Task import LDRH_phonology as Phonology_Script
 from Star_Task import LDRH_stars as Star_Script
-from game_functions import task_function, feedback
+from game_functions import task_function, feedback, handler_function
 
 
 ## task to run ##
@@ -28,9 +28,11 @@ task_names=[
 ## settings ##
 #option to run_instructions, run_practice, have full_screen and touch_screen
 run_inst = False
-run_pract = False
+run_pract = True
 full_screen = False
 touchscreen = True
+use_posterior_matching = False
+testing_questionnaire = False
 
 #enable pickling of .data
 pickle_enabled = False
@@ -197,42 +199,66 @@ else:
         'Music': dict(sheet = wb.add_sheet('Music'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','stim1','stim2','resp','resp_pos','target','target_pos','tones_details','tones_contour','tones_notes_different','tones_root','task_version'], row=1),
         'Reading': dict(sheet = wb.add_sheet('Reading'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','foil1','foil1_pos','foil2','foil2_pos','foil3','foil3_pos','foil4','foil4_pos','task_version'], row=1),
         'Dots': dict(sheet = wb.add_sheet('Dots'), headers = ['subject_ID','trial_number','task','type','threshold_var','level','score','resp_time','resp','resp_pos','target','target_pos','task_version'], row=1),
-        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1)
+        'Task_Times': dict(sheet = wb.add_sheet('Task_Times'), headers = ['task','instructions','practice','staircase','total','task_version'],row=1),
+        'Questionnaire': dict(sheet = wb.add_sheet('Questionnaire'), headers = ['subject_ID','favorite_6_most','why_most_favorite','favorite_5','favorite_4','favorite_3','favorite_2','favorite_1_least','why_least_favorite','easiest_1','why_easiest','easy_2','easy_3','easy_4','easy_5','easy_6_hardest','why_hardest','rank_reading_1to6','rank_math_1to6'],row=1)
     }
     
     #initialize headers for each sheet
     for key in all_sheets.keys():
         for col, header in enumerate(all_sheets[key]['headers']): all_sheets[key]['sheet'].write(0,col,header)
 
+
+
     #create handlers
-    all_handlers = {
-        'Math': {
-                'addition': data.StairHandler(startVal= len(all_conditions['Math']['addition'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['addition'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
-                'subtraction': data.StairHandler(startVal= len(all_conditions['Math']['subtraction'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['subtraction'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
-                'multiplication': data.StairHandler(startVal= len(all_conditions['Math']['multiplication'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['multiplication'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
-                'division': data.StairHandler(startVal= len(all_conditions['Math']['division'])-1, stepSizes=[2,1,1,1],
-                    minVal=0, maxVal=len(all_conditions['Math']['division'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin')
+    all_handlers = {}
+    if use_posterior_matching==False:
+        all_handlers = {
+            'Math': {
+                    'addition': data.StairHandler(startVal= len(all_conditions['Math']['addition'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['addition'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
+                    'subtraction': data.StairHandler(startVal= len(all_conditions['Math']['subtraction'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['subtraction'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
+                    'multiplication': data.StairHandler(startVal= len(all_conditions['Math']['multiplication'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['multiplication'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin'),
+                    'division': data.StairHandler(startVal= len(all_conditions['Math']['division'])-1, stepSizes=[2,1,1,1],
+                        minVal=0, maxVal=len(all_conditions['Math']['division'])-1, nUp=1, nDown=3, nTrials=10, stepType = 'lin')
+                    },
+            'Music': data.StairHandler(startVal = 14, stepType = 'lin', stepSizes=[2,1,1,1,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Music'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10),
+            'Dots': data.StairHandler(startVal = 35, stepType = 'lin', stepSizes=[5,3,2,2,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Dots'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10),
+            'Reading': data.StairHandler(startVal = 8, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Reading'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10, nReversals = 0),
+            'Phonology': data.StairHandler(startVal = 4, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=len(all_conditions['Phonology'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10, nReversals = 0),
+            'Spatial': data.StairHandler(startVal = 150,
+                stepType = 'db', stepSizes=[3,3,2,2,1,1],#[8,4,4,2,2,1,1], #reduce step size every two reversals
+                minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
+                nTrials = 10)
+            }
+
+    elif use_posterior_matching==True:
+        math_max = [len(all_conditions['Math']['addition'])-1,
+            len(all_conditions['Math']['subtraction'])-1,
+            len(all_conditions['Math']['multiplication'])-1,
+            len(all_conditions['Math']['division'])-1]
+
+        all_handlers = {
+            'Math': {
+                'addition': handler_function.posterior_matching(startVal = len(all_conditions['Math']['addition'])-1 , minVal = 0, maxVal = len(all_conditions['Math']['addition'])-1, axis = 4),
+                'subtraction': handler_function.posterior_matching(startVal = len(all_conditions['Math']['subtraction'])-1, minVal = 0, maxVal = len(all_conditions['Math']['subtraction'])-1, axis = 4),
+                'multiplication': handler_function.posterior_matching(startVal = len(all_conditions['Math']['multiplication'])-1, minVal = 0, maxVal = len(all_conditions['Math']['multiplication'])-1, axis = 4),
+                'division': handler_function.posterior_matching(startVal = len(all_conditions['Math']['division'])-1, minVal = 0, maxVal = len(all_conditions['Math']['division'])-1, axis = 4)
                 },
-        'Music': data.StairHandler(startVal = 14, stepType = 'lin', stepSizes=[2,1,1,1,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Music'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10),
-        'Dots': data.StairHandler(startVal = 35, stepType = 'lin', stepSizes=[5,3,2,2,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Dots'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10),
-        'Reading': data.StairHandler(startVal = 8, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Reading'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10, nReversals = 0),
-        'Phonology': data.StairHandler(startVal = 4, stepType = 'lin', stepSizes=[1,1,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=len(all_conditions['Phonology'])-1, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10, nReversals = 0),
-        'Spatial': data.StairHandler(startVal = 150,
-            stepType = 'db', stepSizes=[3,3,2,2,1,1],#[8,4,4,2,2,1,1], #reduce step size every two reversals
-            minVal=0, maxVal=350, nUp=1, nDown=3,  #will home in on the 80% threshold
-            nTrials = 10)
-        }
+            'Music': handler_function.posterior_matching(startVal = 14, minVal = 0, maxVal = len(all_conditions['Music'])-1, axis = 1),
+            'Dots': handler_function.posterior_matching(startVal = 35, minVal = 0, maxVal = len(all_conditions['Dots'])-1, axis = 1),
+            'Reading': handler_function.posterior_matching(startVal = 8, minVal = 0, maxVal = len(all_conditions['Reading'])-1, axis = 1),
+            'Spatial': handler_function.posterior_matching(startVal = 150, minVal = 0, maxVal = 350, axis = 1)
+            }
 
     #dictionry of ring tracking
     num_rings = {'Math': 4, 'Music': 4, 'Reading': 4, 'Dots': 4, 'Phonology': 4, 'Spatial': 4}
@@ -375,10 +401,12 @@ def pickle_and_quit():
 
 def run_staircase(task, operation=None):
     global trial_number
+
     if operation:
         handler = all_handlers[task][operation]
     else:
         handler = all_handlers[task]
+    
 
     try:
         thisIncrement = handler.next()
@@ -439,6 +467,10 @@ def run_staircase(task, operation=None):
         #update handler only if not a "same" trial from tones or phonology
         #if 'Correct Response' in output.keys() and output['Correct Response'].lower() != 'same': all_handlers[task].addData(output['score'])
         #else: print 'same trial-- did not update stairhandler'
+        order_dict = {'addition':1, 'subtraction':2, 'multiplication':3, 'division':4}
+        if operation: output_score = [output['score'] if i==order_dict[operation] else None for i in range(1,5)]
+        else: output_score = output['score']
+
         handler.addData(output['score'])
 
         # This code is to boost the staircase level of 'lower' operations when a student is successful on
@@ -464,12 +496,23 @@ def run_staircase(task, operation=None):
 
     return output
 
+if testing_questionnaire:
+    ## QUESTIONNAIRE ##
+    Questions = task_function.questionnaire(win)
+    questionnaire_output = Questions.run_questionnaire(win)
+    questionnaire_output['subject_ID'] = subject_ID
 
-## QUESTIONNAIRE ##
-# Questions = task_function.questionnaire(win)
-# if Questions.run_questionnaire(win)=='QUIT': pickle_and_quit()
+    print 'output:', questionnaire_output
+    if questionnaire_output=='QUIT': pickle_and_quit()
+    else:
+        try:
+            for col,header in enumerate(all_sheets['Questionnaire']['headers']):
+                all_sheets['Questionnaire']['sheet'].write(all_sheets['Questionnaire']['row'],col,questionnaire_output[header])
+        except:
+            print 'ERROR: Cannot save questionnaire data, please add this data to output file:'
+            print questionnaire_output
 
-
+        save()
 
 #STAIRCASING SECTION
 
@@ -869,8 +912,20 @@ save(complete=True)
 
 ## QUESTIONNAIRE ##
 Questions = task_function.questionnaire(win)
-if Questions.run_questionnaire()=='QUIT': pickle_and_quit()
+questionnaire_output = Questions.run_questionnaire(win)
+questionnaire_output['subject_ID'] = subject_ID
 
+print 'output:', questionnaire_output
+if questionnaire_output=='QUIT': pickle_and_quit()
+else:
+    try:
+        for col,header in enumerate(all_sheets['Questionnaire']['headers']):
+            all_sheets['Questionnaire']['sheet'].write(all_sheets['Questionnaire']['row'],col,questionnaire_output[header])
+    except:
+        print 'ERROR: Cannot save questionnaire data, please add this data to output file:'
+        print questionnaire_output
+
+    save()
 
 
 ## fireworks yay!! ##
