@@ -159,7 +159,7 @@ class PosteriorMatchingIRL(StairHandler):
                     skillLevel = i
                     # Check for 95% probability mass on a particular discrete value.
                     if self.pR[i] >= 0.95:
-                        print "Found it!"
+                        print "95%% Confidence Threshold reached for intensity {i}".format(i=i)
                         self.finished = True
                     break
 

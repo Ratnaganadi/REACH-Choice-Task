@@ -588,10 +588,10 @@ if not just_choice:
                                 if (len(streaks[operation][output['thisIncrement']]) > 9) and (current_streak >= 0.8):
                                     all_thresholds[task][operation] = output['thisIncrement']
                                     active_operations.remove(operation)
-                            #remove operation from being active, don't record a threshold
-                            if output['thisIncrement']==len(all_conditions[task][operation])-1:
-                                if (len(streaks[operation][output['thisIncrement']]) > 3) and (current_streak <= 0.5):
-                                    active_operations.remove(operation)
+                                #remove operation from being active, don't record a threshold
+                                if output['thisIncrement']==len(all_conditions[task][operation])-1:
+                                    if (len(streaks[operation][output['thisIncrement']]) > 3) and (current_streak <= 0.5):
+                                        active_operations.remove(operation)
 
                 #add new operation if applicable
                 for new_operation, reqs in math_benchmarks.items():
