@@ -28,9 +28,9 @@ task_names=[
 
 ## settings ##
 #option to run_instructions, run_practice, have full_screen and touch_screen
-run_inst = False
+run_inst = True
 run_pract = True
-full_screen = False
+full_screen = True
 touchscreen = True
 use_posterior_matching = False
 testing_questionnaire = False
