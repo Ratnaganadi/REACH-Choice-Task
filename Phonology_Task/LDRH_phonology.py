@@ -148,13 +148,14 @@ class Phonology_Game(practice_functions):
             
             if self.tf.quit_check(win)=='QUIT': return 'QUIT'
             
+            duration = audio.getDuration()
             #play phoneme
             audio.play()
 
             #make sure the audio plays until the end of audio duration while checking for 'QUIT'
             start_time = self.trialClock.getTime()
             # double_click, double_time, double_time2, double_time3 = False, None, None, None
-            while self.trialClock.getTime() < start_time + audio.getDuration():
+            while self.trialClock.getTime() < start_time + duration:
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
                 
 
