@@ -522,6 +522,8 @@ if not just_choice:
             instructions_start = trialClock.getTime()
             if all_games[task].run_instructions(win,task.lower())=='QUIT': pickle_and_quit()
             instructions_times[task] = trialClock.getTime() - instructions_start
+        elif not run_inst:
+            instructions_times[task] = 0
         
         if run_pract:
             #run practice for task
@@ -530,6 +532,8 @@ if not just_choice:
             if hasattr(all_games[task], 'run_practice'):
                if all_games[task].run_practice(win,task.lower(),grade)=='QUIT': pickle_and_quit()
             practice_times[task] = trialClock.getTime() - practice_start
+        elif not run_pract:
+            practice_times[task] = 0
 
         # #run staircase; math needs special circumstances
         print '\n* TRIAL / THRESHOLD *'
@@ -577,12 +581,13 @@ if not just_choice:
     
                             #keep track of streaks
                             streaks[operation][output['thisIncrement']] = streaks[operation].get(output['thisIncrement'], []) + [output["score"]]
-    
-                            #handle streak breaking
-                            current_streak = sum([item_correct or 0 for item_correct in streaks[operation][output['thisIncrement']]])/float(len(streaks[operation][output['thisIncrement']]))
-                            if (len(streaks[operation][output['thisIncrement']]) > 9) and (current_streak >= 0.8):
-                                all_thresholds[task][operation] = output['thisIncrement']
-                                active_operations.remove(operation)
+
+                            if not use_posterior_matching:
+                                #handle streak breaking
+                                current_streak = sum([item_correct or 0 for item_correct in streaks[operation][output['thisIncrement']]])/float(len(streaks[operation][output['thisIncrement']]))
+                                if (len(streaks[operation][output['thisIncrement']]) > 9) and (current_streak >= 0.8):
+                                    all_thresholds[task][operation] = output['thisIncrement']
+                                    active_operations.remove(operation)
                             #remove operation from being active, don't record a threshold
                             if output['thisIncrement']==len(all_conditions[task][operation])-1:
                                 if (len(streaks[operation][output['thisIncrement']]) > 3) and (current_streak <= 0.5):
@@ -615,14 +620,16 @@ if not just_choice:
                 streaks[output['thisIncrement']] = streaks.get(output['thisIncrement'], []) + [output["score"]]
 
                 print 'pos_streak:', streaks[output['thisIncrement']]
-                #handle streak breaking
-                current_streak = sum([item_correct or 0 for item_correct in streaks[output['thisIncrement']]])/float(len(streaks[output['thisIncrement']]))
-                if len(streaks[output['thisIncrement']]) > 9:
-                    if current_streak >= 0.8:
-                        all_thresholds[task] = output['thisIncrement']
-                        break
-                    if current_streak <= 0.5:
-                        break
+
+                if not use_posterior_matching:
+                    #handle streak breaking
+                    current_streak = sum([item_correct or 0 for item_correct in streaks[output['thisIncrement']]])/float(len(streaks[output['thisIncrement']]))
+                    if len(streaks[output['thisIncrement']]) > 9:
+                        if current_streak >= 0.8:
+                            all_thresholds[task] = output['thisIncrement']
+                            break
+                        if current_streak <= 0.5:
+                            break
         staircasing_times[task] = trialClock.getTime() - staircasing_start
         total_times[task] = instructions_times[task]+practice_times[task]+staircasing_times[task]
         save()
