@@ -188,6 +188,7 @@ class Star_Game(practice_functions):
             start_time = self.trialClock.getTime()
             
             while score==None:
+                t = self.trialClock.getTime()
                 #quit check
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
                 
@@ -199,7 +200,7 @@ class Star_Game(practice_functions):
                             status='STARTED'
                             first_click_time = t - start_time
                             self.drag.setImage(self.image_path + '/star_selected.png')
-                        elif status == 'STARTED' and t >= first_click_time + start_time + 0.3:
+                        elif status=='STARTED' and t >= first_click_time + start_time + 0.3:
                             second_click_time = t - start_time
                             self.drag.setImage(self.image_path + '/star2.png')
                             self.drag.setPos(self.mouse.getPos())
