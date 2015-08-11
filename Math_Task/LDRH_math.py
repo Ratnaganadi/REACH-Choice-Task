@@ -249,7 +249,7 @@ class Math_Game(practice_functions):
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
   
                 #check for response when time is within time limit
-                while choice_time<=self.timer_limit:
+                if choice_time<=self.timer_limit:
                     if (self.mouse.mouseMoved() or (self.mouse.getPressed()==[1,0,0])):
                         for pts,string,text,xpos,button in object_var:
                             if button.contains(self.mouse):

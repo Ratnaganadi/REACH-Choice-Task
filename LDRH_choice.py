@@ -1,4 +1,5 @@
-from psychopy import visual, core, data, event, logging, gui, sound
+from psychopy import visual
+from psychopy import core, data, event, logging, gui, sound
 from psychopy.constants import *
 import os, random, math, copy, xlwt, numpy, csv, itertools
 from xlrd import open_workbook
