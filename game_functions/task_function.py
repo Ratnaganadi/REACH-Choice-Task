@@ -214,8 +214,8 @@ class questionnaire:
                         self.dots_icon.setSize([145,145])
 
                 if self.tf.quit_check(win)=='QUIT': return 'QUIT'
-                if key==['pagedown'] or key==['right']: 
-                    if ans: thisResp = str(ans.name)
+                if (key==['pagedown'] or key==['right']) and ans: 
+                    thisResp = str(ans.name)
 
                 win.flip()
 
@@ -356,10 +356,9 @@ class questionnaire:
                             if ans: icons[ans-1].setSize([100,100])
                             ans = 6; self.smile6.setSize([120,120])
 
-                    if key==['pagedown'] or key==['right']: 
-                        if ans:
-                            icons[ans-1].setSize([100,100])
-                            thisResp = ans
+                    if (key==['pagedown'] or key==['right']) and ans: 
+                        icons[ans-1].setSize([100,100])
+                        thisResp = ans
                     win.flip()
                 thisList.extend(str(thisResp))
 
