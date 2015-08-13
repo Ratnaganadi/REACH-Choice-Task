@@ -7,7 +7,7 @@ class task_functions:
     def __init__(self, win):
         self.trialClock=core.Clock()
         image_path = 'Images/Tasks/'
-        self.fixation=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], color=u'white',text=u'+')
+        self.fixation=visual.TextStim(win, ori=0, font=u'Arial', pos=[0, 0], height=50, color=u'white',text=u'+')
         self.mouse=event.Mouse(win=win)
         self.mouse.getPos()
         self.double_click = False
