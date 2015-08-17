@@ -384,15 +384,12 @@ class questionnaire:
                 output[str(qwhy1.name)] = answers[1][0]
                 output[str(qwhy2.name)] = answers[1][1]
 
-        # #rank reading and math
-        # answers2 = rank16_icons([self.q_like_reading, self.q_like_math])
-        # if answers2=='QUIT': return 'QUIT'
-        # elif answers2: 
-        #     output['rank_reading_1to6'] = answers2[0]
-        #     output['rank_math_1to6'] = answers2[1]
-
-        output['rank_reading_1to6'] = ''
-        output['rank_math_1to6'] = ''
+        #rank reading and math
+        answers2 = rank16_icons([self.q_like_reading, self.q_like_math])
+        if answers2=='QUIT': return 'QUIT'
+        elif answers2: 
+            output['rank_reading_1to6'] = answers2[0]
+            output['rank_math_1to6'] = answers2[1]
 
         core.wait(0.5)
 

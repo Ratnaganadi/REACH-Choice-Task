@@ -10,6 +10,10 @@ data_camp/
 *.pkg
 *.sh
 *.gif
+*.ipynb
+*.pkf
+data_analysis/
+Audio/
 taskversion.py
 LDRH_choice_with_tasks_w_gradeinfo.py
 
