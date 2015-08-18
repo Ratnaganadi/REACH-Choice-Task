@@ -23,6 +23,17 @@ class PosteriorMatchingIRL(StairHandler):
 
         self.initializePosterior()
 
+        self.alphaList = {
+            'dots': [2.07334185, 0.32723119],
+            'music': [0.82709833, 0.06820259],
+            'phonology': [1.65056589, 0.80824015],
+            'reading': [2.51587506, 0.55903451],
+            'addition': [.789,.444],
+            'subtraction': [1.29,.837],
+            'multiplication': [1.73,.797],
+            'division':[1.06,.631]
+        }
+
 
     #makes 1-dimensional assumption as well
     def initializePosterior(self):
@@ -32,7 +43,7 @@ class PosteriorMatchingIRL(StairHandler):
         self.pR = self.pR / np.sum(self.pR)
         self.calculateNextIntensity()
 
-    def addResponse(self, result, intensity=None):
+    def addResponse(self, task, result, intensity=None):
         """Add a 1 or 0 to signify a correct/detected or incorrect/missed trial
         This is essential to advance the staircase to a new intensity level!
         Supplying an `intensity` value here indicates that you did not use the
@@ -46,7 +57,7 @@ class PosteriorMatchingIRL(StairHandler):
             self.intensities.pop()
             self.intensities.append(intensity)
 
-        self.updatePosterior(result, intensity=intensity)
+        self.updatePosterior(task, result, intensity=intensity)
 
         #add the current data to experiment if poss
         if self.getExp() != None: #update the experiment handler too
@@ -55,16 +66,16 @@ class PosteriorMatchingIRL(StairHandler):
         self.calculateNextIntensity()
 
 
-    def addData(self, result):
+    def addData(self, task, result):
         #this is where I'm passing the result to you. the result is either 1 or 0
         #for math task
         # - a list of 4 Values will be returned, which correspond to this order [addidion, substraction, multiplication, division]
         # - the result of the current operation will either be 1 or 0, whill the result of the other operation currently not give will be None
 
-        self.addResponse(result)
+        self.addResponse(task, result)
 
 
-    def updatePosterior(self, y, intensity=None): 
+    def updatePosterior(self, task, y, intensity=None): 
 
         if not intensity:
             intensity = self.intensities[-1]
@@ -106,7 +117,9 @@ class PosteriorMatchingIRL(StairHandler):
 
         #############1-dimensional assumption#######################
         else:
+            alphas = np.array(self.alphaList[task.lower()])
 
+            print '{} | a0 {} | a1 {}'.format(task,alphas[0],alphas[1])
             for i in range(0, self.pR.shape[0]):
 
                 #we calculate P(Y|W) for ever W we visit
@@ -119,7 +132,7 @@ class PosteriorMatchingIRL(StairHandler):
                 #-y is 1-dimensional, and every iteration has only 1 response pertaining to the given axis
                 #-the posterior self.pR is also 1-dimensional (i.e. only pertains to 1 subject at a time)
 
-                pSuccess = np.exp(self.pConstant * (intensity - curW))
+                pSuccess = np.exp(alphas[1] * (intensity - curW) + alphas[0])
                 pSuccess = pSuccess / (1 + pSuccess)
                 if y == 0:
                     pY_W = pY_W * (1 - pSuccess)

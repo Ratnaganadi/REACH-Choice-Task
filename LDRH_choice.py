@@ -456,7 +456,10 @@ def run_staircase(task, operation=None):
         if operation: output_score = [output['score'] if i==order_dict[operation] else None for i in range(1,5)]
         else: output_score = output['score']
 
-        handler.addData(output['score'])
+        if use_posterior_matching: 
+            if operation: handler.addData(operation,output['score'])
+            else: handler.addData(task,output['score'])
+        elif not use_posterior_matching: handler.addData(output['score'])
 
         # This code is to boost the staircase level of 'lower' operations when a student is successful on
         # more difficult operations. As a first pass, this simply records a success in *all* operations up to the one
@@ -465,7 +468,10 @@ def run_staircase(task, operation=None):
             operations = ['addition', 
             'subtraction','multiplication','division']
             for operation_name in operations[0:operations.index(operation)]:
-                all_handlers[task][operation_name].addData(output['score'])
+                if use_posterior_matching:
+                    all_handlers[task][operation_name].addData(operation,output['score'])
+                elif not use_posterior_matching:
+                    all_handlers[task][operation_name].addData(output['score'])
 
         #increment trial number
         trial_number+=1
@@ -543,7 +549,8 @@ if not just_choice:
                 all_thresholds['Math']={}
             streaks = {'addition': {}, 'subtraction': {}, 'multiplication': {}, 'division': {}}
             add_count_for_mult = 0
-            active_operations = ['addition']
+            if use_posterior_matching: active_operations = ['addition','subtraction','multiplication','division']
+            else: active_operations = ['addition']
 
             while active_operations:
                 for operation in math_operations:
